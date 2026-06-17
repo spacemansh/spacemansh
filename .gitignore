@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+dist
+build
+.env*
+*.log
+.hallmark
+.impeccable
+desktop-shot.png
+mobile-shot.png
+tmp-spaceman-desktop.png
