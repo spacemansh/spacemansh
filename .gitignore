@@ -3,6 +3,8 @@ node_modules
 out
 dist
 build
+.open-next
+.wrangler
 .env*
 *.log
 .hallmark
