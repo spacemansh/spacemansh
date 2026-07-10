@@ -50,15 +50,15 @@ export default function Home() {
           >
             <Image
               alt=""
-              className="spaceman-brand-logo h-8 w-auto"
-              height={32}
+              className="spaceman-brand-logo size-6"
+              height={24}
               priority
-              src="/figma-assets/spaceman-logo.svg"
-              width={158}
+              src="/figma-assets/spaceman-logo-24.svg"
+              width={24}
             />
           </a>
 
-          <div className="ml-[86px] hidden items-center gap-8 font-mono text-sm leading-5 text-muted-foreground lg:flex">
+          <div className="ml-12 hidden items-center gap-8 font-mono text-sm leading-5 text-muted-foreground lg:flex">
             {navItems.map((item) => (
               <a
                 className="spaceman-pressable -mx-1.5 -my-3 rounded-sm px-1.5 py-3 transition-colors duration-200 ease-out hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
