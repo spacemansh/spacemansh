@@ -20,6 +20,7 @@ Key values brought over:
 
 - 65px header height.
 - 32px desktop horizontal page padding.
+- 24px uploaded header mark.
 - Left-aligned hero content.
 - 99px desktop top spacing for the hero.
 - 55.2px desktop hero heading.
@@ -29,6 +30,10 @@ Key values brought over:
 - Minimal dark-first visual system with light mode parity.
 
 ## Files Changed
+
+### `public/figma-assets/spaceman-logo-24.svg`
+
+Added the uploaded 24px spaceman mark as a public asset. The header now uses this smaller mark instead of the previous 158px wordmark.
 
 ### `app/page.tsx`
 
@@ -40,6 +45,8 @@ Notable changes:
 - Removed React `useState` theme handling.
 - Added a CSS-native theme toggle using an accessible checkbox and label.
 - Added `Sun` and `Moon` icons from `lucide-react`.
+- Replaced the previous header wordmark with the uploaded 24px mark.
+- Tightened the desktop nav offset to fit the smaller logo.
 - Updated navigation to:
   - Products
   - Standards
@@ -177,4 +184,3 @@ This branch intentionally includes:
 - New product box grid component.
 - Scoped CSS for theme, layout, responsiveness, and animation.
 - This change summary document.
-
