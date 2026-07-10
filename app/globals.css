@@ -182,6 +182,12 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
+@utility text-sp-display {
+  font-size: 3.45rem;
+  line-height: 56.3px;
+  letter-spacing: 0;
+}
+
 body {
   overscroll-behavior: none;
 }
@@ -192,5 +198,189 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.spaceman-page {
+  --background: oklch(0.034 0.007 160);
+  --foreground: oklch(0.948 0.006 160);
+  --card: oklch(0.056 0.008 160);
+  --card-foreground: oklch(0.948 0.006 160);
+  --primary: oklch(0.78 0.15 154);
+  --primary-foreground: oklch(0.13 0.03 154);
+  --muted-foreground: oklch(0.61 0.009 160);
+  --border: oklch(0.22 0.008 160);
+  --ring: oklch(0.78 0.15 154);
+  --ease-sp-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-sp-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  color-scheme: dark;
+}
+
+.spaceman-page:has(.spaceman-theme-toggle:checked) {
+  --background: oklch(0.982 0.006 160);
+  --foreground: oklch(0.18 0.008 160);
+  --card: oklch(0.948 0.007 160);
+  --card-foreground: oklch(0.18 0.008 160);
+  --primary: oklch(0.78 0.15 154);
+  --primary-foreground: oklch(0.13 0.03 154);
+  --muted-foreground: oklch(0.47 0.008 160);
+  --border: oklch(0.84 0.008 160);
+  --ring: oklch(0.78 0.15 154);
+  color-scheme: light;
+}
+
+.spaceman-brand-logo {
+  filter: none;
+}
+
+.spaceman-nav-reveal,
+.spaceman-hero-kicker,
+.spaceman-hero-title,
+.spaceman-hero-copy,
+.spaceman-product-card {
+  animation: spaceman-enter 360ms var(--ease-sp-out) both;
+  will-change: transform, opacity;
+}
+
+.spaceman-nav-reveal {
+  animation-duration: 240ms;
+}
+
+.spaceman-hero-kicker {
+  animation-delay: 40ms;
+}
+
+.spaceman-hero-title {
+  animation-delay: 80ms;
+}
+
+.spaceman-hero-copy {
+  animation-delay: 120ms;
+}
+
+.spaceman-product-card {
+  transition:
+    transform 180ms var(--ease-sp-out),
+    border-color 180ms var(--ease-sp-out),
+    background-color 180ms var(--ease-sp-out);
+}
+
+.spaceman-product-card:nth-child(1) {
+  animation-delay: 160ms;
+}
+
+.spaceman-product-card:nth-child(2) {
+  animation-delay: 210ms;
+}
+
+.spaceman-product-card:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.spaceman-pressable,
+.spaceman-theme-toggle-control {
+  transition:
+    transform 140ms var(--ease-sp-out),
+    color 180ms ease,
+    background-color 180ms ease;
+}
+
+.spaceman-pressable:active,
+.spaceman-theme-toggle:active + .spaceman-theme-toggle-control,
+.spaceman-product-card:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spaceman-product-card:hover {
+    border-color: color-mix(in oklch, var(--primary) 35%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .spaceman-product-card:hover svg {
+    transform: translateX(2px);
+  }
+}
+
+.spaceman-product-card svg {
+  transition: transform 180ms var(--ease-sp-out);
+}
+
+@keyframes spaceman-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spaceman-theme-toggle-control {
+  display: inline-grid;
+  place-items: center;
+}
+
+.spaceman-sun-icon,
+.spaceman-moon-icon {
+  grid-area: 1 / 1;
+  transition:
+    transform 180ms var(--ease-sp-in-out),
+    opacity 180ms ease,
+    filter 180ms ease;
+}
+
+.spaceman-moon-icon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.92);
+}
+
+.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control .spaceman-sun-icon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.92);
+}
+
+.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control .spaceman-moon-icon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.spaceman-theme-toggle:focus-visible + .spaceman-theme-toggle-control {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control {
+  color: var(--foreground);
+}
+
+.spaceman-page:has(.spaceman-theme-toggle:checked) .spaceman-brand-logo {
+  filter: invert(1);
+}
+
+@media (max-width: 640px) {
+  .text-sp-display {
+    font-size: 2.8rem;
+    line-height: 1.06;
+  }
+}
+
+@media (max-width: 360px) {
+  .text-sp-display {
+    font-size: 2.5rem;
+    line-height: 1.08;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
