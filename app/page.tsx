@@ -6,32 +6,44 @@ import {
   type ProductBox,
 } from "@/components/product-box-grid";
 
-const navItems = ["Products", "Standards", "Docs", "GitHub"] as const;
+const navItems = ["Products", "Integrations", "Docs", "Open Source"] as const;
 
 const productBoxes: ProductBox[] = [
   {
-    label: "component library",
-    title: "spaceman/ui",
+    title: "Drag-and-drop builder",
     description:
-      "Production-ready primitives for building calm interfaces without losing control of the source.",
+      "Compose UIs from 90+ production components. Bind any element to a query and ship in minutes.",
     href: "#products",
-    action: "Browse components",
   },
   {
-    label: "review utility",
-    title: "surface checks",
+    title: "Design-to-code",
     description:
-      "Design-system audits for contrast, spacing, interaction states, and the details teams usually catch late.",
-    href: "#standards",
-    action: "Read standards",
+      "Import design tokens and Figma frames. Designers and engineers work from the same source of truth.",
+    href: "#products",
   },
   {
-    label: "workflow kit",
-    title: "shipbench",
+    title: "Connect any datasource",
     description:
-      "A small set of project patterns for keeping code, tokens, and visual quality moving together.",
-    href: "#docs",
-    action: "Open docs",
+      "Postgres, REST, GraphQL, gRPC, or your own SDK. Queries are typed and cached out of the box.",
+    href: "#products",
+  },
+  {
+    title: "Git-native workflow",
+    description:
+      "Everything is code. Branch, review, and roll back tools the same way you ship your product.",
+    href: "#products",
+  },
+  {
+    title: "Edge runtime",
+    description:
+      "Functions deploy to the edge automatically. Sub-50ms responses for tools your whole team relies on.",
+    href: "#products",
+  },
+  {
+    title: "Self-host or cloud",
+    description:
+      "Run Spaceman on your own infra under MIT, or let us host it. SOC 2, SSO, and audit logs included.",
+    href: "#products",
   },
 ];
 
@@ -62,7 +74,7 @@ export default function Home() {
             {navItems.map((item) => (
               <a
                 className="spaceman-pressable -mx-1.5 -my-3 rounded-sm px-1.5 py-3 transition-colors duration-200 ease-out hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                href={`#${item.toLowerCase()}`}
+                href={`#${item.toLowerCase().replaceAll(" ", "-")}`}
                 key={item}
               >
                 {item}
@@ -94,22 +106,28 @@ export default function Home() {
       >
         <div className="flex w-full max-w-[1023px] flex-col items-start gap-[58px]">
           <div className="flex flex-col items-start gap-6">
-            <div className="spaceman-hero-kicker flex items-center gap-2 font-mono text-xs leading-4 text-muted-foreground">
-              <span aria-hidden="true">Folder</span>
-              <span className="text-foreground">Open-Source library.</span>
-            </div>
-
             <h1 className="spaceman-hero-title max-w-[896px] text-balance font-sans text-sp-display font-normal text-foreground">
-              Developer tools for interfaces that arrive considered.
+              Build internal tools at the speed of thought.
             </h1>
 
             <p className="spaceman-hero-copy max-w-xl font-mono text-sm leading-[22.75px] text-muted-foreground">
-              Open-source libraries, review utilities, and workflow patterns
-              for teams who want source code and surface quality to be in sync.
+              Spaceman is the open-source platform for developers and designers
+              to assemble dashboards, admin panels, and design systems from real
+              data, real components, and real code. No lock-in.
             </p>
           </div>
 
-          <ProductBoxGrid items={productBoxes} />
+          <div className="flex w-full flex-col gap-8" id="products">
+            <div className="flex flex-col gap-4">
+              <p className="font-mono text-xs leading-4 text-muted-foreground">
+                {"// the platform"}
+              </p>
+              <h2 className="max-w-2xl text-balance font-sans text-3xl font-normal leading-tight text-foreground sm:text-4xl">
+                Everything you need to build, nothing you don&apos;t.
+              </h2>
+            </div>
+            <ProductBoxGrid items={productBoxes} />
+          </div>
         </div>
       </section>
     </main>
