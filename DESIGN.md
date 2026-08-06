@@ -1,71 +1,20 @@
 ---
 name: spaceman.sh
 description: Open-source tools that help developers ship beautiful user interfaces.
-colors:
-  background: "oklch(0.9911 0 0)"
-  foreground: "oklch(0.2046 0 0)"
-  primary: "oklch(0.8348 0.1302 160.9080)"
-  primary-foreground: "oklch(0.2626 0.0147 166.4589)"
-  secondary: "oklch(0.9940 0 0)"
-  muted: "oklch(0.9461 0 0)"
-  muted-foreground: "oklch(0.2435 0 0)"
-  border: "oklch(0.9037 0 0)"
-  input: "oklch(0.9731 0 0)"
-  dark-background: "oklch(0.012 0 0)"
-  dark-foreground: "oklch(0.9288 0.0126 255.5078)"
-  dark-card: "oklch(0.125 0 0)"
-  dark-primary: "oklch(0.8003 0.1821 151.7110)"
-  dark-muted-foreground: "oklch(0.7122 0 0)"
-  dark-border: "oklch(0.2809 0 0)"
-typography:
-  display:
-    fontFamily: "Inter Display, sans-serif"
-    fontSize: "clamp(2.8rem, 4.2vw, 3.45rem)"
-    fontWeight: 600
-    lineHeight: 1.02
-    letterSpacing: "0"
-  accent:
-    fontFamily: "Intel one mono, Georgia, serif"
-    fontStyle: "italic"
-  body:
-    fontFamily: "Intel one mono, sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 400
-    lineHeight: 1.45
-    letterSpacing: "0"
-  label:
-    fontFamily: "Intel one mono, sans-serif"
-    fontSize: "0.8rem"
-    fontWeight: 500
-    lineHeight: 1.25
-    letterSpacing: "0"
-rounded:
-  sm: "4px"
-  md: "6px"
-  lg: "8px"
-  xl: "12px"
-spacing:
-  xs: "4px"
-  sm: "8px"
-  md: "16px"
-  lg: "28px"
-  xl: "48px"
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-foreground}"
-    rounded: "{rounded.md}"
-    padding: "8px 12px"
-    height: "36px"
-  input-email:
-    backgroundColor: "transparent"
-    textColor: "{colors.dark-foreground}"
-    rounded: "{rounded.md}"
-    padding: "4px 12px"
-    height: "36px"
+tokens: app/globals.css
 ---
 
 # Design System: spaceman.sh
+
+> **Token values live in `app/globals.css`** (`:root` and `.dark`), not in this
+> file. This document carries the *rules and intent* of the system; the CSS
+> carries the numbers. A previous version of this file duplicated the values in
+> frontmatter, and they drifted out of sync with the implementation — the fonts
+> and dark-mode colours listed there had never matched what shipped. Do not
+> reintroduce token values here.
+>
+> The tokens are published as `@spaceman/theme`, so changing one changes a
+> public artefact.
 
 ## 1. Overview
 
@@ -185,4 +134,4 @@ The system uses tonal layering and tight glows more than traditional shadows. Su
 - **Don't** use angle brackets, terminal-window marks, hexagons, rocket icons, AI sparkles, gradients as identity, or mascots.
 - **Don't** turn the whole brand green, purple, blue-slate, or beige.
 - **Don't** use the current Suron copy, matchmaking promise, or product story for spaceman.sh.
-- **Don't** rely on Outfit + Playfair as the final brand voice without testing a more ownable open-license type direction.
+- **Don't** treat Geist Sans + Geist Mono as the settled final brand voice without testing a more ownable open-license type direction.

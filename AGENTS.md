@@ -109,11 +109,26 @@ Treat everything currently on the page as provisional.
 
 ## 6. Design system
 
-`DESIGN.md` is the authoritative design system and should be read before any
-visual change. Its frontmatter carries the token values; the body carries the
-named rules. The tokens are implemented as CSS custom properties in
-`app/globals.css` (`:root` and `.dark`), exposed to Tailwind through
-`@theme inline`.
+`app/globals.css` is the **single source of truth for token values**. They live
+in `:root` (light) and `.dark` (dark), and are exposed to Tailwind through
+`@theme inline`. `DESIGN.md` carries the named rules and the intent behind the
+system; its frontmatter is **not** a token source and must not be treated as
+one.
+
+Two rules bind every change to the system itself:
+
+- **One token set.** `:root` and `.dark` are the only places tokens are
+  defined. Do not introduce a page-scoped or component-scoped block that
+  redefines them. A second set silently shadows the first, leaves the tokens it
+  does not override falling through to the wrong theme, and cannot be
+  distributed through the registry.
+- **Do not invent tokens or colours.** Use what exists. If a change appears to
+  need a token that is not there, that is a design-system question — stop and
+  ask. Adding one is a decision, not an implementation detail.
+
+The theme is applied as the `dark` class on `<html>` by
+`registry/spaceman/theme-toggle/theme-provider.tsx`, which is what
+`@custom-variant dark (&:is(.dark *))` matches.
 
 Rules that bind every visual change:
 
@@ -143,7 +158,8 @@ it rather than inlining the value.
 
 Adding or changing a token means updating **both** `:root` and `.dark`, plus the
 `@theme inline` mapping, plus `DESIGN.md` if the change is a system decision
-rather than a fix.
+rather than a fix. Because the tokens are published as `@spaceman/theme`, a
+token change is a change to a public artefact — rebuild the registry after one.
 
 ## 7. Architecture
 
@@ -152,15 +168,18 @@ via OpenNext.
 
 ```text
 app/
-  layout.tsx        root layout, next/font wiring, metadata
+  layout.tsx        root layout, next/font wiring, theme provider, metadata
   page.tsx          the landing page
   globals.css       Tailwind v4 entry, design tokens, .spaceman-* page layer
 components/
   ui/               shadcn primitives (Radix + CVA + tailwind-merge)
   *.tsx             page-level compositions
+registry/spaceman/  published registry sources — see §13
+registry.json       registry catalogue
+public/r/*.json     built registry output, served at spaceman.sh/r/
 lib/utils.ts        cn() — clsx + tailwind-merge
 public/figma-assets/  design-sourced SVGs
-DESIGN.md           authoritative design system
+DESIGN.md           design-system rules and intent (not token values)
 PRODUCT.md          in-progress positioning material
 spaceman-changes.md implementation notes for the current landing-page work
 ```
@@ -209,10 +228,12 @@ The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
 
 ## 9. Style and tooling
 
-- The repo has both `package-lock.json` and `pnpm-lock.yaml`. That is a real
-  inconsistency — pick one deliberately with the user rather than silently
-  adding to either. Until resolved, do not add or remove dependencies without
-  saying which lockfile you updated.
+- **pnpm is the package manager**, pinned via `packageManager` in
+  `package.json`. `pnpm-lock.yaml` is the only lockfile; do not reintroduce
+  `package-lock.json` or run `npm install`.
+- Many dependencies are pinned to `"latest"`, which makes installs
+  irreproducible and has already broken `pnpm lint` (see §11). Raise this before
+  adding more; do not add a new dependency as `"latest"`.
 - Prettier defaults are in effect in the committed code: double quotes,
   semicolons, trailing commas. Match it; do not hand-format against it.
 - ESLint is flat config with `next/core-web-vitals` + `next/typescript`. Fix
@@ -237,9 +258,10 @@ When requirements conflict, use:
 
 1. The current user's explicit request.
 2. This repository guide.
-3. `DESIGN.md` for anything visual.
-4. Existing implementation in `app/` and `components/`.
-5. `spaceman-changes.md` for why the current landing page is shaped as it is.
+3. `app/globals.css` for token values — it is the system of record.
+4. `DESIGN.md` for visual *rules* and intent, never for token values.
+5. Existing implementation in `app/`, `components/`, and `registry/`.
+6. `spaceman-changes.md` for why the current landing page is shaped as it is.
 
 `PRODUCT.md` is explicitly **not** in this order — it is unsettled working
 material (§5).
@@ -251,12 +273,19 @@ Do not silently resolve a meaningful conflict. State it and ask.
 There is no test suite. Verification is the build, the linter, and your own eyes.
 
 ```bash
-pnpm dev        # local dev server
-pnpm lint       # eslint
-pnpm build      # next build — catches type and build errors
-pnpm preview    # opennext build + local Worker preview (the real runtime)
-pnpm deploy     # PUBLISHES — only when explicitly asked
+pnpm dev             # local dev server
+pnpm lint            # eslint — CURRENTLY BROKEN, see below
+pnpm build           # next build — catches type and build errors
+pnpm registry:build  # regenerate public/r/*.json from registry.json
+pnpm preview         # opennext build + local Worker preview (the real runtime)
+pnpm deploy          # PUBLISHES — only when explicitly asked
 ```
+
+`pnpm lint` currently fails before linting anything: `eslint` resolves to 10.x
+while `eslint-config-next` bundles plugins supporting ≤9, and the flat config
+has no `ignores`, so it also tries to lint `.open-next` output. This is a
+pre-existing defect, not something your change caused. Until it is fixed,
+`pnpm build` is the type and correctness signal — do not report lint as passing.
 
 Because there are no tests, visual verification is not optional:
 
@@ -280,6 +309,40 @@ Report what was run, what passed, and what could not be verified.
   build output.
 - Update `DESIGN.md` when a change alters a design-system decision, and this
   guide when a change alters the build, deployment, or developer workflow.
+
+## 13. The registry
+
+spaceman.sh publishes a shadcn registry under the `@spaceman` namespace, served
+as static JSON from the same Worker at `https://spaceman.sh/r/{name}.json`.
+
+```text
+registry.json                    the catalogue — hand-written, one entry per item
+registry/spaceman/<item>/*.tsx   item sources
+public/r/*.json                  built output, committed
+```
+
+`pnpm registry:build` runs `shadcn build`, which flattens `registry.json` into
+`public/r/`. It is chained into `pnpm build`, so a normal build keeps the output
+current. The generated files **are committed** so the published artefacts are
+reviewable in the repo.
+
+Rules for registry items:
+
+- **The site consumes what it publishes.** `app/` imports items from
+  `registry/spaceman/...` directly. There is no second copy, so the published
+  file and the rendered file cannot drift. Keep it that way.
+- **Only publish what has been rendered.** An item that has never been displayed
+  in both themes does not go in `registry.json`. This is why
+  `components/ui/button.tsx` and `input.tsx` are not published yet.
+- **Items must be self-contained.** Styling travels with the component in
+  Tailwind classes. Do not rely on the `.spaceman-*` layer in `globals.css` — a
+  consumer does not get that file, and the item will install unstyled.
+- List every npm package in `dependencies` and every other item in
+  `registryDependencies`. A missing entry installs a broken component.
+- Item `name` is a public API. Renaming one breaks everybody who installed it.
+
+After changing an item or a token, run `pnpm registry:build` and verify with
+`pnpm dlx shadcn@latest view @spaceman/<name>` against the running dev server.
 
 These guidelines are working when diffs stay focused, uncertainty is surfaced
 early, the design system holds in both themes, and visual work is backed by
