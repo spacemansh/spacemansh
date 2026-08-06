@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 
+import { ThemeProvider } from "@/registry/spaceman/theme-toggle/theme-provider";
+
 import "./globals.css";
 
 const geist = Geist({
@@ -16,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+  variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
 });
@@ -37,7 +39,7 @@ export default function RootLayout({
         className={`${geist.variable} ${geistMono.variable} ${sourceSerif.variable} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -62,6 +62,9 @@
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
   --tracking-normal: 0.025em;
   --spacing: 0.25rem;
+  --ease-sp-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-sp-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  color-scheme: light;
 }
 
 .dark {
@@ -120,6 +123,7 @@
   --shadow-xl:
     0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -201,35 +205,11 @@ body {
   }
 }
 
-.spaceman-page {
-  --background: oklch(0.034 0.007 160);
-  --foreground: oklch(0.948 0.006 160);
-  --card: oklch(0.056 0.008 160);
-  --card-foreground: oklch(0.948 0.006 160);
-  --primary: oklch(0.78 0.15 154);
-  --primary-foreground: oklch(0.13 0.03 154);
-  --muted-foreground: oklch(0.61 0.009 160);
-  --border: oklch(0.22 0.008 160);
-  --ring: oklch(0.78 0.15 154);
-  --ease-sp-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-sp-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  color-scheme: dark;
-}
-
-.spaceman-page:has(.spaceman-theme-toggle:checked) {
-  --background: oklch(0.982 0.006 160);
-  --foreground: oklch(0.18 0.008 160);
-  --card: oklch(0.948 0.007 160);
-  --card-foreground: oklch(0.18 0.008 160);
-  --primary: oklch(0.78 0.15 154);
-  --primary-foreground: oklch(0.13 0.03 154);
-  --muted-foreground: oklch(0.47 0.008 160);
-  --border: oklch(0.84 0.008 160);
-  --ring: oklch(0.78 0.15 154);
-  color-scheme: light;
-}
-
 .spaceman-brand-logo {
+  filter: invert(1);
+}
+
+.dark .spaceman-brand-logo {
   filter: none;
 }
 
@@ -277,8 +257,7 @@ body {
   animation-delay: 260ms;
 }
 
-.spaceman-pressable,
-.spaceman-theme-toggle-control {
+.spaceman-pressable {
   transition:
     transform 140ms var(--ease-sp-out),
     color 180ms ease,
@@ -286,7 +265,6 @@ body {
 }
 
 .spaceman-pressable:active,
-.spaceman-theme-toggle:active + .spaceman-theme-toggle-control,
 .spaceman-product-card:active {
   transform: scale(0.97);
 }
@@ -318,48 +296,6 @@ body {
   }
 }
 
-.spaceman-theme-toggle-control {
-  display: inline-grid;
-  place-items: center;
-}
-
-.spaceman-sun-icon,
-.spaceman-moon-icon {
-  grid-area: 1 / 1;
-  transition:
-    transform 180ms var(--ease-sp-in-out),
-    opacity 180ms ease,
-    filter 180ms ease;
-}
-
-.spaceman-moon-icon {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0.92);
-}
-
-.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control .spaceman-sun-icon {
-  opacity: 0;
-  transform: rotate(90deg) scale(0.92);
-}
-
-.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control .spaceman-moon-icon {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
-.spaceman-theme-toggle:focus-visible + .spaceman-theme-toggle-control {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-.spaceman-theme-toggle:checked + .spaceman-theme-toggle-control {
-  color: var(--foreground);
-}
-
-.spaceman-page:has(.spaceman-theme-toggle:checked) .spaceman-brand-logo {
-  filter: invert(1);
-}
-
 @media (max-width: 640px) {
   .text-sp-display {
     font-size: 2.8rem;
@@ -382,5 +318,14 @@ body {
     animation: none !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* View-transition pseudo-elements sit outside the document tree, so the
+     universal selector above never reaches them. Without this the theme
+     reveal still animates for reduced-motion users. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { Moon, Sun } from "lucide-react";
 
 import {
   ProductBoxGrid,
   type ProductBox,
 } from "@/components/product-box-grid";
+import { ThemeToggle } from "@/registry/spaceman/theme-toggle/theme-toggle";
 
 const navItems = ["Products", "Integrations", "Docs", "Open Source"] as const;
 
@@ -49,7 +49,7 @@ const productBoxes: ProductBox[] = [
 
 export default function Home() {
   return (
-    <main className="spaceman-page min-h-svh bg-background text-foreground">
+    <main className="min-h-svh bg-background text-foreground">
       <header className="relative z-20 border-b border-border/70 bg-background/85 backdrop-blur">
         <nav
           aria-label="Primary navigation"
@@ -82,20 +82,8 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="relative ml-auto">
-            <input
-              aria-label="Use light theme"
-              className="spaceman-theme-toggle absolute inset-0 z-10 size-11 cursor-pointer opacity-0"
-              id="spaceman-theme-toggle"
-              type="checkbox"
-            />
-            <label
-              className="spaceman-theme-toggle-control inline-flex size-11 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-card hover:text-foreground"
-              htmlFor="spaceman-theme-toggle"
-            >
-              <Sun aria-hidden="true" className="spaceman-sun-icon size-4" />
-              <Moon aria-hidden="true" className="spaceman-moon-icon size-4" />
-            </label>
+          <div className="ml-auto">
+            <ThemeToggle className="spaceman-pressable" />
           </div>
         </nav>
       </header>
