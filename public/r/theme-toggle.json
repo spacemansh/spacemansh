@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "title": "Theme Toggle",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A theme provider and toggle button that switch between light and dark with an animated circular reveal. The provider applies the `dark` class to the html element and stores the choice; the button cross-fades a sun and moon icon.",
+  "dependencies": [
+    "@space-man/react-theme-animation",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@spaceman/theme"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/theme-toggle/theme-provider.tsx",
+      "content": "\"use client\";\n\nimport type * as React from \"react\";\nimport { ThemeProvider as ThemeAnimationProvider } from \"@space-man/react-theme-animation\";\n\n/**\n * Wraps the app in theme state and applies the `dark` class to <html>.\n *\n * Renders a pre-hydration script so the stored theme is applied before first\n * paint, which keeps the page from flashing the wrong theme on load.\n */\nfunction ThemeProvider({ children }: { children: React.ReactNode }) {\n  return (\n    <ThemeAnimationProvider\n      attribute=\"class\"\n      defaultTheme=\"dark\"\n      duration={300}\n      enableSystem\n    >\n      {children}\n    </ThemeAnimationProvider>\n  );\n}\n\nexport { ThemeProvider };\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "registry/spaceman/theme-toggle/theme-toggle.tsx",
+      "content": "\"use client\";\n\nimport type * as React from \"react\";\nimport { Moon, Sun } from \"lucide-react\";\nimport { useTheme } from \"@space-man/react-theme-animation\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Toggles between light and dark, revealing the new theme from the button.\n *\n * The icons cross-fade through the `dark` variant rather than through React\n * state, so the button renders correctly on the server and never flashes the\n * wrong icon before hydration. Requires `ThemeProvider` above it in the tree.\n */\nfunction ThemeToggle({ className, ...props }: React.ComponentProps<\"button\">) {\n  const { ref, toggleTheme } = useTheme();\n\n  return (\n    <button\n      aria-label=\"Toggle theme\"\n      className={cn(\n        \"inline-grid size-11 cursor-pointer place-items-center rounded-md text-muted-foreground transition-colors duration-200 ease-out hover:bg-card hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\n        className,\n      )}\n      onClick={() => toggleTheme()}\n      ref={ref}\n      type=\"button\"\n      {...props}\n    >\n      <Sun\n        aria-hidden=\"true\"\n        className=\"col-start-1 row-start-1 size-4 rotate-90 scale-90 opacity-0 transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none dark:rotate-0 dark:scale-100 dark:opacity-100\"\n      />\n      <Moon\n        aria-hidden=\"true\"\n        className=\"col-start-1 row-start-1 size-4 rotate-0 scale-100 opacity-100 transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none dark:-rotate-90 dark:scale-90 dark:opacity-0\"\n      />\n    </button>\n  );\n}\n\nexport { ThemeToggle };\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Register the @spaceman namespace before installing: `npx shadcn@latest registry add @spaceman=https://spaceman.sh/r/{name}.json`. Wrap your app in <ThemeProvider> inside the root layout's <body>, and add suppressHydrationWarning to <html>. Your CSS needs a dark variant that matches the class, e.g. `@custom-variant dark (&:is(.dark *))` on Tailwind v4. The reveal runs at 300ms and is disabled under prefers-reduced-motion.",
+  "type": "registry:block"
+}
