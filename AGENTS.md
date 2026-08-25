@@ -252,6 +252,37 @@ The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
 - Conventional Commits, as used in the existing history (`feat:`, `fix:`,
   `chore:`). Default branch is `main`.
 
+### The `no-use-effect` skill
+
+There is currently **no `useEffect` in this repository** — the only client
+components are `registry/spaceman/theme-toggle/*`. Keep it that way where you
+can: most of what an effect is reached for here belongs in render, in an event
+handler, or in CSS.
+
+When you do need one, use the `no-use-effect` skill first. Effects in
+`registry/spaceman/` matter twice over — a published item's bug ships to every
+consumer who installs it, and they cannot be fixed by editing this site.
+
+If the skill is not already installed in your harness, install it once:
+
+```bash
+npx skills add https://github.com/factory-ai/factory-plugins --skill no-use-effect
+```
+
+For a quick session or a one-off change, run it without installing:
+
+```bash
+npx skills use "https://github.com/factory-ai/factory-plugins" --skill "no-use-effect"
+```
+
+Follow the instructions it generates. Read its **complete** output — redirect to
+a temporary file first if it is long — and resolve any relative paths against
+the supporting-files directory it names.
+
+The skill is a guiding principle, not a gate. With `pnpm lint` broken (§11), it
+is also the only effect-specific check available, so do not treat a passing
+`pnpm build` as covering this.
+
 ## 10. Source-of-truth order
 
 When requirements conflict, use:
