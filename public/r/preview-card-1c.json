@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card-1c",
+  "title": "Preview Card 1c: Install footer",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A catalogue card for showing a live component preview. Tight inset, with the install command as the footer.",
+  "registryDependencies": [
+    "@spaceman/theme",
+    "@spaceman/copy-button"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/preview-card/preview-card-1c.tsx",
+      "content": "import type * as React from 'react'\nimport { useId } from 'react'\n\nimport { cn } from '@/lib/utils'\nimport { CopyButton } from '@/registry/spaceman/copy-button/copy-button'\n\ntype PreviewCardProps = Omit<\n  React.ComponentProps<'article'>,\n  'children' | 'title'\n> & {\n  /** The item's display name. */\n  title: string\n  /** Where the card links, such as the item's docs page. */\n  href?: string\n  /** The command the copy action copies. */\n  installCommand: string\n  /** The live, interactive preview. */\n  children: React.ReactNode\n}\n\n/**\n * Design 1c, install footer. The name sits in the corner of a tight-inset\n * preview, and the footer shows the install command with a copy action.\n *\n * With `href` the whole card links there, while the preview and the copy\n * action stay clickable above the link. On hover the border strengthens and\n * the card takes a soft lift shadow.\n */\nfunction PreviewCard({\n  title,\n  href,\n  installCommand,\n  children,\n  className,\n  ...props\n}: PreviewCardProps) {\n  const titleId = useId()\n\n  return (\n    <article\n      aria-labelledby={titleId}\n      className={cn(\n        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',\n        className,\n      )}\n      {...props}\n    >\n      <div className='bg-inset grid min-h-0 flex-1 overflow-hidden rounded-[calc(var(--radius)+1px)]'>\n        <h3\n          className='col-start-1 row-start-1 mt-2.5 ml-3 self-start justify-self-start text-[13px] font-medium'\n          id={href ? undefined : titleId}\n        >\n          {href ? (\n            <a\n              className=\"after:absolute after:inset-0 after:content-[''] focus-visible:outline-none\"\n              href={href}\n              id={titleId}\n            >\n              {title}\n            </a>\n          ) : (\n            title\n          )}\n        </h3>\n        {/* Empty preview space passes clicks through to the card link; the\n            preview's own elements take them. */}\n        <div className='pointer-events-none relative z-10 col-start-1 row-start-1 grid place-items-center *:pointer-events-auto'>\n          {children}\n        </div>\n      </div>\n      <div className='border-border bg-input flex h-8.5 items-center gap-2 rounded-[calc(var(--radius)+1px)] border pr-1.5 pl-2.5'>\n        <code className='text-muted-foreground min-w-0 flex-1 truncate font-mono text-[11.5px]'>\n          <span aria-hidden='true'>$ </span>\n          {installCommand}\n        </code>\n        <CopyButton\n          className='bg-muted text-muted-foreground hover:bg-muted-strong hover:text-foreground relative z-10 h-[22px] w-7 rounded-[calc(var(--radius)-5px)]'\n          label={`Copy ${title} install command`}\n          value={installCommand}\n        />\n      </div>\n    </article>\n  )\n}\n\nexport { PreviewCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+  "type": "registry:component"
+}

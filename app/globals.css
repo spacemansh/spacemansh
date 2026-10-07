@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 /* @import "shadcn/tailwindcss"; */
 
 @custom-variant dark (&:is(.dark *));
@@ -16,14 +16,20 @@
   --secondary: oklch(0.994 0 0);
   --secondary-foreground: oklch(0.2046 0 0);
   --muted: oklch(0.9461 0 0);
-  --muted-foreground: oklch(0.2435 0 0);
+  --muted-foreground: oklch(0.4386 0 0);
+  --muted-strong: oklch(0.9 0 0);
   --accent: oklch(0.9461 0 0);
   --accent-foreground: oklch(0.2435 0 0);
   --destructive: oklch(0.5523 0.1927 32.7272);
   --destructive-foreground: oklch(0.9934 0.0032 17.2118);
   --border: oklch(0.9037 0 0);
+  --border-strong: oklch(0.82 0 0);
   --input: oklch(0.9731 0 0);
+  --inset: oklch(0.9731 0 0);
   --ring: oklch(0.8348 0.1302 160.908);
+  --primary-ink: oklch(0.55 0.15 157);
+  --tag: oklch(0.93 0.04 255);
+  --tag-foreground: oklch(0.5 0.17 258);
   --chart-1: oklch(0.8348 0.1302 160.908);
   --chart-2: oklch(0.6231 0.188 259.8145);
   --chart-3: oklch(0.6056 0.2189 292.7172);
@@ -37,9 +43,6 @@
   --sidebar-accent-foreground: oklch(0.2435 0 0);
   --sidebar-border: oklch(0.9037 0 0);
   --sidebar-ring: oklch(0.8348 0.1302 160.908);
-  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
-  --font-serif: Source Serif 4, ui-serif, serif;
-  --font-mono: Geist Mono, ui-monospace, monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -60,6 +63,7 @@
   --shadow-xl:
     0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+  --shadow-lift: 0px 10px 20px -8px hsl(0 0% 0% / 0.14);
   --tracking-normal: 0.025em;
   --spacing: 0.25rem;
   --ease-sp-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -80,13 +84,19 @@
   --secondary-foreground: oklch(0.9851 0 0);
   --muted: oklch(0.2393 0 0);
   --muted-foreground: oklch(0.7122 0 0);
+  --muted-strong: oklch(0.3132 0 0);
   --accent: oklch(0.3132 0 0);
   --accent-foreground: oklch(0.9851 0 0);
   --destructive: oklch(0.3123 0.0852 29.7877);
   --destructive-foreground: oklch(0.9368 0.0045 34.3092);
   --border: oklch(0.2809 0 0);
+  --border-strong: oklch(0.3132 0 0);
   --input: oklch(0.2603 0 0);
+  --inset: oklch(0.1822 0 0);
   --ring: oklch(0.8003 0.1821 151.711);
+  --primary-ink: oklch(0.78 0.15 158);
+  --tag: oklch(0.3 0.06 258);
+  --tag-foreground: oklch(0.8 0.1 255);
   --chart-1: oklch(0.8003 0.1821 151.711);
   --chart-2: oklch(0.7137 0.1434 254.624);
   --chart-3: oklch(0.709 0.1592 293.5412);
@@ -100,9 +110,6 @@
   --sidebar-accent-foreground: oklch(0.9851 0 0);
   --sidebar-border: oklch(0.2809 0 0);
   --sidebar-ring: oklch(0.8003 0.1821 151.711);
-  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
-  --font-serif: Source Serif 4, ui-serif, serif;
-  --font-mono: Geist Mono, ui-monospace, monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -123,6 +130,7 @@
   --shadow-xl:
     0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+  --shadow-lift: 0px 12px 26px -10px hsl(0 0% 0% / 0.6);
   color-scheme: dark;
 }
 
@@ -139,13 +147,19 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-muted-strong: var(--muted-strong);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
+  --color-inset: var(--inset);
   --color-ring: var(--ring);
+  --color-primary-ink: var(--primary-ink);
+  --color-tag: var(--tag);
+  --color-tag-foreground: var(--tag-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -177,6 +191,7 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  --shadow-lift: var(--shadow-lift);
 
   --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
   --tracking-tight: calc(var(--tracking-normal) - 0.025em);
@@ -186,10 +201,8 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
-@utility text-sp-display {
-  font-size: 3.45rem;
-  line-height: 56.3px;
-  letter-spacing: 0;
+@utility px-page {
+  padding-inline: max(24px, calc((100% - 1120px) / 2));
 }
 
 body {
@@ -203,6 +216,88 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Theme picker colour themes. Applied as `theme-<name>` on <html> by the
+   theme provider, and on each swatch so it previews its own accent. Mirrors
+   the `css` block of the theme-picker item in registry.json. */
+.theme-emerald {
+  --primary: oklch(0.8348 0.1302 160.908);
+  --primary-foreground: oklch(0.2626 0.0147 166.4589);
+  --ring: oklch(0.8348 0.1302 160.908);
+  --primary-ink: oklch(0.55 0.15 157);
+}
+
+.theme-slate {
+  --primary: oklch(0.8 0 0);
+  --primary-foreground: oklch(0.2046 0 0);
+  --ring: oklch(0.8 0 0);
+  --primary-ink: oklch(0.45 0 0);
+}
+
+.theme-azure {
+  --primary: oklch(0.8 0.1 255);
+  --primary-foreground: oklch(0.26 0.03 258);
+  --ring: oklch(0.8 0.1 255);
+  --primary-ink: oklch(0.52 0.17 258);
+}
+
+.theme-violet {
+  --primary: oklch(0.8 0.1 293);
+  --primary-foreground: oklch(0.27 0.04 293);
+  --ring: oklch(0.8 0.1 293);
+  --primary-ink: oklch(0.52 0.19 293);
+}
+
+.theme-amber {
+  --primary: oklch(0.85 0.15 84);
+  --primary-foreground: oklch(0.28 0.05 70);
+  --ring: oklch(0.85 0.15 84);
+  --primary-ink: oklch(0.55 0.13 70);
+}
+
+.dark.theme-emerald,
+.dark .theme-emerald {
+  --primary: oklch(0.4365 0.1044 156.7556);
+  --primary-foreground: oklch(0.9213 0.0135 167.1556);
+  --ring: oklch(0.8003 0.1821 151.711);
+  --primary-ink: oklch(0.78 0.15 158);
+}
+
+.dark.theme-slate,
+.dark .theme-slate {
+  --primary: oklch(0.4 0 0);
+  --primary-foreground: oklch(0.9851 0 0);
+  --ring: oklch(0.7122 0 0);
+  --primary-ink: oklch(0.78 0 0);
+}
+
+.dark.theme-azure,
+.dark .theme-azure {
+  --primary: oklch(0.45 0.13 258);
+  --primary-foreground: oklch(0.93 0.02 255);
+  --ring: oklch(0.7137 0.1434 254.624);
+  --primary-ink: oklch(0.78 0.12 255);
+}
+
+.dark.theme-violet,
+.dark .theme-violet {
+  --primary: oklch(0.45 0.15 293);
+  --primary-foreground: oklch(0.93 0.02 293);
+  --ring: oklch(0.709 0.1592 293.5412);
+  --primary-ink: oklch(0.78 0.12 293);
+}
+
+.dark.theme-amber,
+.dark .theme-amber {
+  --primary: oklch(0.5 0.11 70);
+  --primary-foreground: oklch(0.95 0.03 84);
+  --ring: oklch(0.8369 0.1644 84.4286);
+  --primary-ink: oklch(0.83 0.15 84);
 }
 
 .spaceman-brand-logo {
@@ -213,101 +308,73 @@ body {
   filter: none;
 }
 
-.spaceman-nav-reveal,
+/* Hero entrance: one staggered pass on load, most important first. */
 .spaceman-hero-kicker,
 .spaceman-hero-title,
 .spaceman-hero-copy,
-.spaceman-product-card {
-  animation: spaceman-enter 360ms var(--ease-sp-out) both;
-  will-change: transform, opacity;
-}
-
-.spaceman-nav-reveal {
-  animation-duration: 240ms;
-}
-
-.spaceman-hero-kicker {
-  animation-delay: 40ms;
+.spaceman-hero-actions {
+  animation: spaceman-enter 420ms var(--ease-sp-out) both;
 }
 
 .spaceman-hero-title {
-  animation-delay: 80ms;
+  animation-delay: 60ms;
 }
 
 .spaceman-hero-copy {
   animation-delay: 120ms;
 }
 
-.spaceman-product-card {
-  transition:
-    transform 180ms var(--ease-sp-out),
-    border-color 180ms var(--ease-sp-out),
-    background-color 180ms var(--ease-sp-out);
+.spaceman-hero-actions {
+  animation-delay: 180ms;
 }
 
-.spaceman-product-card:nth-child(1) {
-  animation-delay: 160ms;
-}
-
-.spaceman-product-card:nth-child(2) {
-  animation-delay: 210ms;
-}
-
-.spaceman-product-card:nth-child(3) {
-  animation-delay: 260ms;
+/* Hand-drawn underline. The resting state is fully drawn and the animation
+   runs from undrawn with `backwards` fill, so switching animation off leaves
+   the stroke visible instead of hiding it. */
+.spaceman-underline {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: spaceman-draw 800ms cubic-bezier(0.65, 0, 0.35, 1) backwards;
 }
 
 .spaceman-pressable {
   transition:
-    transform 140ms var(--ease-sp-out),
-    color 180ms ease,
-    background-color 180ms ease;
+    transform 150ms var(--ease-sp-out),
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
-.spaceman-pressable:active,
-.spaceman-product-card:active {
-  transform: scale(0.97);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .spaceman-product-card:hover {
-    border-color: color-mix(in oklch, var(--primary) 35%, transparent);
-    transform: translateY(-2px);
-  }
-
-  .spaceman-product-card:hover svg {
-    transform: translateX(2px);
-  }
-}
-
-.spaceman-product-card svg {
-  transition: transform 180ms var(--ease-sp-out);
+.spaceman-pressable:active {
+  transform: scale(0.96);
 }
 
 @keyframes spaceman-enter {
   from {
     opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateY(8px);
   }
 }
 
-@media (max-width: 640px) {
-  .text-sp-display {
-    font-size: 2.8rem;
-    line-height: 1.06;
+@keyframes spaceman-draw {
+  from {
+    stroke-dashoffset: 1;
   }
 }
 
-@media (max-width: 360px) {
-  .text-sp-display {
-    font-size: 2.5rem;
-    line-height: 1.08;
-  }
+/* The header motion switch sets data-motion="reduced" on <html>; it behaves
+   like prefers-reduced-motion for this site. */
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation: none !important;
+  transition-duration: 0.01ms !important;
+}
+
+:root[data-motion='reduced']::view-transition-group(*),
+:root[data-motion='reduced']::view-transition-old(*),
+:root[data-motion='reduced']::view-transition-new(*) {
+  animation: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

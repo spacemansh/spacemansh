@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card-1n",
+  "title": "Preview Card 1n: Window chrome",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A catalogue card for showing a live component preview. A title bar with three dots, and the slug set as a file name.",
+  "registryDependencies": [
+    "@spaceman/theme"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/preview-card/preview-card-1n.tsx",
+      "content": "import type * as React from 'react'\nimport { useId } from 'react'\n\nimport { cn } from '@/lib/utils'\n\ntype PreviewCardProps = Omit<\n  React.ComponentProps<'article'>,\n  'children' | 'title'\n> & {\n  /** The item's display name. */\n  title: string\n  /** Where the card links, such as the item's docs page. */\n  href: string\n  /** The registry slug, such as \"theme-picker\", shown as a file name. */\n  slug?: string\n  /** The live, interactive preview. */\n  children: React.ReactNode\n}\n\n/**\n * Design 1n, the window chrome. A title bar with three neutral dots carries\n * the slug as a file name, above a flush preview and a name footer.\n *\n * The whole card links to the item; on hover the border firms up and a soft\n * shadow appears.\n */\nfunction PreviewCard({\n  title,\n  href,\n  slug,\n  children,\n  className,\n  ...props\n}: PreviewCardProps) {\n  const titleId = useId()\n\n  return (\n    <article\n      aria-labelledby={titleId}\n      className={cn(\n        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring hover:border-border-strong hover:shadow-lift relative flex aspect-square min-h-0 flex-col overflow-hidden rounded-[calc(var(--radius)+6px)] border transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',\n        className,\n      )}\n      {...props}\n    >\n      <div className='border-border flex h-[34px] flex-none items-center gap-1.5 border-b px-3'>\n        <span\n          aria-hidden='true'\n          className='pointer-events-none flex items-center gap-1.5'\n        >\n          <span className='bg-border-strong size-[9px] rounded-full' />\n          <span className='bg-border-strong size-[9px] rounded-full' />\n          <span className='bg-border-strong size-[9px] rounded-full' />\n        </span>\n        {slug ? (\n          <span className='text-muted-foreground mx-auto font-mono text-[11.5px]'>\n            {`${slug}.tsx`}\n          </span>\n        ) : null}\n      </div>\n\n      <div className='bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden'>\n        {children}\n      </div>\n\n      <div className='flex items-center px-3.5 py-2.5'>\n        <h3 className='mr-auto text-[15px] font-medium'>\n          <a\n            className=\"after:absolute after:inset-0 after:content-[''] focus-visible:outline-none\"\n            href={href}\n            id={titleId}\n          >\n            {title}\n          </a>\n        </h3>\n        <span\n          aria-hidden='true'\n          className='text-primary-ink font-mono text-[14px] font-medium'\n        >\n          →\n        </span>\n      </div>\n    </article>\n  )\n}\n\nexport { PreviewCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+  "type": "registry:component"
+}

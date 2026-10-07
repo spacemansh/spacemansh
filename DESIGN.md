@@ -7,7 +7,7 @@ tokens: app/globals.css
 # Design System: spaceman.sh
 
 > **Token values live in `app/globals.css`** (`:root` and `.dark`), not in this
-> file. This document carries the *rules and intent* of the system; the CSS
+> file. This document carries the _rules and intent_ of the system; the CSS
 > carries the numbers. A previous version of this file duplicated the values in
 > frontmatter, and they drifted out of sync with the implementation — the fonts
 > and dark-mode colours listed there had never matched what shipped. Do not
@@ -48,6 +48,18 @@ The palette is strict neutral monochrome with a small green accent used for acti
 - **Soft Dark Surface**: The dark card and input field base.
 - **Quiet Border**: Thin structural lines only. Borders should be subtle and useful.
 - **Muted Text**: Secondary copy and placeholder text. Check contrast every time this is used on dark backgrounds.
+- **Strong Border / Strong Muted**: One step up from the quiet border and muted fill, for hover states only.
+- **Inset**: The well inside a card that holds a live preview.
+
+### Supporting
+
+- **Primary Ink**: Signal Green at a strength readable as a line or icon on the page background: the hero underline and card action icons. It follows the theme picker, like primary.
+- **Tag**: A soft blue for catalogue category tabs. It labels, never acts, so it must not compete with Signal Green; keep it to small tabs.
+- **Lift**: The hover shadow for catalogue cards. Resting cards stay flat.
+
+### Accent themes
+
+`@spaceman/theme-picker` swaps the accent by putting a `theme-<name>` class on `<html>` (emerald, slate, azure, violet, amber). Each theme overrides only primary, primary-foreground, ring and primary-ink, in light and dark. Emerald is the default and matches the base tokens.
 
 ### Named Rules
 
@@ -57,11 +69,11 @@ The palette is strict neutral monochrome with a small green accent used for acti
 
 ## 3. Typography
 
-**Display Font:** Geist Sans, with sans-serif fallback
-**Body Font:** Geist Sans, with sans-serif fallback
+**Display Font:** Noto Sans, with sans-serif fallback
+**Body Font:** Noto Sans, with sans-serif fallback
 **Accent Font:** Geist Mono, with monospace fallback
 
-**Character:** Geist provides a clean, developer-friendly typeface system with both sans and mono variants. The sans font handles display and body text, while mono is reserved for technical content, code references, and metadata per the No Costume Rule.
+**Character:** Noto Sans is a neutral, highly legible open-license sans for display and body text. Geist Mono is reserved for technical content, code references, and metadata per the No Costume Rule.
 
 ### Hierarchy
 
@@ -75,7 +87,7 @@ The palette is strict neutral monochrome with a small green accent used for acti
 
 **The No Costume Rule.** Do not use monospace just to signal "developer." Only use mono where the content is actually code, CLI output, package names, or technical metadata.
 
-**The Reference Font Rule.** Geist Sans and Geist Mono are the current implementation. Future brand work may explore other open-license type directions, but these define the current system.
+**The Reference Font Rule.** Noto Sans and Geist Mono are the current implementation. Future brand work may explore other open-license type directions, but these define the current system.
 
 ## 4. Elevation
 
@@ -134,4 +146,4 @@ The system uses tonal layering and tight glows more than traditional shadows. Su
 - **Don't** use angle brackets, terminal-window marks, hexagons, rocket icons, AI sparkles, gradients as identity, or mascots.
 - **Don't** turn the whole brand green, purple, blue-slate, or beige.
 - **Don't** use the current Suron copy, matchmaking promise, or product story for spaceman.sh.
-- **Don't** treat Geist Sans + Geist Mono as the settled final brand voice without testing a more ownable open-license type direction.
+- **Don't** treat Noto Sans + Geist Mono as the settled final brand voice without testing a more ownable open-license type direction.
