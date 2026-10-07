@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card-1h",
+  "title": "Preview Card 1h: Crop marks",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A catalogue card for showing a live component preview. Printer’s registration marks at the corners, with a mono spec line along the base.",
+  "registryDependencies": [
+    "@spaceman/theme"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/preview-card/preview-card-1h.tsx",
+      "content": "import type * as React from 'react'\nimport { useId } from 'react'\n\nimport { cn } from '@/lib/utils'\n\ntype PreviewCardProps = Omit<\n  React.ComponentProps<'article'>,\n  'children' | 'title'\n> & {\n  /** The item's display name. */\n  title: string\n  /** Where the card links, such as the item's docs page. */\n  href: string\n  /** A short index such as \"01\". */\n  index?: string\n  /** The registry slug, such as \"theme-picker\". */\n  slug?: string\n  /** A category such as \"Themes\". */\n  category?: string\n  /** The live, interactive preview. */\n  children: React.ReactNode\n}\n\n/**\n * Design 1h, crop marks. Printer's registration marks sit in the top corners,\n * and a mono spec line along the base holds the optional index, the slug and\n * the optional category. The whole card links to `href`.\n *\n * The spec line shows the slug when given, and the link keeps the title as\n * its name. On hover the border darkens to the foreground colour.\n */\nfunction PreviewCard({\n  title,\n  href,\n  index,\n  slug,\n  category,\n  children,\n  className,\n  ...props\n}: PreviewCardProps) {\n  const titleId = useId()\n\n  return (\n    <article\n      aria-labelledby={titleId}\n      className={cn(\n        'group border-border bg-card hover:border-foreground has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col overflow-hidden rounded-[calc(var(--radius)-4px)] border p-3.5 transition-[border-color] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',\n        className,\n      )}\n      {...props}\n    >\n      <span\n        aria-hidden='true'\n        className='border-muted-foreground pointer-events-none absolute top-2 left-2 size-2.5 border-t border-l'\n      />\n      <span\n        aria-hidden='true'\n        className='border-muted-foreground pointer-events-none absolute top-2 right-2 size-2.5 border-t border-r'\n      />\n      <div className='relative z-10 grid min-h-0 flex-1 place-items-center'>\n        {children}\n      </div>\n      <div className='border-border flex items-baseline gap-2.5 border-t pt-2.5'>\n        {index ? (\n          <span className='text-muted-foreground font-mono text-[10px] tracking-[0.08em] uppercase'>\n            {index}\n          </span>\n        ) : null}\n        <h3\n          className={cn(\n            'min-w-0 flex-1 text-sm font-medium',\n            slug && 'font-mono tracking-[-0.01em]',\n          )}\n        >\n          <a\n            aria-label={slug ? `${title}, ${slug}` : undefined}\n            className=\"after:absolute after:inset-0 after:content-[''] focus-visible:outline-none\"\n            href={href}\n            id={titleId}\n          >\n            {slug ?? title}\n          </a>\n        </h3>\n        {category ? (\n          <span className='text-muted-foreground font-mono text-[10px] tracking-[0.08em] uppercase'>\n            {category}\n          </span>\n        ) : null}\n      </div>\n    </article>\n  )\n}\n\nexport { PreviewCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+  "type": "registry:component"
+}

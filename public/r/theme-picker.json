@@ -1,0 +1,89 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-picker",
+  "title": "Theme Picker",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A row of swatches that switches the accent colour theme at runtime: emerald, slate, azure, violet and amber. Each theme overrides the primary, ring and primary-ink tokens in light and dark, and the choice is stored and applied before first paint.",
+  "dependencies": [
+    "@space-man/react-theme-animation"
+  ],
+  "registryDependencies": [
+    "@spaceman/theme-toggle"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/theme-picker/theme-picker.tsx",
+      "content": "'use client'\n\nimport { useTheme } from '@space-man/react-theme-animation'\nimport type * as React from 'react'\nimport { useSyncExternalStore } from 'react'\n\nimport { cn } from '@/lib/utils'\nimport { colorThemes } from '@/registry/spaceman/theme-picker/themes'\n\nconst subscribe = () => () => {}\n\n/**\n * A row of swatches that switches the accent colour theme at runtime.\n *\n * Each swatch carries its own `theme-<name>` class, so it paints the accent\n * that theme would apply in the current light or dark mode. The pressed state\n * is only reported after hydration: the provider reads the stored theme on\n * the client, and reporting it during hydration would not match the server.\n */\nfunction ThemePicker({\n  themes = colorThemes,\n  className,\n  ...props\n}: React.ComponentProps<'fieldset'> & { themes?: string[] }) {\n  const { colorTheme, switchColorTheme } = useTheme()\n\n  const hydrated = useSyncExternalStore(\n    subscribe,\n    () => true,\n    () => false,\n  )\n\n  return (\n    <fieldset\n      aria-label='Accent colour'\n      className={cn(\n        'border-border bg-card flex items-center gap-2.5 rounded-full border px-3.5 py-3',\n        className,\n      )}\n      {...props}\n    >\n      {themes.map((name) => (\n        <button\n          aria-label={name.charAt(0).toUpperCase() + name.slice(1)}\n          aria-pressed={hydrated ? colorTheme === name : undefined}\n          className={cn(\n            `theme-${name}`,\n            \"bg-primary relative size-5 cursor-pointer rounded-full outline-offset-2 transition-[transform,box-shadow] duration-150 ease-out after:absolute after:-inset-1 after:content-[''] hover:scale-110 active:scale-[0.96] aria-pressed:shadow-[0_0_0_2px_var(--card),0_0_0_4px_var(--foreground)] motion-reduce:transition-none\",\n          )}\n          key={name}\n          onClick={() => switchColorTheme(name)}\n          title={name}\n          type='button'\n        />\n      ))}\n    </fieldset>\n  )\n}\n\nexport { ThemePicker }\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "registry/spaceman/theme-picker/themes.ts",
+      "content": "/**\n * The colour themes the picker offers. Pass the same list to the\n * `ThemeProvider` as `colorThemes` so it can apply and persist the choice.\n *\n * Kept outside the client component so server files, such as the root layout,\n * can import the real array rather than a client reference.\n */\nconst colorThemes = ['emerald', 'slate', 'azure', 'violet', 'amber']\n\nexport { colorThemes }\n",
+      "type": "registry:lib"
+    }
+  ],
+  "css": {
+    ".theme-emerald": {
+      "--primary": "oklch(0.8348 0.1302 160.908)",
+      "--primary-foreground": "oklch(0.2626 0.0147 166.4589)",
+      "--ring": "oklch(0.8348 0.1302 160.908)",
+      "--primary-ink": "oklch(0.55 0.15 157)"
+    },
+    ".theme-slate": {
+      "--primary": "oklch(0.8 0 0)",
+      "--primary-foreground": "oklch(0.2046 0 0)",
+      "--ring": "oklch(0.8 0 0)",
+      "--primary-ink": "oklch(0.45 0 0)"
+    },
+    ".theme-azure": {
+      "--primary": "oklch(0.8 0.1 255)",
+      "--primary-foreground": "oklch(0.26 0.03 258)",
+      "--ring": "oklch(0.8 0.1 255)",
+      "--primary-ink": "oklch(0.52 0.17 258)"
+    },
+    ".theme-violet": {
+      "--primary": "oklch(0.8 0.1 293)",
+      "--primary-foreground": "oklch(0.27 0.04 293)",
+      "--ring": "oklch(0.8 0.1 293)",
+      "--primary-ink": "oklch(0.52 0.19 293)"
+    },
+    ".theme-amber": {
+      "--primary": "oklch(0.85 0.15 84)",
+      "--primary-foreground": "oklch(0.28 0.05 70)",
+      "--ring": "oklch(0.85 0.15 84)",
+      "--primary-ink": "oklch(0.55 0.13 70)"
+    },
+    ".dark.theme-emerald, .dark .theme-emerald": {
+      "--primary": "oklch(0.4365 0.1044 156.7556)",
+      "--primary-foreground": "oklch(0.9213 0.0135 167.1556)",
+      "--ring": "oklch(0.8003 0.1821 151.711)",
+      "--primary-ink": "oklch(0.78 0.15 158)"
+    },
+    ".dark.theme-slate, .dark .theme-slate": {
+      "--primary": "oklch(0.4 0 0)",
+      "--primary-foreground": "oklch(0.9851 0 0)",
+      "--ring": "oklch(0.7122 0 0)",
+      "--primary-ink": "oklch(0.78 0 0)"
+    },
+    ".dark.theme-azure, .dark .theme-azure": {
+      "--primary": "oklch(0.45 0.13 258)",
+      "--primary-foreground": "oklch(0.93 0.02 255)",
+      "--ring": "oklch(0.7137 0.1434 254.624)",
+      "--primary-ink": "oklch(0.78 0.12 255)"
+    },
+    ".dark.theme-violet, .dark .theme-violet": {
+      "--primary": "oklch(0.45 0.15 293)",
+      "--primary-foreground": "oklch(0.93 0.02 293)",
+      "--ring": "oklch(0.709 0.1592 293.5412)",
+      "--primary-ink": "oklch(0.78 0.12 293)"
+    },
+    ".dark.theme-amber, .dark .theme-amber": {
+      "--primary": "oklch(0.5 0.11 70)",
+      "--primary-foreground": "oklch(0.95 0.03 84)",
+      "--ring": "oklch(0.8369 0.1644 84.4286)",
+      "--primary-ink": "oklch(0.83 0.15 84)"
+    }
+  },
+  "docs": "Pass the themes to the provider from @spaceman/theme-toggle: `<ThemeProvider colorThemes={colorThemes} defaultColorTheme=\"emerald\">`, importing colorThemes from the installed themes.ts. The provider puts a `theme-<name>` class on <html>; the CSS this item adds maps each class to its accent tokens.",
+  "type": "registry:component"
+}

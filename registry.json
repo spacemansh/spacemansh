@@ -11,7 +11,7 @@
       "author": "tony <tony@spaceman.sh>",
       "cssVars": {
         "theme": {
-          "font-sans": "Geist, ui-sans-serif, sans-serif, system-ui",
+          "font-sans": "Noto Sans, ui-sans-serif, sans-serif, system-ui",
           "font-serif": "Source Serif 4, ui-serif, serif",
           "font-mono": "Geist Mono, ui-monospace, monospace",
           "radius": "0.5rem",
@@ -46,7 +46,7 @@
           "secondary": "oklch(0.994 0 0)",
           "secondary-foreground": "oklch(0.2046 0 0)",
           "muted": "oklch(0.9461 0 0)",
-          "muted-foreground": "oklch(0.2435 0 0)",
+          "muted-foreground": "oklch(0.4386 0 0)",
           "accent": "oklch(0.9461 0 0)",
           "accent-foreground": "oklch(0.2435 0 0)",
           "destructive": "oklch(0.5523 0.1927 32.7272)",
@@ -66,7 +66,14 @@
           "sidebar-accent": "oklch(0.9461 0 0)",
           "sidebar-accent-foreground": "oklch(0.2435 0 0)",
           "sidebar-border": "oklch(0.9037 0 0)",
-          "sidebar-ring": "oklch(0.8348 0.1302 160.908)"
+          "sidebar-ring": "oklch(0.8348 0.1302 160.908)",
+          "muted-strong": "oklch(0.9 0 0)",
+          "border-strong": "oklch(0.82 0 0)",
+          "inset": "oklch(0.9731 0 0)",
+          "primary-ink": "oklch(0.55 0.15 157)",
+          "tag": "oklch(0.93 0.04 255)",
+          "tag-foreground": "oklch(0.5 0.17 258)",
+          "shadow-lift": "0px 10px 20px -8px hsl(0 0% 0% / 0.14)"
         },
         "dark": {
           "background": "oklch(0.1822 0 0)",
@@ -100,10 +107,17 @@
           "sidebar-accent": "oklch(0.3132 0 0)",
           "sidebar-accent-foreground": "oklch(0.9851 0 0)",
           "sidebar-border": "oklch(0.2809 0 0)",
-          "sidebar-ring": "oklch(0.8003 0.1821 151.711)"
+          "sidebar-ring": "oklch(0.8003 0.1821 151.711)",
+          "muted-strong": "oklch(0.3132 0 0)",
+          "border-strong": "oklch(0.3132 0 0)",
+          "inset": "oklch(0.1822 0 0)",
+          "primary-ink": "oklch(0.78 0.15 158)",
+          "tag": "oklch(0.3 0.06 258)",
+          "tag-foreground": "oklch(0.8 0.1 255)",
+          "shadow-lift": "0px 12px 26px -10px hsl(0 0% 0% / 0.6)"
         }
       },
-      "docs": "Typography tokens reference Geist Sans and Geist Mono. Install them yourself — with next/font/google on Next.js, or the `geist` package elsewhere. Both fall back to the system sans and mono stacks if absent, so the theme is usable without them."
+      "docs": "Typography tokens reference Noto Sans and Geist Mono. Install them yourself — with next/font/google on Next.js, or from Google Fonts elsewhere. Both fall back to the system sans and mono stacks if absent, so the theme is usable without them."
     },
     {
       "name": "theme-toggle",
@@ -111,13 +125,8 @@
       "title": "Theme Toggle",
       "description": "A theme provider and toggle button that switch between light and dark with an animated circular reveal. The provider applies the `dark` class to the html element and stores the choice; the button cross-fades a sun and moon icon.",
       "author": "tony <tony@spaceman.sh>",
-      "registryDependencies": [
-        "@spaceman/theme"
-      ],
-      "dependencies": [
-        "@space-man/react-theme-animation",
-        "lucide-react"
-      ],
+      "registryDependencies": ["@spaceman/theme"],
+      "dependencies": ["@space-man/react-theme-animation", "lucide-react"],
       "files": [
         {
           "path": "registry/spaceman/theme-toggle/theme-provider.tsx",
@@ -129,6 +138,598 @@
         }
       ],
       "docs": "Register the @spaceman namespace before installing: `npx shadcn@latest registry add @spaceman=https://spaceman.sh/r/{name}.json`. Wrap your app in <ThemeProvider> inside the root layout's <body>, and add suppressHydrationWarning to <html>. Your CSS needs a dark variant that matches the class, e.g. `@custom-variant dark (&:is(.dark *))` on Tailwind v4. The reveal runs at 300ms and is disabled under prefers-reduced-motion."
+    },
+    {
+      "name": "theme-picker",
+      "type": "registry:component",
+      "title": "Theme Picker",
+      "description": "A row of swatches that switches the accent colour theme at runtime: emerald, slate, azure, violet and amber. Each theme overrides the primary, ring and primary-ink tokens in light and dark, and the choice is stored and applied before first paint.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme-toggle"],
+      "dependencies": ["@space-man/react-theme-animation"],
+      "files": [
+        {
+          "path": "registry/spaceman/theme-picker/theme-picker.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/spaceman/theme-picker/themes.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "css": {
+        ".theme-emerald": {
+          "--primary": "oklch(0.8348 0.1302 160.908)",
+          "--primary-foreground": "oklch(0.2626 0.0147 166.4589)",
+          "--ring": "oklch(0.8348 0.1302 160.908)",
+          "--primary-ink": "oklch(0.55 0.15 157)"
+        },
+        ".theme-slate": {
+          "--primary": "oklch(0.8 0 0)",
+          "--primary-foreground": "oklch(0.2046 0 0)",
+          "--ring": "oklch(0.8 0 0)",
+          "--primary-ink": "oklch(0.45 0 0)"
+        },
+        ".theme-azure": {
+          "--primary": "oklch(0.8 0.1 255)",
+          "--primary-foreground": "oklch(0.26 0.03 258)",
+          "--ring": "oklch(0.8 0.1 255)",
+          "--primary-ink": "oklch(0.52 0.17 258)"
+        },
+        ".theme-violet": {
+          "--primary": "oklch(0.8 0.1 293)",
+          "--primary-foreground": "oklch(0.27 0.04 293)",
+          "--ring": "oklch(0.8 0.1 293)",
+          "--primary-ink": "oklch(0.52 0.19 293)"
+        },
+        ".theme-amber": {
+          "--primary": "oklch(0.85 0.15 84)",
+          "--primary-foreground": "oklch(0.28 0.05 70)",
+          "--ring": "oklch(0.85 0.15 84)",
+          "--primary-ink": "oklch(0.55 0.13 70)"
+        },
+        ".dark.theme-emerald, .dark .theme-emerald": {
+          "--primary": "oklch(0.4365 0.1044 156.7556)",
+          "--primary-foreground": "oklch(0.9213 0.0135 167.1556)",
+          "--ring": "oklch(0.8003 0.1821 151.711)",
+          "--primary-ink": "oklch(0.78 0.15 158)"
+        },
+        ".dark.theme-slate, .dark .theme-slate": {
+          "--primary": "oklch(0.4 0 0)",
+          "--primary-foreground": "oklch(0.9851 0 0)",
+          "--ring": "oklch(0.7122 0 0)",
+          "--primary-ink": "oklch(0.78 0 0)"
+        },
+        ".dark.theme-azure, .dark .theme-azure": {
+          "--primary": "oklch(0.45 0.13 258)",
+          "--primary-foreground": "oklch(0.93 0.02 255)",
+          "--ring": "oklch(0.7137 0.1434 254.624)",
+          "--primary-ink": "oklch(0.78 0.12 255)"
+        },
+        ".dark.theme-violet, .dark .theme-violet": {
+          "--primary": "oklch(0.45 0.15 293)",
+          "--primary-foreground": "oklch(0.93 0.02 293)",
+          "--ring": "oklch(0.709 0.1592 293.5412)",
+          "--primary-ink": "oklch(0.78 0.12 293)"
+        },
+        ".dark.theme-amber, .dark .theme-amber": {
+          "--primary": "oklch(0.5 0.11 70)",
+          "--primary-foreground": "oklch(0.95 0.03 84)",
+          "--ring": "oklch(0.8369 0.1644 84.4286)",
+          "--primary-ink": "oklch(0.83 0.15 84)"
+        }
+      },
+      "docs": "Pass the themes to the provider from @spaceman/theme-toggle: `<ThemeProvider colorThemes={colorThemes} defaultColorTheme=\"emerald\">`, importing colorThemes from the installed themes.ts. The provider puts a `theme-<name>` class on <html>; the CSS this item adds maps each class to its accent tokens."
+    },
+    {
+      "name": "copy-button",
+      "type": "registry:component",
+      "title": "Copy Button",
+      "description": "An icon button that copies a value and confirms with a check that cross-fades in place of the copy icon. A polite live region announces the copy.",
+      "author": "tony <tony@spaceman.sh>",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/spaceman/copy-button/copy-button.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "preview-card-1a",
+      "type": "registry:component",
+      "title": "Preview Card 1a: Tight inset",
+      "description": "A catalogue card for showing a live component preview. Current card, with a 5px inset and a shorter preview.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1a.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-2a",
+      "type": "registry:component",
+      "title": "Preview Card 2a: Inset top, flat bottom, compact footer",
+      "description": "A catalogue card for showing a live component preview. The flat-bottom preview from 2b, with the one-line footer from 1a.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-2a.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1b",
+      "type": "registry:component",
+      "title": "Preview Card 1b: Flush preview",
+      "description": "A catalogue card for showing a live component preview. No inset. The preview runs edge to edge, with a divider above the footer.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1b.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-2b",
+      "type": "registry:component",
+      "title": "Preview Card 2b: Inset top, flat bottom",
+      "description": "A catalogue card for showing a live component preview. The 5px top and side inset from 1a, with the flat divider and footer from 1b.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-2b.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-2c",
+      "type": "registry:component",
+      "title": "Preview Card 2c: Split panels",
+      "description": "A catalogue card for showing a live component preview. Two stacked inner panels: the preview has a flat bottom and the footer has a flat top. The card is inset 5px on every side, with the 6px gap and footer background from 1c.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-2c.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1c",
+      "type": "registry:component",
+      "title": "Preview Card 1c: Install footer",
+      "description": "A catalogue card for showing a live component preview. Tight inset, with the install command as the footer.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme", "@spaceman/copy-button"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1c.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1d",
+      "type": "registry:component",
+      "title": "Preview Card 1d: Floating footer",
+      "description": "A catalogue card for showing a live component preview. A single surface, with the footer as a bar inset at the bottom.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1d.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1e",
+      "type": "registry:component",
+      "title": "Preview Card 1e: Index card",
+      "description": "A catalogue card for showing a live component preview. A mono label above a dotted preview, with the name and description below.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1e.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1f",
+      "type": "registry:component",
+      "title": "Preview Card 1f: Ticket stub",
+      "description": "A catalogue card for showing a live component preview. A dashed tear line with notches cut into both sides, and the install slug on the stub.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1f.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1g",
+      "type": "registry:component",
+      "title": "Preview Card 1g: Folder tab",
+      "description": "A catalogue card for showing a live component preview. The name sits on a tab that rises out of the preview. Nothing sits below it.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1g.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-2g",
+      "type": "registry:component",
+      "title": "Preview Card 2g: Tinted folder tab",
+      "description": "A catalogue card for showing a live component preview. 1g with a blue tab for Themes. The tab tucks behind the card, and the card has all four corners rounded.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme", "@spaceman/copy-button"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-2g.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+      "dependencies": ["lucide-react"]
+    },
+    {
+      "name": "preview-card-1h",
+      "type": "registry:component",
+      "title": "Preview Card 1h: Crop marks",
+      "description": "A catalogue card for showing a live component preview. Printer’s registration marks at the corners, with a mono spec line along the base.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1h.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1i",
+      "type": "registry:component",
+      "title": "Preview Card 1i: Stacked variants",
+      "description": "A catalogue card for showing a live component preview. Faint card edges peek out behind the card, hinting that there are more variants inside.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1i.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1j",
+      "type": "registry:component",
+      "title": "Preview Card 1j: Inverted footer",
+      "description": "A catalogue card for showing a live component preview. The footer is a solid ink bar, which reads as a button. The preview stays neutral.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1j.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1k",
+      "type": "registry:component",
+      "title": "Preview Card 1k: Caption inside",
+      "description": "A catalogue card for showing a live component preview. There’s no footer. The name and arrow float in the preview’s top corners.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1k.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1l",
+      "type": "registry:component",
+      "title": "Preview Card 1l: Header first",
+      "description": "A catalogue card for showing a live component preview. The name and number sit above the preview, like a document title.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1l.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1m",
+      "type": "registry:component",
+      "title": "Preview Card 1m: Spine",
+      "description": "A catalogue card for showing a live component preview. The name runs vertically along a narrow spine on the left, like the spine of a book.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1m.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1n",
+      "type": "registry:component",
+      "title": "Preview Card 1n: Window chrome",
+      "description": "A catalogue card for showing a live component preview. A title bar with three dots, and the slug set as a file name.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1n.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1o",
+      "type": "registry:component",
+      "title": "Preview Card 1o: Big numeral",
+      "description": "A catalogue card for showing a live component preview. An oversized index number sits faintly behind the preview.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1o.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1p",
+      "type": "registry:component",
+      "title": "Preview Card 1p: Outline",
+      "description": "A catalogue card for showing a live component preview. The card has no fill, just hairlines and a dashed preview frame. It fills on hover.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1p.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1q",
+      "type": "registry:component",
+      "title": "Preview Card 1q: Pill on the seam",
+      "description": "A catalogue card for showing a live component preview. The name sits in a pill that straddles the edge between preview and footer.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1q.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1r",
+      "type": "registry:component",
+      "title": "Preview Card 1r: Passe-partout",
+      "description": "A catalogue card for showing a live component preview. A mat frame inside the card, like a framed print, with a small-caps caption.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1r.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1s",
+      "type": "registry:component",
+      "title": "Preview Card 1s: Side meta",
+      "description": "A catalogue card for showing a live component preview. The preview takes the top. Below it, the name and slug sit on the left and the arrow on the right, split by a hairline.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1s.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1t",
+      "type": "registry:component",
+      "title": "Preview Card 1t: Keycap",
+      "description": "A catalogue card for showing a live component preview. A raised card with a hard bottom edge, like a keyboard key. It presses down on hover.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1t.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1u",
+      "type": "registry:component",
+      "title": "Preview Card 1u: Polaroid",
+      "description": "A catalogue card for showing a live component preview. Even margins on three sides and a deep bottom margin for a mono caption.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1u.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1v",
+      "type": "registry:component",
+      "title": "Preview Card 1v: Dog-ear",
+      "description": "A catalogue card for showing a live component preview. The top-right corner is folded over, marking the card as a page you can open.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1v.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-2v",
+      "type": "registry:component",
+      "title": "Preview Card 2v: Dog-ear, flat bottom",
+      "description": "A catalogue card for showing a live component preview. 1v with the flat-bottomed preview and one-line footer from 2a.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-2v.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-3v",
+      "type": "registry:component",
+      "title": "Preview Card 3v: Dog-ear, clear fold",
+      "description": "A catalogue card for showing a live component preview. 1v with the preview clipped away from the fold, so nothing shows under the folded corner.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-3v.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-4v",
+      "type": "registry:component",
+      "title": "Preview Card 4v: Dog-ear on the preview",
+      "description": "A catalogue card for showing a live component preview. The outer card stays fully rounded. The fold sits on the inner preview's corner and matches its 10px radius.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-4v.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1w",
+      "type": "registry:component",
+      "title": "Preview Card 1w: Hard offset",
+      "description": "A catalogue card for showing a live component preview. A flat, solid shadow offset to the bottom right. It slides into place on hover.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1w.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1x",
+      "type": "registry:component",
+      "title": "Preview Card 1x: Notch label",
+      "description": "A catalogue card for showing a live component preview. The name sits in a notch cut into the preview’s bottom-left corner. There’s no separate footer.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1x.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1y",
+      "type": "registry:component",
+      "title": "Preview Card 1y: Blueprint",
+      "description": "A catalogue card for showing a live component preview. Ruler ticks along two edges and a fine grid in the preview, like a technical drawing.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1y.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
+    },
+    {
+      "name": "preview-card-1z",
+      "type": "registry:component",
+      "title": "Preview Card 1z: No card",
+      "description": "A catalogue card for showing a live component preview. There’s no card at all: a rounded preview tile with the name set beneath it, like an app icon.",
+      "author": "tony <tony@spaceman.sh>",
+      "registryDependencies": ["@spaceman/theme"],
+      "files": [
+        {
+          "path": "registry/spaceman/preview-card/preview-card-1z.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children."
     }
   ]
 }

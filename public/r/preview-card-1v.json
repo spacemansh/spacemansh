@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card-1v",
+  "title": "Preview Card 1v: Dog-ear",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A catalogue card for showing a live component preview. The top-right corner is folded over, marking the card as a page you can open.",
+  "registryDependencies": [
+    "@spaceman/theme"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/preview-card/preview-card-1v.tsx",
+      "content": "import type * as React from 'react'\nimport { useId } from 'react'\n\nimport { cn } from '@/lib/utils'\n\ntype PreviewCardProps = Omit<\n  React.ComponentProps<'article'>,\n  'children' | 'title'\n> & {\n  /** The item's display name. */\n  title: string\n  /** Where the card links, such as the item's docs page. */\n  href: string\n  /** The live, interactive preview. */\n  children: React.ReactNode\n}\n\n/**\n * Design 1v, dog-ear. The card's top-right corner is folded over, marking it\n * as a page you can open. The fold is a triangle painted in the page\n * background and the strong border colour, laid over the square corner.\n *\n * On hover the border darkens and the card gains a soft lift shadow.\n */\nfunction PreviewCard({\n  title,\n  href,\n  children,\n  className,\n  ...props\n}: PreviewCardProps) {\n  const titleId = useId()\n\n  return (\n    <article\n      aria-labelledby={titleId}\n      className={cn(\n        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] rounded-tr-none border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',\n        className,\n      )}\n      {...props}\n    >\n      <span\n        aria-hidden='true'\n        className='pointer-events-none absolute -top-px -right-px z-20 size-7 rounded-bl-[calc(var(--radius)-2px)] bg-[linear-gradient(225deg,var(--background)_50%,var(--border-strong)_50%)]'\n      />\n\n      <div className='bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)] rounded-tr-none'>\n        {children}\n      </div>\n\n      <div className='flex items-center px-2 pt-1.5 pb-2'>\n        <h3 className='mr-auto text-[15px] font-medium'>\n          <a\n            className=\"after:absolute after:inset-0 after:content-[''] focus-visible:outline-none\"\n            href={href}\n            id={titleId}\n          >\n            {title}\n          </a>\n        </h3>\n        <span\n          aria-hidden='true'\n          className='text-primary-ink font-mono text-[14px] font-medium'\n        >\n          →\n        </span>\n      </div>\n    </article>\n  )\n}\n\nexport { PreviewCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+  "type": "registry:component"
+}

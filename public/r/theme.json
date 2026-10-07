@@ -6,7 +6,7 @@
   "description": "The spaceman.sh design tokens: a neutral monochrome palette with a single green accent reserved for action and focus, plus the radius, shadow and typography scales. Ships light and dark as peers.",
   "cssVars": {
     "theme": {
-      "font-sans": "Geist, ui-sans-serif, sans-serif, system-ui",
+      "font-sans": "Noto Sans, ui-sans-serif, sans-serif, system-ui",
       "font-serif": "Source Serif 4, ui-serif, serif",
       "font-mono": "Geist Mono, ui-monospace, monospace",
       "radius": "0.5rem",
@@ -41,7 +41,7 @@
       "secondary": "oklch(0.994 0 0)",
       "secondary-foreground": "oklch(0.2046 0 0)",
       "muted": "oklch(0.9461 0 0)",
-      "muted-foreground": "oklch(0.2435 0 0)",
+      "muted-foreground": "oklch(0.4386 0 0)",
       "accent": "oklch(0.9461 0 0)",
       "accent-foreground": "oklch(0.2435 0 0)",
       "destructive": "oklch(0.5523 0.1927 32.7272)",
@@ -61,7 +61,14 @@
       "sidebar-accent": "oklch(0.9461 0 0)",
       "sidebar-accent-foreground": "oklch(0.2435 0 0)",
       "sidebar-border": "oklch(0.9037 0 0)",
-      "sidebar-ring": "oklch(0.8348 0.1302 160.908)"
+      "sidebar-ring": "oklch(0.8348 0.1302 160.908)",
+      "muted-strong": "oklch(0.9 0 0)",
+      "border-strong": "oklch(0.82 0 0)",
+      "inset": "oklch(0.9731 0 0)",
+      "primary-ink": "oklch(0.55 0.15 157)",
+      "tag": "oklch(0.93 0.04 255)",
+      "tag-foreground": "oklch(0.5 0.17 258)",
+      "shadow-lift": "0px 10px 20px -8px hsl(0 0% 0% / 0.14)"
     },
     "dark": {
       "background": "oklch(0.1822 0 0)",
@@ -95,9 +102,16 @@
       "sidebar-accent": "oklch(0.3132 0 0)",
       "sidebar-accent-foreground": "oklch(0.9851 0 0)",
       "sidebar-border": "oklch(0.2809 0 0)",
-      "sidebar-ring": "oklch(0.8003 0.1821 151.711)"
+      "sidebar-ring": "oklch(0.8003 0.1821 151.711)",
+      "muted-strong": "oklch(0.3132 0 0)",
+      "border-strong": "oklch(0.3132 0 0)",
+      "inset": "oklch(0.1822 0 0)",
+      "primary-ink": "oklch(0.78 0.15 158)",
+      "tag": "oklch(0.3 0.06 258)",
+      "tag-foreground": "oklch(0.8 0.1 255)",
+      "shadow-lift": "0px 12px 26px -10px hsl(0 0% 0% / 0.6)"
     }
   },
-  "docs": "Typography tokens reference Geist Sans and Geist Mono. Install them yourself — with next/font/google on Next.js, or the `geist` package elsewhere. Both fall back to the system sans and mono stacks if absent, so the theme is usable without them.",
+  "docs": "Typography tokens reference Noto Sans and Geist Mono. Install them yourself — with next/font/google on Next.js, or from Google Fonts elsewhere. Both fall back to the system sans and mono stacks if absent, so the theme is usable without them.",
   "type": "registry:theme"
 }

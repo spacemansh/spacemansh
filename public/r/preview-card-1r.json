@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "preview-card-1r",
+  "title": "Preview Card 1r: Passe-partout",
+  "author": "tony <tony@spaceman.sh>",
+  "description": "A catalogue card for showing a live component preview. A mat frame inside the card, like a framed print, with a small-caps caption.",
+  "registryDependencies": [
+    "@spaceman/theme"
+  ],
+  "files": [
+    {
+      "path": "registry/spaceman/preview-card/preview-card-1r.tsx",
+      "content": "import type * as React from 'react'\nimport { useId } from 'react'\n\nimport { cn } from '@/lib/utils'\n\ntype PreviewCardProps = Omit<\n  React.ComponentProps<'article'>,\n  'children' | 'title'\n> & {\n  /** The item's display name. */\n  title: string\n  /** Where the card links, such as the item's docs page. */\n  href: string\n  /** The live, interactive preview. */\n  children: React.ReactNode\n}\n\n/**\n * Design 1r, the passe-partout. A square mat frames the preview inside the\n * card, like a framed print, with a small spaced caption below.\n *\n * The whole card links to the item; on hover the border firms up and a soft\n * shadow appears.\n */\nfunction PreviewCard({\n  title,\n  href,\n  children,\n  className,\n  ...props\n}: PreviewCardProps) {\n  const titleId = useId()\n\n  return (\n    <article\n      aria-labelledby={titleId}\n      className={cn(\n        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring hover:border-border-strong hover:shadow-lift relative flex aspect-square min-h-0 flex-col gap-2.5 overflow-hidden rounded-[calc(var(--radius)-2px)] border px-3.5 pt-3.5 pb-3 transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',\n        className,\n      )}\n      {...props}\n    >\n      <div className='border-border relative z-10 min-h-0 flex-1 border p-[5px]'>\n        <div className='bg-inset grid h-full place-items-center overflow-hidden'>\n          {children}\n        </div>\n      </div>\n\n      <h3 className='text-center font-mono text-[11px] font-medium tracking-[0.14em] uppercase'>\n        <a\n          className=\"after:absolute after:inset-0 after:content-[''] focus-visible:outline-none\"\n          href={href}\n          id={titleId}\n        >\n          {title}\n        </a>\n      </h3>\n    </article>\n  )\n}\n\nexport { PreviewCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "docs": "Every preview card design exports the same `PreviewCard` component, so you can switch designs by changing the import path. Pass the live preview as children.",
+  "type": "registry:component"
+}
