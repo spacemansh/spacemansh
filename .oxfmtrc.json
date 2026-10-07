@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/.open-next/**",
+    "**/.wrangler/**",
+    "**/coverage/**",
+    "public/r/**",
+    "next-env.d.ts",
+    "pnpm-lock.yaml"
+  ],
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "semi": false,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "sortPackageJson": { "sortScripts": true },
+  "sortTailwindcss": {
+    "functions": ["clsx", "cn", "cva", "tw"],
+    "preserveDuplicates": false,
+    "preserveWhitespace": false
+  },
+  "sortImports": {
+    "groups": [
+      "builtin",
+      "external",
+      ["internal", "subpath"],
+      ["parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ],
+    "internalPattern": ["@/", "#"],
+    "ignoreCase": true,
+    "newlinesBetween": true,
+    "partitionByComment": true,
+    "sortSideEffects": false
+  }
+}
