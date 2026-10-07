@@ -232,13 +232,16 @@ The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
   `package.json`. `pnpm-lock.yaml` is the only lockfile; do not reintroduce
   `package-lock.json` or run `npm install`.
 - Many dependencies are pinned to `"latest"`, which makes installs
-  irreproducible and has already broken `pnpm lint` (see §11). Raise this before
-  adding more; do not add a new dependency as `"latest"`.
-- Prettier defaults are in effect in the committed code: double quotes,
-  semicolons, trailing commas. Match it; do not hand-format against it.
-- ESLint is flat config with `next/core-web-vitals` + `next/typescript`. Fix
-  warnings rather than disabling rules; if a disable is genuinely right, comment
-  why.
+  irreproducible. Raise this before adding more; do not add a new dependency as
+  `"latest"`. The Ox toolchain is pinned exactly, and `oxlint` and
+  `@oxlint/plugins` must move together.
+- Formatting is **oxfmt** (`.oxfmtrc.json`): single quotes, no semicolons,
+  trailing commas, sorted imports and sorted Tailwind classes. Run
+  `pnpm format:fix`; do not hand-format against it.
+- Linting is **oxlint** (`oxlint.config.ts`) with the eslint, typescript,
+  unicorn, oxc, import, react, react-perf, nextjs and jsx-a11y plugins, plus
+  every generic rule from `antislop-plugin`. Fix warnings rather than disabling
+  rules; if a disable is genuinely right, comment why next to the directive.
 - TypeScript is `strict`. Do not add `any` or non-null assertions to get past a
   type error — model the type correctly.
 - Tailwind v4 (CSS-first, no `tailwind.config`). Configure through `globals.css`.
@@ -254,10 +257,10 @@ The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
 
 ### The `no-use-effect` skill
 
-There is currently **no `useEffect` in this repository** — the only client
-components are `registry/spaceman/theme-toggle/*`. Keep it that way where you
-can: most of what an effect is reached for here belongs in render, in an event
-handler, or in CSS.
+There is currently **no `useEffect` in this repository** — client state uses
+`useSyncExternalStore`, event handlers, and ref-callback cleanup instead. Keep
+it that way where you can: most of what an effect is reached for here belongs
+in render, in an event handler, or in CSS.
 
 When you do need one, use the `no-use-effect` skill first. Effects in
 `registry/spaceman/` matter twice over — a published item's bug ships to every
@@ -279,9 +282,8 @@ Follow the instructions it generates. Read its **complete** output — redirect 
 a temporary file first if it is long — and resolve any relative paths against
 the supporting-files directory it names.
 
-The skill is a guiding principle, not a gate. With `pnpm lint` broken (§11), it
-is also the only effect-specific check available, so do not treat a passing
-`pnpm build` as covering this.
+The skill is a guiding principle, not a gate. No lint rule bans `useEffect`, so
+do not treat a passing `pnpm quality` or `pnpm build` as covering this.
 
 ## 10. Source-of-truth order
 
@@ -290,7 +292,7 @@ When requirements conflict, use:
 1. The current user's explicit request.
 2. This repository guide.
 3. `app/globals.css` for token values — it is the system of record.
-4. `DESIGN.md` for visual *rules* and intent, never for token values.
+4. `DESIGN.md` for visual _rules_ and intent, never for token values.
 5. Existing implementation in `app/`, `components/`, and `registry/`.
 6. `spaceman-changes.md` for why the current landing page is shaped as it is.
 
@@ -305,18 +307,17 @@ There is no test suite. Verification is the build, the linter, and your own eyes
 
 ```bash
 pnpm dev             # local dev server
-pnpm lint            # eslint — CURRENTLY BROKEN, see below
+pnpm lint            # oxlint (pnpm lint:fix applies safe fixes)
+pnpm format          # oxfmt check (pnpm format:fix rewrites)
+pnpm quality         # lint, then format check (pnpm quality:fix fixes both)
 pnpm build           # next build — catches type and build errors
 pnpm registry:build  # regenerate public/r/*.json from registry.json
 pnpm preview         # opennext build + local Worker preview (the real runtime)
 pnpm deploy          # PUBLISHES — only when explicitly asked
 ```
 
-`pnpm lint` currently fails before linting anything: `eslint` resolves to 10.x
-while `eslint-config-next` bundles plugins supporting ≤9, and the flat config
-has no `ignores`, so it also tries to lint `.open-next` output. This is a
-pre-existing defect, not something your change caused. Until it is fixed,
-`pnpm build` is the type and correctness signal — do not report lint as passing.
+oxlint does not type-check. `pnpm quality` and `pnpm build` are both required
+signals: run them and report each result.
 
 Because there are no tests, visual verification is not optional:
 

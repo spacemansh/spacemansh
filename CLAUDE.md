@@ -27,10 +27,9 @@ session in this repository.
 - **`pnpm deploy` publishes the live site** at `spaceman.sh`. Never run it
   unless explicitly asked. Bindings, routes, and compatibility flags in
   `wrangler.jsonc` are production infrastructure.
-- **There are no tests, and `pnpm lint` is currently broken** (eslint 10 vs
-  `eslint-config-next` plugins). `pnpm build` is the real signal — never report
-  lint as passing. A visual change is not done until it has been rendered and
-  looked at, in both themes, at mobile and desktop widths.
+- **There are no tests.** `pnpm quality` (oxlint + oxfmt) and `pnpm build`
+  (types) are the signals — run both. A visual change is not done until it has
+  been rendered and looked at, in both themes, at mobile and desktop widths.
 - **The repo publishes a shadcn registry** under `@spaceman` (see `AGENTS.md`
   §13). The site imports items from `registry/spaceman/...`, so anything you
   change there is a public artefact. Only rendered items get published.
