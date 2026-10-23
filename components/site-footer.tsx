@@ -14,8 +14,8 @@ const heading =
 export function SiteFooter() {
   return (
     <footer className='px-page border-border flex flex-col gap-13 border-t pt-14 pb-[30px]'>
-      <div className='grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-x-8 gap-y-10'>
-        <div className='col-span-2 flex min-w-0 flex-col gap-3.5 max-sm:col-span-1'>
+      <div className='grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4'>
+        <div className='col-span-2 flex min-w-0 flex-col gap-3.5'>
           <p className='font-mono text-[clamp(40px,7vw,86px)] leading-[0.92] font-semibold tracking-[-0.045em]'>
             spaceman.sh
           </p>
