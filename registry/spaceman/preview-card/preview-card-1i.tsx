@@ -45,7 +45,7 @@ function PreviewCard({
     >
       <div
         aria-hidden='true'
-        className='border-border bg-inset pointer-events-none absolute inset-x-4 bottom-0 h-5 rounded-b-[calc(var(--radius)+4px)] border transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0.5 motion-reduce:transition-none'
+        className='border-border pointer-events-none absolute inset-x-4 bottom-0 h-5 rounded-b-[calc(var(--radius)+4px)] border bg-[var(--inset,var(--muted))] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0.5 motion-reduce:transition-none'
       />
       <div
         aria-hidden='true'
@@ -53,8 +53,8 @@ function PreviewCard({
       />
 
       <div className='relative h-full transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 motion-reduce:transition-none'>
-        <div className='border-border bg-card group-hover:border-border-strong flex h-full flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color] duration-150 ease-out motion-reduce:transition-none'>
-          <div className='bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)]'>
+        <div className='border-border bg-card flex h-full flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color] duration-150 ease-out group-hover:border-[var(--border-strong,var(--border))] motion-reduce:transition-none'>
+          <div className='relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)] bg-[var(--inset,var(--muted))]'>
             {children}
           </div>
 
@@ -75,7 +75,7 @@ function PreviewCard({
             )}
             <span
               aria-hidden='true'
-              className='text-primary-ink font-mono text-[14px] font-medium'
+              className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
             >
               →
             </span>

@@ -34,18 +34,18 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-1.5 overflow-hidden rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-1.5 overflow-hidden rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
       <div className='relative min-h-0 flex-1'>
-        <div className='border-border bg-inset absolute inset-0 z-10 grid place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)] border [clip-path:polygon(0_0,calc(100%_-_26px)_0,100%_26px,100%_100%,0_100%)]'>
+        <div className='border-border absolute inset-0 z-10 grid place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)] border bg-[var(--inset,var(--muted))] [clip-path:polygon(0_0,calc(100%_-_26px)_0,100%_26px,100%_100%,0_100%)]'>
           {children}
         </div>
         <span
           aria-hidden='true'
-          className='pointer-events-none absolute top-0 right-0 z-20 size-[26px] rounded-bl-[calc(var(--radius)+2px)] bg-[linear-gradient(225deg,transparent_50%,var(--border-strong)_50%)]'
+          className='pointer-events-none absolute top-0 right-0 z-20 size-[26px] rounded-bl-[calc(var(--radius)+2px)] bg-[linear-gradient(225deg,transparent_50%,var(--border-strong,var(--border))_50%)]'
         />
       </div>
 
@@ -61,7 +61,7 @@ function PreviewCard({
         </h3>
         <span
           aria-hidden='true'
-          className='text-primary-ink font-mono text-[14px] font-medium'
+          className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
         >
           →
         </span>

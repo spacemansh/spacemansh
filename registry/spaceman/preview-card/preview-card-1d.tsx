@@ -38,7 +38,7 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-inset hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col gap-2 rounded-[calc(var(--radius)+8px)] border p-1.5 transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col gap-2 rounded-[calc(var(--radius)+8px)] border bg-[var(--inset,var(--muted))] p-1.5 transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
@@ -63,7 +63,7 @@ function PreviewCard({
         ) : null}
         <span
           aria-hidden='true'
-          className='text-primary-ink font-mono text-sm font-medium'
+          className='font-mono text-sm font-medium text-[color:var(--primary-ink,var(--foreground))]'
         >
           →
         </span>

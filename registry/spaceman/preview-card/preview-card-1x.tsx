@@ -34,12 +34,12 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative aspect-square min-h-0 overflow-hidden rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative aspect-square min-h-0 overflow-hidden rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
-      <div className='bg-inset grid h-full min-h-0 rounded-[calc(var(--radius)+2px)]'>
+      <div className='grid h-full min-h-0 rounded-[calc(var(--radius)+2px)] bg-[var(--inset,var(--muted))]'>
         <div className='relative z-10 col-start-1 row-start-1 place-self-center'>
           {children}
         </div>
@@ -56,7 +56,7 @@ function PreviewCard({
           </h3>
           <span
             aria-hidden='true'
-            className='text-primary-ink font-mono text-[14px] font-medium'
+            className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

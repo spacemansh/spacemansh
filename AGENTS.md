@@ -158,8 +158,8 @@ it rather than inlining the value.
 
 Adding or changing a token means updating **both** `:root` and `.dark`, plus the
 `@theme inline` mapping, plus `DESIGN.md` if the change is a system decision
-rather than a fix. Because the tokens are published as `@spaceman/theme`, a
-token change is a change to a public artefact — rebuild the registry after one.
+rather than a fix. The site tokens stay local. Registry components use standard shadcn tokens
+as fallbacks for optional site overrides; never ship the site theme to consumers.
 
 ## 7. Architecture
 
@@ -182,6 +182,7 @@ public/figma-assets/  design-sourced SVGs
 DESIGN.md           design-system rules and intent (not token values)
 PRODUCT.md          in-progress positioning material
 spaceman-changes.md implementation notes for the current landing-page work
+plan/               dated briefs for explorations run in their own session
 ```
 
 Boundary rules:
@@ -373,7 +374,7 @@ Rules for registry items:
   `registryDependencies`. A missing entry installs a broken component.
 - Item `name` is a public API. Renaming one breaks everybody who installed it.
 
-After changing an item or a token, run `pnpm registry:build` and verify with
+After changing an item, run `pnpm registry:build` and verify with
 `pnpm dlx shadcn@latest view @spaceman/<name>` against the running dev server.
 
 These guidelines are working when diffs stay focused, uncertainty is surfaced

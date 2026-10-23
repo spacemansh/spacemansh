@@ -38,12 +38,12 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col overflow-hidden rounded-[calc(var(--radius)+6px)] border transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col overflow-hidden rounded-[calc(var(--radius)+6px)] border transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
-      <div className='border-border bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden border-b'>
+      <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden border-b bg-[var(--inset,var(--muted))]'>
         {children}
       </div>
       <div className='flex flex-col gap-[3px] px-3.5 pt-3 pb-3.5'>
@@ -59,7 +59,7 @@ function PreviewCard({
           </h3>
           <span
             aria-hidden='true'
-            className='text-primary-ink font-mono text-sm font-medium'
+            className='font-mono text-sm font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

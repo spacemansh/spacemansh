@@ -40,12 +40,12 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
-      <div className='bg-inset grid min-h-0 flex-1 overflow-hidden rounded-[calc(var(--radius)+1px)]'>
+      <div className='grid min-h-0 flex-1 overflow-hidden rounded-[calc(var(--radius)+1px)] bg-[var(--inset,var(--muted))]'>
         <h3
           className='col-start-1 row-start-1 mt-2.5 ml-3 self-start justify-self-start text-[13px] font-medium'
           id={href ? undefined : titleId}
@@ -74,7 +74,7 @@ function PreviewCard({
           {installCommand}
         </code>
         <CopyButton
-          className='bg-muted text-muted-foreground hover:bg-muted-strong hover:text-foreground relative z-10 h-[22px] w-7 rounded-[calc(var(--radius)-5px)]'
+          className='bg-muted text-muted-foreground hover:text-foreground relative z-10 h-[22px] w-7 rounded-[calc(var(--radius)-5px)] hover:bg-[var(--muted-strong,var(--muted))]'
           label={`Copy ${title} install command`}
           value={installCommand}
         />

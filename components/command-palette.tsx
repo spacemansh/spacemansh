@@ -22,7 +22,6 @@ const items: PaletteItem[] = [
     href: '/#theme-picker',
   },
   { group: 'Themes', name: 'Theme toggle', href: '/#theme-toggle' },
-  { group: 'Themes', name: 'Theme tokens', href: '/#theme' },
   { group: 'Docs', name: 'Catalogue', href: '/#catalogue' },
   {
     group: 'Docs',

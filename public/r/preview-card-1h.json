@@ -4,9 +4,6 @@
   "title": "Preview Card 1h: Crop marks",
   "author": "tony <tony@spaceman.sh>",
   "description": "A catalogue card for showing a live component preview. Printer’s registration marks at the corners, with a mono spec line along the base.",
-  "registryDependencies": [
-    "@spaceman/theme"
-  ],
   "files": [
     {
       "path": "registry/spaceman/preview-card/preview-card-1h.tsx",

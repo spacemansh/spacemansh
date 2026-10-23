@@ -39,7 +39,7 @@ function PreviewCard({
       )}
       {...props}
     >
-      <div className='border-border bg-inset group-hover:border-border-strong group-hover:shadow-lift relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+10px)] border transition-[border-color,box-shadow] duration-150 ease-out motion-reduce:transition-none'>
+      <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+10px)] border bg-[var(--inset,var(--muted))] transition-[border-color,box-shadow] duration-150 ease-out group-hover:border-[var(--border-strong,var(--border))] group-hover:shadow-[var(--shadow-lift,var(--shadow-md))] motion-reduce:transition-none'>
         {children}
       </div>
 
@@ -55,7 +55,7 @@ function PreviewCard({
         </h3>
         <span
           aria-hidden='true'
-          className='text-primary-ink font-mono text-[14px] font-medium'
+          className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
         >
           →
         </span>

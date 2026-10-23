@@ -38,7 +38,7 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring hover:border-border-strong hover:shadow-lift relative flex aspect-square min-h-0 flex-col overflow-hidden rounded-[calc(var(--radius)+6px)] border transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col overflow-hidden rounded-[calc(var(--radius)+6px)] border transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
@@ -48,9 +48,9 @@ function PreviewCard({
           aria-hidden='true'
           className='pointer-events-none flex items-center gap-1.5'
         >
-          <span className='bg-border-strong size-[9px] rounded-full' />
-          <span className='bg-border-strong size-[9px] rounded-full' />
-          <span className='bg-border-strong size-[9px] rounded-full' />
+          <span className='size-[9px] rounded-full bg-[var(--border-strong,var(--border))]' />
+          <span className='size-[9px] rounded-full bg-[var(--border-strong,var(--border))]' />
+          <span className='size-[9px] rounded-full bg-[var(--border-strong,var(--border))]' />
         </span>
         {slug ? (
           <span className='text-muted-foreground mx-auto font-mono text-[11.5px]'>
@@ -59,7 +59,7 @@ function PreviewCard({
         ) : null}
       </div>
 
-      <div className='bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden'>
+      <div className='relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden bg-[var(--inset,var(--muted))]'>
         {children}
       </div>
 
@@ -75,7 +75,7 @@ function PreviewCard({
         </h3>
         <span
           aria-hidden='true'
-          className='text-primary-ink font-mono text-[14px] font-medium'
+          className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
         >
           →
         </span>

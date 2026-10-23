@@ -42,8 +42,8 @@ function PreviewCard({
       {...props}
     >
       <div className='h-full transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 motion-reduce:transition-none'>
-        <div className='border-border bg-card group-hover:border-border-strong group-hover:shadow-lift flex h-full flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out motion-reduce:transition-none'>
-          <div className='border-border bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+1px)] border'>
+        <div className='border-border bg-card flex h-full flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] transition-[border-color,box-shadow] duration-150 ease-out group-hover:border-[var(--border-strong,var(--border))] group-hover:shadow-[var(--shadow-lift,var(--shadow-md))] motion-reduce:transition-none'>
+          <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+1px)] border bg-[var(--inset,var(--muted))]'>
             {children}
           </div>
           <div className='flex items-center gap-2 px-2 pt-1.5 pb-2'>
@@ -58,7 +58,7 @@ function PreviewCard({
             </h3>
             <span
               aria-hidden='true'
-              className='text-primary-ink font-mono text-sm font-medium'
+              className='font-mono text-sm font-medium text-[color:var(--primary-ink,var(--foreground))]'
             >
               →
             </span>

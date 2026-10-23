@@ -13,8 +13,8 @@ tokens: app/globals.css
 > and dark-mode colours listed there had never matched what shipped. Do not
 > reintroduce token values here.
 >
-> The tokens are published as `@spaceman/theme`, so changing one changes a
-> public artefact.
+> The site tokens stay local. Registry items inherit the installing project's
+> theme and use standard token fallbacks for site-specific values.
 
 ## 1. Overview
 
