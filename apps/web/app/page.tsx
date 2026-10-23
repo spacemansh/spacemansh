@@ -1,34 +1,52 @@
-const products = [
-  { name: 'UI Registry', href: 'https://ui.spaceman.sh' },
-  { name: 'UI Theme', href: 'https://www.uitheme.dev/' },
-  { name: 'Spaceman RTA', href: 'https://spaceman-rta-vite.netlify.app/' },
-  {
-    name: 'Spaceman Skills',
-    href: 'https://github.com/spacemansh/spaceman-skills',
-  },
-  { name: 'Portfolio', href: 'https://tony.spaceman.sh' },
-]
+import { BounceCards } from '@/components/bounce-cards'
+import { ExploreButton } from '@/components/explore-button'
+import { SiteFooter } from '@/components/site-footer'
+import { SmoothScroll } from '@/components/smooth-scroll'
+import { TextFlip } from '@/components/text-flip'
+import { githubUrl, heroProducts } from '@/lib/site'
 
-// Placeholder until the product family page from plan/ is built.
 export default function Page() {
   return (
-    <main className='px-page flex min-h-svh flex-col justify-center gap-6 py-16'>
-      <h1 className='text-4xl font-medium tracking-tight'>spaceman.sh</h1>
-      <p className='text-muted-foreground max-w-prose'>
-        Open-source tools for building beautiful user interfaces.
-      </p>
-      <ul className='flex flex-wrap gap-x-6 gap-y-2'>
-        {products.map((product) => (
-          <li key={product.name}>
-            <a
-              className='text-foreground decoration-border hover:decoration-primary-ink underline underline-offset-4'
-              href={product.href}
-            >
-              {product.name}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <SmoothScroll>
+      <nav aria-label='Site' className='absolute top-4 right-4 z-40 flex gap-1'>
+        <a className='spaceman-nav-link' href={githubUrl}>
+          GitHub
+        </a>
+      </nav>
+
+      <main className='bg-background relative z-10 shadow-[0_1px_0_var(--border)]'>
+        <div className='flex h-dvh flex-col overflow-hidden'>
+          <BounceCards />
+
+          <section
+            aria-labelledby='hero-title'
+            className='flex shrink-0 flex-col gap-10 px-[clamp(20px,2.7vw,40px)] pt-6 pb-5 md:pb-10 lg:flex-row lg:items-start lg:justify-between'
+          >
+            <h1 className='spaceman-hero-title' id='hero-title'>
+              <span className='sr-only'>
+                The Home Of Spaceman’s Portfolio, UI Registry, Skills and
+                Packages
+              </span>
+              <span aria-hidden='true'>
+                <span className='block'>The Home Of</span>
+                <span className='block'>
+                  Spaceman’s <TextFlip words={heroProducts} />
+                </span>
+              </span>
+            </h1>
+
+            <div className='flex flex-col gap-6 lg:h-[124px] lg:w-[459px] lg:shrink-0 lg:justify-between lg:gap-0'>
+              <p className='spaceman-hero-lead'>
+                Open-source tools that help developers ship beautiful user
+                interfaces.
+              </p>
+              <ExploreButton />
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <SiteFooter />
+    </SmoothScroll>
   )
 }

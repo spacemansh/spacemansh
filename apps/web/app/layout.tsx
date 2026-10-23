@@ -4,6 +4,7 @@ import { Geist_Mono, Noto_Sans, Source_Serif_4 } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import '@workspace/ui/globals.css'
+import './site.css'
 
 const notoSans = Noto_Sans({
   variable: '--font-sans',

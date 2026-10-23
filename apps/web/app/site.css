@@ -1,0 +1,313 @@
+/*
+ * spaceman.sh composition layer. Tokens come from @workspace/ui; nothing here
+ * defines a colour, radius or font of its own.
+ */
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* ---- nav ---- */
+
+.spaceman-nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: color-mix(in oklch, var(--foreground) 34%, transparent);
+  font: 600 16px / 1 var(--font-sans);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
+}
+
+/* ---- hero ---- */
+
+.spaceman-hero-title {
+  margin: 0;
+  max-width: 860px;
+  font: 400 clamp(40px, calc(34.65px + 1.427vw), 56px) / 1.1 var(--font-sans);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.spaceman-hero-lead {
+  margin: 0;
+  max-width: 560px;
+  font: 400 20px / 26px var(--font-sans);
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+  .spaceman-hero-lead {
+    max-width: none;
+  }
+}
+
+/* Text flip: all words share one grid cell, so the slot never changes width. */
+.spaceman-flip {
+  display: inline-grid;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.spaceman-flip-word {
+  grid-area: 1 / 1;
+  justify-self: start;
+  opacity: 0;
+}
+
+.spaceman-flip-word[data-state='on'] {
+  opacity: 1;
+}
+
+.spaceman-flip-word[data-state='in'] {
+  animation: spaceman-flip-in 300ms ease-out 300ms both;
+}
+
+.spaceman-flip-word[data-state='out'] {
+  animation: spaceman-flip-out 300ms ease-out both;
+}
+
+/* Both ends are explicit: the resting state is opacity 0, so an implicit
+   `to` would fade the entering word straight back out. */
+@keyframes spaceman-flip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20%);
+    filter: blur(1px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes spaceman-flip-out {
+  from {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(40%);
+    filter: blur(1px);
+  }
+}
+
+/* Explore: Signal Green, label rolls letter by letter on hover. */
+.spaceman-explore {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 32px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: 500 16px / 1 var(--font-sans);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    background-color 450ms cubic-bezier(0.6, 0, 0.2, 1),
+    transform 150ms var(--ease-sp-out);
+}
+
+.spaceman-explore:active {
+  transform: scale(0.96);
+}
+
+.spaceman-roll {
+  position: relative;
+  display: block;
+  overflow: clip;
+  line-height: 1.2;
+}
+
+.spaceman-roll-face {
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+}
+
+.spaceman-roll-face span {
+  display: inline-block;
+  white-space: pre;
+  transition: translate 450ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+
+.spaceman-roll-under span {
+  translate: 0 100%;
+}
+
+.spaceman-explore:focus-visible
+  .spaceman-roll-face:not(.spaceman-roll-under)
+  span {
+  translate: 0 calc(-100% - 2px);
+}
+
+.spaceman-explore:focus-visible .spaceman-roll-under span {
+  translate: 0 0;
+}
+
+/* ---- cards: square concentric frames ---- */
+
+.spaceman-cards {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spaceman-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--card-size, 248px);
+  height: var(--card-size, 248px);
+  border-radius: var(--card-radius, 20px);
+  background: var(--card);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 1px 2px hsl(0 0% 0% / 0.06),
+    0 12px 24px -12px hsl(0 0% 0% / 0.18);
+  transform: translate(-50%, -50%) scale(0);
+  will-change: transform;
+  transition: box-shadow 300ms ease;
+}
+
+.spaceman-card[data-active] {
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 2px 4px hsl(0 0% 0% / 0.14),
+    0 22px 44px -10px hsl(0 0% 0% / 0.42);
+}
+
+.dark .spaceman-card {
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 1px 2px hsl(0 0% 0% / 0.3),
+    0 16px 32px -14px hsl(0 0% 0% / 0.6);
+}
+
+.dark .spaceman-card[data-active] {
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 2px 4px hsl(0 0% 0% / 0.4),
+    0 26px 52px -12px hsl(0 0% 0% / 0.75);
+}
+
+/* concentric frame: inner radius = outer radius - padding - 1px hairline */
+.spaceman-card-well {
+  position: absolute;
+  inset: var(--card-pad, 9px);
+  border-radius: calc(var(--card-radius, 20px) - var(--card-pad, 9px) - 1px);
+  background: var(--inset);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* ---- footer ---- */
+
+/* A sticky footer taller than the screen could never be fully revealed. */
+@media (max-height: 640px) {
+  .spaceman-footer {
+    position: relative;
+  }
+}
+
+.spaceman-footer-top {
+  container-type: inline-size;
+}
+
+.spaceman-wordmark-shadow {
+  fill: none;
+  stroke: var(--muted-foreground);
+  stroke-width: 0.7;
+}
+
+.spaceman-wordmark-tag {
+  margin: clamp(14px, 2.2cqi, 28px) 0 0;
+  font: 500 clamp(11px, 2.5cqi, 34px) / 1.2 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spaceman-footer-heading {
+  margin: 0 0 18px;
+  color: var(--muted-foreground);
+  font: 500 12.5px / 1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.spaceman-footer-heading::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  margin-top: 14px;
+  background: var(--border-strong);
+}
+
+.spaceman-footer-link {
+  display: inline-block;
+  padding: 5px 0;
+  color: var(--foreground);
+  font-size: 15px;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 160ms ease;
+}
+
+/* ---- hover, gated to devices that really hover ---- */
+
+@media (hover: hover) and (pointer: fine) {
+  .spaceman-nav-link:hover {
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .spaceman-explore:hover {
+    background: color-mix(in oklch, var(--primary) 80%, var(--foreground));
+  }
+
+  .spaceman-explore:hover .spaceman-roll-face:not(.spaceman-roll-under) span {
+    translate: 0 calc(-100% - 2px);
+  }
+
+  .spaceman-explore:hover .spaceman-roll-under span {
+    translate: 0 0;
+  }
+
+  .spaceman-footer-link:hover {
+    text-decoration-color: var(--primary-ink);
+  }
+}
+
+/* ---- reduced motion: same states, no movement ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .spaceman-flip-word[data-state='in'] {
+    animation: none;
+    opacity: 1;
+  }
+
+  .spaceman-flip-word[data-state='out'] {
+    animation: none;
+    opacity: 0;
+  }
+
+  .spaceman-roll-face span,
+  .spaceman-explore {
+    transition-duration: 0.01ms;
+  }
+}
