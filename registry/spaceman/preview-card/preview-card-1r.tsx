@@ -35,13 +35,13 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring hover:border-border-strong hover:shadow-lift relative flex aspect-square min-h-0 flex-col gap-2.5 overflow-hidden rounded-[calc(var(--radius)-2px)] border px-3.5 pt-3.5 pb-3 transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-2.5 overflow-hidden rounded-[calc(var(--radius)-2px)] border px-3.5 pt-3.5 pb-3 transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
       <div className='border-border relative z-10 min-h-0 flex-1 border p-[5px]'>
-        <div className='bg-inset grid h-full place-items-center overflow-hidden'>
+        <div className='grid h-full place-items-center overflow-hidden bg-[var(--inset,var(--muted))]'>
           {children}
         </div>
       </div>

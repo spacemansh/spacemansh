@@ -41,7 +41,7 @@ function PreviewCard({
       {...props}
     >
       <div className='border-foreground bg-card flex h-full min-h-0 flex-col gap-1.5 rounded-[calc(var(--radius)+4px)] border p-[5px] shadow-[5px_5px_0_0_var(--foreground)] transition-[translate,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-[3px_3px_0_0_var(--foreground)] motion-reduce:transition-none'>
-        <div className='border-border bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)] border'>
+        <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)] border bg-[var(--inset,var(--muted))]'>
           {children}
         </div>
 
@@ -57,7 +57,7 @@ function PreviewCard({
           </h3>
           <span
             aria-hidden='true'
-            className='text-primary-ink font-mono text-[14px] font-medium'
+            className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

@@ -44,7 +44,7 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group border-border bg-card hover:border-border-strong hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-2 overflow-hidden rounded-[calc(var(--radius)+4px)] border p-2 pb-3 transition-[border-color,box-shadow] duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group border-border bg-card has-[a[id]:focus-visible]:outline-ring relative flex aspect-square min-h-0 flex-col gap-2 overflow-hidden rounded-[calc(var(--radius)+4px)] border p-2 pb-3 transition-[border-color,box-shadow] duration-150 ease-out hover:border-[var(--border-strong,var(--border))] hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
@@ -55,7 +55,7 @@ function PreviewCard({
           {index ? <span className='ml-auto'>{index}</span> : null}
         </div>
       ) : null}
-      <div className='border-border bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)-4px)] border bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[12px_12px]'>
+      <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)-4px)] border bg-[var(--inset,var(--muted))] bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[12px_12px]'>
         {children}
       </div>
       <div className='flex flex-col gap-0.5 px-1 pt-1'>

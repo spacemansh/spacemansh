@@ -35,18 +35,18 @@ function PreviewCard({
     <article
       aria-labelledby={titleId}
       className={cn(
-        'group hover:shadow-lift has-[a[id]:focus-visible]:outline-ring relative aspect-square min-h-0 rounded-[calc(var(--radius)+6px)] rounded-tr-none transition-shadow duration-150 ease-out has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
+        'group has-[a[id]:focus-visible]:outline-ring relative aspect-square min-h-0 rounded-[calc(var(--radius)+6px)] rounded-tr-none transition-shadow duration-150 ease-out hover:shadow-[var(--shadow-lift,var(--shadow-md))] has-[a[id]:focus-visible]:outline-2 has-[a[id]:focus-visible]:outline-offset-2 motion-reduce:transition-none',
         className,
       )}
       {...props}
     >
-      <div className='border-border bg-card group-hover:border-border-strong relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius)+6px)] rounded-tr-none border px-[5px] pt-[5px] transition-[border-color] duration-150 ease-out [clip-path:polygon(0_0,calc(100%_-_28px)_0,100%_28px,100%_100%,0_100%)] motion-reduce:transition-none'>
+      <div className='border-border bg-card relative flex h-full min-h-0 flex-col rounded-[calc(var(--radius)+6px)] rounded-tr-none border px-[5px] pt-[5px] transition-[border-color] duration-150 ease-out [clip-path:polygon(0_0,calc(100%_-_28px)_0,100%_28px,100%_100%,0_100%)] group-hover:border-[var(--border-strong,var(--border))] motion-reduce:transition-none'>
         <span
           aria-hidden='true'
-          className='pointer-events-none absolute -top-px -right-px z-20 size-7 rounded-bl-[calc(var(--radius)-2px)] bg-[linear-gradient(225deg,transparent_50%,var(--border-strong)_50%)]'
+          className='pointer-events-none absolute -top-px -right-px z-20 size-7 rounded-bl-[calc(var(--radius)-2px)] bg-[linear-gradient(225deg,transparent_50%,var(--border-strong,var(--border))_50%)]'
         />
 
-        <div className='border-border bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-tl-[calc(var(--radius)+2px)] border'>
+        <div className='border-border relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-tl-[calc(var(--radius)+2px)] border bg-[var(--inset,var(--muted))]'>
           {children}
         </div>
 
@@ -62,7 +62,7 @@ function PreviewCard({
           </h3>
           <span
             aria-hidden='true'
-            className='text-primary-ink font-mono text-[14px] font-medium'
+            className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

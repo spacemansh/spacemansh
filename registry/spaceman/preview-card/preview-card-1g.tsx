@@ -62,12 +62,12 @@ function PreviewCard({
           ) : null}
         </div>
         <div className='border-border bg-card relative -mt-px min-h-0 flex-1 rounded-[calc(var(--radius)+4px)] rounded-tl-none border p-[5px]'>
-          <div className='bg-inset relative z-10 grid h-full place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)]'>
+          <div className='relative z-10 grid h-full place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)] bg-[var(--inset,var(--muted))]'>
             {children}
           </div>
           <span
             aria-hidden='true'
-            className='text-primary-ink pointer-events-none absolute right-3.5 bottom-3 z-20 font-mono text-sm font-medium'
+            className='pointer-events-none absolute right-3.5 bottom-3 z-20 font-mono text-sm font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

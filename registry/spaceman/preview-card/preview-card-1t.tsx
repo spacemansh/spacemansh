@@ -40,8 +40,8 @@ function PreviewCard({
       )}
       {...props}
     >
-      <div className='border-border-strong bg-card flex h-full min-h-0 flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border p-[5px] shadow-[0_4px_0_0_var(--border-strong)] transition-[translate,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0.5 group-hover:shadow-[0_2px_0_0_var(--border-strong)] motion-reduce:transition-none'>
-        <div className='bg-inset relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)]'>
+      <div className='bg-card flex h-full min-h-0 flex-col gap-1.5 rounded-[calc(var(--radius)+6px)] border border-[var(--border-strong,var(--border))] p-[5px] shadow-[0_4px_0_0_var(--border-strong,var(--border))] transition-[translate,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0.5 group-hover:shadow-[0_2px_0_0_var(--border-strong,var(--border))] motion-reduce:transition-none'>
+        <div className='relative z-10 grid min-h-0 flex-1 place-items-center overflow-hidden rounded-[calc(var(--radius)+2px)] bg-[var(--inset,var(--muted))]'>
           {children}
         </div>
 
@@ -57,7 +57,7 @@ function PreviewCard({
           </h3>
           <span
             aria-hidden='true'
-            className='text-primary-ink font-mono text-[14px] font-medium'
+            className='font-mono text-[14px] font-medium text-[color:var(--primary-ink,var(--foreground))]'
           >
             →
           </span>

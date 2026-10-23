@@ -8,9 +8,6 @@
     "@space-man/react-theme-animation",
     "lucide-react"
   ],
-  "registryDependencies": [
-    "@spaceman/theme"
-  ],
   "files": [
     {
       "path": "registry/spaceman/theme-toggle/theme-provider.tsx",
@@ -23,6 +20,6 @@
       "type": "registry:component"
     }
   ],
-  "docs": "Register the @spaceman namespace before installing: `npx shadcn@latest registry add @spaceman=https://spaceman.sh/r/{name}.json`. Wrap your app in <ThemeProvider> inside the root layout's <body>, and add suppressHydrationWarning to <html>. Your CSS needs a dark variant that matches the class, e.g. `@custom-variant dark (&:is(.dark *))` on Tailwind v4. The reveal runs at 300ms and is disabled under prefers-reduced-motion.",
+  "docs": "Wrap your app in <ThemeProvider> inside the root layout's <body>, and add suppressHydrationWarning to <html>. Your CSS needs a dark variant that matches the class, e.g. `@custom-variant dark (&:is(.dark *))` on Tailwind v4. The reveal runs at 300ms and is disabled under prefers-reduced-motion.",
   "type": "registry:block"
 }

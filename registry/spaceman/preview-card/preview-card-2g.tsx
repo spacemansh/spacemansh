@@ -60,7 +60,7 @@ function PreviewCard({
             Soon
           </span>
         </div>
-        <div className='border-border-strong bg-background min-h-0 flex-1 rounded-[calc(var(--radius)+4px)] border border-dashed p-[5px]'>
+        <div className='bg-background min-h-0 flex-1 rounded-[calc(var(--radius)+4px)] border border-dashed border-[var(--border-strong,var(--border))] p-[5px]'>
           <div className='grid h-full place-items-center rounded-[calc(var(--radius)-1px)] bg-[repeating-linear-gradient(45deg,color-mix(in_oklch,var(--muted)_60%,var(--background))_0_8px,var(--background)_8px_16px)]'>
             {children ?? (
               <span className='text-muted-foreground font-mono text-[11px] lowercase'>
@@ -80,7 +80,7 @@ function PreviewCard({
       {...props}
     >
       <div className='flex h-full min-h-0 flex-col transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 motion-reduce:transition-none'>
-        <div className='bg-tag text-tag-foreground -mb-2.5 flex h-[34px] items-center gap-2.5 self-start rounded-t-[calc(var(--radius)+2px)] px-3.5 pb-2.5'>
+        <div className='-mb-2.5 flex h-[34px] items-center gap-2.5 self-start rounded-t-[calc(var(--radius)+2px)] bg-[var(--tag,var(--muted))] px-3.5 pb-2.5 text-[color:var(--tag-foreground,var(--muted-foreground))]'>
           <h3
             className='text-[13.5px] font-medium whitespace-nowrap'
             id={titleId}
@@ -94,8 +94,8 @@ function PreviewCard({
           ) : null}
         </div>
 
-        <div className='border-border bg-card group-hover:border-border-strong group-hover:shadow-lift relative min-h-0 flex-1 rounded-[calc(var(--radius)+4px)] border p-[5px] transition-[border-color,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]'>
-          <div className='bg-inset grid h-full place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)]'>
+        <div className='border-border bg-card relative min-h-0 flex-1 rounded-[calc(var(--radius)+4px)] border p-[5px] transition-[border-color,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:border-[var(--border-strong,var(--border))] group-hover:shadow-[var(--shadow-lift,var(--shadow-md))]'>
+          <div className='grid h-full place-items-center overflow-hidden rounded-[calc(var(--radius)-1px)] bg-[var(--inset,var(--muted))]'>
             {children}
           </div>
 
@@ -103,7 +103,7 @@ function PreviewCard({
             <div className='border-border bg-card absolute right-2.5 bottom-2.5 flex items-center gap-0.5 rounded-[calc(var(--radius)+1px)] border p-0.5'>
               {installCommand ? (
                 <CopyButton
-                  className='text-primary-ink hover:bg-muted size-[30px] rounded-[calc(var(--radius)-1px)]'
+                  className='hover:bg-muted size-[30px] rounded-[calc(var(--radius)-1px)] text-[color:var(--primary-ink,var(--foreground))]'
                   label={`Copy ${title} install command`}
                   value={installCommand}
                 />
@@ -111,7 +111,7 @@ function PreviewCard({
               {href ? (
                 <a
                   aria-label={`View ${title}`}
-                  className='text-primary-ink hover:bg-muted grid size-[30px] place-items-center rounded-[calc(var(--radius)-1px)] transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] motion-reduce:transition-none'
+                  className='hover:bg-muted grid size-[30px] place-items-center rounded-[calc(var(--radius)-1px)] text-[color:var(--primary-ink,var(--foreground))] transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] motion-reduce:transition-none'
                   href={href}
                   title={`View ${title}`}
                 >
