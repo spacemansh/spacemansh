@@ -6,9 +6,12 @@ async function getStars(): Promise<number | null> {
     const response = await fetch(
       `https://api.github.com/repos/${siteLinks.repo}`,
       {
-        headers: { Accept: 'application/vnd.github+json' },
-        // The unauthenticated API allows 60 requests an hour per IP.
-        next: { revalidate: 3600 },
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'spaceman.sh',
+        },
+        // Capture the count at build time; no runtime revalidation storage.
+        cache: 'force-cache',
       },
     )
 
@@ -17,9 +20,8 @@ async function getStars(): Promise<number | null> {
     // Parse the one field we use: anything that is not a whole, non-negative
     // number (missing field, changed API shape) counts as unknown.
     const { stargazers_count: raw } = await response.json()
-    const stars = Number(raw)
 
-    return Number.isSafeInteger(stars) && stars >= 0 ? stars : null
+    return Number.isSafeInteger(raw) && raw >= 0 ? raw : null
   } catch {
     return null
   }
@@ -31,7 +33,7 @@ function formatStars(count: number) {
   return `${(count / 1000).toFixed(count >= 10000 ? 0 : 1).replace(/\.0$/, '')}k`
 }
 
-/** Links to the repo with its live star count; shows no number if unknown. */
+/** Links to the repo with its build-time star count; shows no number if unknown. */
 export async function GitHubStars() {
   const stars = await getStars()
 
