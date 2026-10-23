@@ -5,6 +5,7 @@ dist
 build
 .open-next
 .wrangler
+.turbo
 .env*
 *.log
 .hallmark

@@ -8,6 +8,7 @@ export default defineConfig({
     '**/.next/**',
     '**/.open-next/**',
     '**/.wrangler/**',
+    '**/.turbo/**',
     '**/coverage/**',
     'next-env.d.ts',
   ],
