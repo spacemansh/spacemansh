@@ -6,8 +6,8 @@
     "**/.next/**",
     "**/.open-next/**",
     "**/.wrangler/**",
+    "**/.turbo/**",
     "**/coverage/**",
-    "public/r/**",
     "next-env.d.ts",
     "pnpm-lock.yaml"
   ],
@@ -33,7 +33,7 @@
       "style",
       "unknown"
     ],
-    "internalPattern": ["@/", "#"],
+    "internalPattern": ["@/", "@workspace/", "#"],
     "ignoreCase": true,
     "newlinesBetween": true,
     "partitionByComment": true,
