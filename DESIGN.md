@@ -1,13 +1,15 @@
 ---
 name: spaceman.sh
 description: Open-source tools that help developers ship beautiful user interfaces.
-tokens: app/globals.css
+tokens: spacemansh/packages/ui/src/styles/tokens.css
 ---
 
 # Design System: spaceman.sh
 
-> **Token values live in `app/globals.css`** (`:root` and `.dark`), not in this
-> file. This document carries the _rules and intent_ of the system; the CSS
+> **Token values live in `packages/ui/src/styles/tokens.css` in the spacemansh
+> repo** (`:root` and `.dark`), not in this file. spaceman-ui keeps a
+> byte-identical copy at `app/tokens.css`, and both repos share this document.
+> It carries the _rules and intent_ of the system; the CSS
 > carries the numbers. A previous version of this file duplicated the values in
 > frontmatter, and they drifted out of sync with the implementation — the fonts
 > and dark-mode colours listed there had never matched what shipped. Do not

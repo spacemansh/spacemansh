@@ -1,7 +1,8 @@
 # Spaceman repository guide
 
 Behavioural and project-specific guidelines for coding agents working in
-`spacemansh` — the spaceman.sh website and registry.
+`spacemansh` — the spaceman.sh website and the shared Spaceman design system.
+The `@spaceman` registry lives in the separate `spaceman-ui` repo.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks,
 use judgment.
@@ -109,9 +110,11 @@ Treat everything currently on the page as provisional.
 
 ## 6. Design system
 
-`app/globals.css` is the **single source of truth for token values**. They live
-in `:root` (light) and `.dark` (dark), and are exposed to Tailwind through
-`@theme inline`. `DESIGN.md` carries the named rules and the intent behind the
+`packages/ui/src/styles/tokens.css` is the **single source of truth for token
+values** for every Spaceman site. They live in `:root` (light) and `.dark`
+(dark), and are exposed to Tailwind through `@theme inline`. `spaceman-ui` keeps
+a byte-identical copy (`app/tokens.css`) and fails `pnpm tokens:check` if it
+drifts, so change tokens here first and then copy the file across. `DESIGN.md` carries the named rules and the intent behind the
 system; its frontmatter is **not** a token source and must not be treated as
 one.
 
@@ -120,14 +123,14 @@ Two rules bind every change to the system itself:
 - **One token set.** `:root` and `.dark` are the only places tokens are
   defined. Do not introduce a page-scoped or component-scoped block that
   redefines them. A second set silently shadows the first, leaves the tokens it
-  does not override falling through to the wrong theme, and cannot be
-  distributed through the registry.
+  does not override falling through to the wrong theme, and breaks parity with
+  `spaceman-ui`.
 - **Do not invent tokens or colours.** Use what exists. If a change appears to
   need a token that is not there, that is a design-system question — stop and
   ask. Adding one is a decision, not an implementation detail.
 
 The theme is applied as the `dark` class on `<html>` by
-`registry/spaceman/theme-toggle/theme-provider.tsx`, which is what
+`apps/web/components/theme-provider.tsx` (next-themes), which is what
 `@custom-variant dark (&:is(.dark *))` matches.
 
 Rules that bind every visual change:
@@ -158,61 +161,59 @@ it rather than inlining the value.
 
 Adding or changing a token means updating **both** `:root` and `.dark`, plus the
 `@theme inline` mapping, plus `DESIGN.md` if the change is a system decision
-rather than a fix. The site tokens stay local. Registry components use standard shadcn tokens
-as fallbacks for optional site overrides; never ship the site theme to consumers.
+rather than a fix, plus the copy in `spaceman-ui`. The tokens are never shipped to
+registry consumers.
 
 ## 7. Architecture
 
-Next.js App Router (React 19, TypeScript strict) deployed to Cloudflare Workers
-via OpenNext.
+A pnpm + Turborepo monorepo scaffolded by `shadcn init --monorepo`: Next.js App
+Router (React 19, TypeScript strict) apps and a shared shadcn UI package.
 
 ```text
-app/
-  layout.tsx        root layout, next/font wiring, theme provider, metadata
-  page.tsx          the landing page
-  globals.css       Tailwind v4 entry, design tokens, .spaceman-* page layer
-components/
-  ui/               shadcn primitives (Radix + CVA + tailwind-merge)
-  *.tsx             page-level compositions
-registry/spaceman/  published registry sources — see §13
-registry.json       registry catalogue
-public/r/*.json     built registry output, served at spaceman.sh/r/
-lib/utils.ts        cn() — clsx + tailwind-merge
-public/figma-assets/  design-sourced SVGs
-DESIGN.md           design-system rules and intent (not token values)
-PRODUCT.md          in-progress positioning material
-spaceman-changes.md implementation notes for the current landing-page work
-plan/               dated briefs for explorations run in their own session
+apps/web/                 spaceman.sh — the product family page
+  app/                    routes, layout (next/font wiring, theme provider, metadata)
+  components/             page-level compositions
+  next.config.ts          includes the permanent /r/* → ui.spaceman.sh redirect
+  wrangler.jsonc          Cloudflare Worker config for spaceman.sh
+packages/ui/              @workspace/ui — the shared design system
+  src/styles/tokens.css   design tokens: the system of record (§6)
+  src/styles/globals.css  Tailwind entry: imports tokens, declares @source paths
+  src/components/         shadcn primitives (add with the shadcn CLI)
+  src/lib/utils.ts        cn() — clsx + tailwind-merge
+packages/typescript-config/  shared tsconfig presets
+DESIGN.md                 design-system rules and intent (not token values)
+PRODUCT.md                in-progress positioning material
+plan/                     dated briefs for explorations run in their own session
 ```
 
 Boundary rules:
 
 - **Server Components are the default.** Add `"use client"` only at a real
-  interactivity boundary, and push it as far down the tree as possible. The
-  current page is fully server-rendered — keep it that way unless a change
-  genuinely requires client state.
-- `components/ui/` holds generic, reusable primitives added via the shadcn CLI.
-  Prefer regenerating or extending a primitive over hand-writing a one-off
-  button or input. Anything that knows about spaceman.sh page content is a
-  page-level component in `components/`, not `ui/`.
-- Composition-specific styling lives in the scoped `.spaceman-*` layer in
-  `globals.css`; keep that convention rather than starting a second CSS approach.
-- Fonts are loaded through `next/font/google` in `app/layout.tsx` and consumed as
-  CSS variables. Do not add a `<link>` to a font CDN or import a font in CSS.
-- Images go through `next/image`; SVG assets live in `public/figma-assets/`.
-  Decorative images take `alt=""` and decorative wrappers take `aria-hidden`.
-- The `@/*` alias maps to the repo root. Use it; avoid deep relative chains.
-- `lib/utils.ts` is for genuinely shared helpers. It is not a dumping ground.
+  interactivity boundary, and push it as far down the tree as possible.
+- `packages/ui/src/components/` holds generic primitives added via the shadcn
+  CLI (run it from `apps/web`; `components.json` routes primitives into the
+  package). Anything that knows about spaceman.sh page content lives in
+  `apps/web/components/`.
+- Registry items from `@spaceman` (ui.spaceman.sh) install into `apps/web`
+  with the shadcn CLI. Do not copy registry sources in by hand.
+- Fonts are loaded through `next/font/google` in `apps/web/app/layout.tsx` and
+  consumed as CSS variables. Do not add a `<link>` to a font CDN.
+- The `@/*` alias maps to the app root; shared code is imported as
+  `@workspace/ui/...`.
 
 ## 8. Cloudflare deployment
 
-The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
-`.open-next/worker.js`, configured by `open-next.config.ts` and `wrangler.jsonc`.
+`apps/web` builds to a Worker: `next build` → `opennextjs-cloudflare build` →
+`.open-next/worker.js`, configured by `apps/web/open-next.config.ts` and
+`apps/web/wrangler.jsonc`.
 
 - `wrangler.jsonc` binds assets, a self-reference service (required by OpenNext
   caching — the `service` name must stay equal to the worker name), and the
   images binding. Do not rename the worker without updating the self-reference.
-- The custom domain route is `spaceman.sh`. Treat routes, bindings, and
+- The custom domain route is `spaceman.sh`. The registry used to be served from
+  this Worker at `/r/`; `next.config.ts` now redirects `/r/*` permanently to
+  `https://ui.spaceman.sh/r/*` so existing installs keep resolving. Never
+  remove that redirect. Treat routes, bindings, and
   compatibility flags as production infrastructure: changing them is a
   confirm-first action, not a side effect of a feature.
 - `nodejs_compat` and `global_fetch_strictly_public` are set deliberately. Do not
@@ -245,7 +246,8 @@ The site builds to a Worker: `next build` → `opennextjs-cloudflare build` →
   rules; if a disable is genuinely right, comment why next to the directive.
 - TypeScript is `strict`. Do not add `any` or non-null assertions to get past a
   type error — model the type correctly.
-- Tailwind v4 (CSS-first, no `tailwind.config`). Configure through `globals.css`.
+- Tailwind v4 (CSS-first, no `tailwind.config`). Configure through
+  `packages/ui/src/styles/globals.css`.
 - Compose class variants with CVA and merge with `cn()`. Do not concatenate
   class strings by hand.
 - Prefer semantic elements and correct landmarks (`header`, `nav`, `main`,
@@ -264,8 +266,8 @@ it that way where you can: most of what an effect is reached for here belongs
 in render, in an event handler, or in CSS.
 
 When you do need one, use the `no-use-effect` skill first. Effects in
-`registry/spaceman/` matter twice over — a published item's bug ships to every
-consumer who installs it, and they cannot be fixed by editing this site.
+`packages/ui` matter twice over: every app that imports the package inherits
+them.
 
 If the skill is not already installed in your harness, install it once:
 
@@ -292,10 +294,9 @@ When requirements conflict, use:
 
 1. The current user's explicit request.
 2. This repository guide.
-3. `app/globals.css` for token values — it is the system of record.
+3. `packages/ui/src/styles/tokens.css` for token values — the system of record.
 4. `DESIGN.md` for visual _rules_ and intent, never for token values.
-5. Existing implementation in `app/`, `components/`, and `registry/`.
-6. `spaceman-changes.md` for why the current landing page is shaped as it is.
+5. Existing implementation in `apps/` and `packages/`.
 
 `PRODUCT.md` is explicitly **not** in this order — it is unsettled working
 material (§5).
@@ -311,14 +312,14 @@ pnpm dev             # local dev server
 pnpm lint            # oxlint (pnpm lint:fix applies safe fixes)
 pnpm format          # oxfmt check (pnpm format:fix rewrites)
 pnpm quality         # lint, then format check (pnpm quality:fix fixes both)
-pnpm build           # next build — catches type and build errors
-pnpm registry:build  # regenerate public/r/*.json from registry.json
-pnpm preview         # opennext build + local Worker preview (the real runtime)
-pnpm deploy          # PUBLISHES — only when explicitly asked
+pnpm typecheck       # tsc in every workspace (turbo)
+pnpm build           # next build in every app (turbo)
+pnpm preview         # apps/web: opennext build + local Worker preview (the real runtime)
+pnpm deploy          # apps/web: PUBLISHES — only when explicitly asked
 ```
 
-oxlint does not type-check. `pnpm quality` and `pnpm build` are both required
-signals: run them and report each result.
+oxlint does not type-check. `pnpm quality`, `pnpm typecheck` and `pnpm build`
+are all required signals: run them and report each result.
 
 Because there are no tests, visual verification is not optional:
 
@@ -343,40 +344,31 @@ Report what was run, what passed, and what could not be verified.
 - Update `DESIGN.md` when a change alters a design-system decision, and this
   guide when a change alters the build, deployment, or developer workflow.
 
-## 13. The registry
+## 13. Shared design system across repos
 
-spaceman.sh publishes a shadcn registry under the `@spaceman` namespace, served
-as static JSON from the same Worker at `https://spaceman.sh/r/{name}.json`.
+Spaceman has two sites that must look like one product:
 
-```text
-registry.json                    the catalogue — hand-written, one entry per item
-registry/spaceman/<item>/*.tsx   item sources
-public/r/*.json                  built output, committed
-```
+- `spacemansh` (this repo): spaceman.sh, and the canonical tokens in
+  `packages/ui/src/styles/tokens.css`.
+- `spaceman-ui`: ui.spaceman.sh and the `@spaceman` shadcn registry. It keeps
+  `app/tokens.css` byte-identical to the file here; its `pnpm tokens:check`
+  compares the two and fails on drift.
 
-`pnpm registry:build` runs `shadcn build`, which flattens `registry.json` into
-`public/r/`. It is chained into `pnpm build`, so a normal build keeps the output
-current. The generated files **are committed** so the published artefacts are
-reviewable in the repo.
-
-Rules for registry items:
-
-- **The site consumes what it publishes.** `app/` imports items from
-  `registry/spaceman/...` directly. There is no second copy, so the published
-  file and the rendered file cannot drift. Keep it that way.
-- **Only publish what has been rendered.** An item that has never been displayed
-  in both themes does not go in `registry.json`. This is why
-  `components/ui/button.tsx` and `input.tsx` are not published yet.
-- **Items must be self-contained.** Styling travels with the component in
-  Tailwind classes. Do not rely on the `.spaceman-*` layer in `globals.css` — a
-  consumer does not get that file, and the item will install unstyled.
-- List every npm package in `dependencies` and every other item in
-  `registryDependencies`. A missing entry installs a broken component.
-- Item `name` is a public API. Renaming one breaks everybody who installed it.
-
-After changing an item, run `pnpm registry:build` and verify with
-`pnpm dlx shadcn@latest view @spaceman/<name>` against the running dev server.
+To change a token: edit `tokens.css` here, update `DESIGN.md` if it is a system
+decision, copy the file to `spaceman-ui/app/tokens.css`, and run
+`pnpm tokens:check` there. Ship both changes together.
 
 These guidelines are working when diffs stay focused, uncertainty is surfaced
 early, the design system holds in both themes, and visual work is backed by
 having actually looked at it.
+
+<!-- BEGIN:turborepo-agent-rules -->
+
+# This is NOT the Turborepo you know
+
+Turborepo configuration, task behavior, and CLI commands can vary between installed versions and may differ from your training data. Resolve the `turbo` package from this file's directory or relevant workspace; in monorepos, it may not be visible from the repository root. For example, run `node -p "require.resolve('turbo/package.json')"` from a workspace that depends on `turbo`.
+
+Read `docs/README.md` inside that installed package first, then read the relevant pages from its `docs/` directory before changing Turborepo configuration or commands. Heed deprecation notices. These bundled docs match the installed package version and are available without network access.
+
+This block is written and re-added by `turbo` before repository-scoped commands when an AI agent is detected. In the Turborepo source repository, its template is defined in `crates/turborepo-cli/src/cli/agent_guidance.rs`. Removing the managed block while updates are enabled means a later qualifying invocation will add it again. Set `"agentGuidance": false` in the root `turbo.json` or `turbo.jsonc` to opt out; this does not remove an existing block. Keep the block committed with your work to avoid an uncommitted change on the next agent invocation.
+<!-- END:turborepo-agent-rules -->
