@@ -1,7 +1,3 @@
-'use client'
-
-import { replayCards } from '@/lib/replay-cards'
-
 const label = 'Explore'
 
 const letters = Array.from(label)
@@ -20,17 +16,16 @@ function Face({ className }: { className: string }) {
   )
 }
 
-export function ExploreButton() {
+/** The Explore label with its letter roll; the button around it owns the action. */
+export function ExploreButtonFace() {
   return (
-    <button className='spaceman-explore' onClick={replayCards} type='button'>
-      <span className='spaceman-roll'>
-        <span className='sr-only'>{label}</span>
-        <span aria-hidden='true' className='invisible block whitespace-nowrap'>
-          {label}
-        </span>
-        <Face className='spaceman-roll-face' />
-        <Face className='spaceman-roll-face spaceman-roll-under' />
+    <span className='spaceman-roll'>
+      <span className='sr-only'>{label}</span>
+      <span aria-hidden='true' className='invisible block whitespace-nowrap'>
+        {label}
       </span>
-    </button>
+      <Face className='spaceman-roll-face' />
+      <Face className='spaceman-roll-face spaceman-roll-under' />
+    </span>
   )
 }

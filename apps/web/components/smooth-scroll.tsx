@@ -28,6 +28,8 @@ function mountSmoothScroll(node: HTMLDivElement | null) {
   const onWheel = (event: WheelEvent) => {
     if (
       event.ctrlKey ||
+      // the Explore tour handles its own wheel input
+      document.documentElement.classList.contains('spaceman-tour-open') ||
       Math.abs(event.deltaX) > Math.abs(event.deltaY) ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
