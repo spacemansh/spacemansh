@@ -268,6 +268,190 @@ body {
   transition: text-decoration-color 160ms ease;
 }
 
+/* ---- Explore tour: framed page transition ---- */
+
+/* the page behind stays put while the tour is open */
+html.spaceman-tour-open {
+  overflow: hidden;
+}
+
+.spaceman-tour {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  /* clip, not hidden: showModal focuses the parked page and would scroll it in */
+  overflow: clip;
+  background: transparent;
+  color: var(--foreground);
+  overscroll-behavior: contain;
+}
+
+.spaceman-tour::backdrop {
+  background: transparent;
+}
+
+/* the field the framed pages sit on */
+.spaceman-tour-field {
+  position: absolute;
+  inset: 0;
+  background: var(--muted-strong);
+  transition: opacity 320ms ease-out;
+}
+
+.spaceman-tour[data-phase='away'] .spaceman-tour-field {
+  opacity: 0;
+  transition-duration: 440ms;
+}
+
+.spaceman-tour-scale {
+  position: absolute;
+  inset: 0;
+  transition:
+    scale 420ms var(--ease-sp-out),
+    translate 560ms var(--ease-sp-in-out);
+}
+
+.spaceman-tour:not([data-phase='full']) .spaceman-tour-scale {
+  scale: 0.9;
+}
+
+/* parked one page and a gap below the screen */
+.spaceman-tour[data-phase='away'] .spaceman-tour-scale {
+  translate: 0 calc(100% + 24px);
+  transition-duration: 420ms, 440ms;
+}
+
+/* the wrapper carries every page, so only the current one may drop into view */
+.spaceman-tour[data-phase='away'] .spaceman-tour-page[inert] {
+  visibility: hidden;
+}
+
+.spaceman-tour-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: transform 560ms var(--ease-sp-in-out);
+}
+
+.spaceman-tour-page {
+  position: relative;
+  flex: 0 0 100%;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.spaceman-tour-title {
+  margin: 0;
+  font: 400 clamp(40px, calc(28px + 3vw), 72px) / 1.04 var(--font-sans);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.spaceman-tour-art {
+  position: relative;
+  width: 100%;
+  max-height: 52dvh;
+  aspect-ratio: 4 / 3;
+  --card-radius: 20px;
+  --card-pad: 8px;
+  border-radius: var(--card-radius);
+  background: var(--card);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 12px 24px -12px hsl(0 0% 0% / 0.18);
+}
+
+.spaceman-tour-visit,
+.spaceman-tour-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  font: 500 15px / 1 var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 150ms var(--ease-sp-out);
+}
+
+.spaceman-tour-visit {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.spaceman-tour-next {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.spaceman-tour-visit:active,
+.spaceman-tour-next:active {
+  transform: scale(0.96);
+}
+
+.spaceman-tour-nav {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: calc(100% - 24px);
+  padding: 4px;
+  overflow-x: auto;
+  translate: -50% 0;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--shadow-lift);
+  scrollbar-width: none;
+  transition: opacity 320ms ease-out;
+}
+
+.spaceman-tour[data-phase='away'] .spaceman-tour-nav {
+  opacity: 0;
+  transition-duration: 440ms;
+}
+
+.spaceman-tour-seg {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 500 13.5px / 1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.spaceman-tour-seg[aria-current='page'] {
+  background: var(--foreground);
+  color: var(--background);
+}
+
 /* ---- hover, gated to devices that really hover ---- */
 
 @media (hover: hover) and (pointer: fine) {
@@ -291,6 +475,15 @@ body {
   .spaceman-footer-link:hover {
     text-decoration-color: var(--primary-ink);
   }
+
+  .spaceman-tour-seg:not([aria-current='page']):hover {
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .spaceman-tour-next:hover {
+    background: var(--muted);
+  }
 }
 
 /* ---- reduced motion: same states, no movement ---- */
@@ -307,7 +500,11 @@ body {
   }
 
   .spaceman-roll-face span,
-  .spaceman-explore {
+  .spaceman-explore,
+  .spaceman-tour-field,
+  .spaceman-tour-nav,
+  .spaceman-tour-scale,
+  .spaceman-tour-track {
     transition-duration: 0.01ms;
   }
 }

@@ -1,13 +1,15 @@
 import { BounceCards } from '@/components/bounce-cards'
-import { ExploreButton } from '@/components/explore-button'
+import { ProductTour } from '@/components/product-tour'
 import { SiteFooter } from '@/components/site-footer'
 import { SmoothScroll } from '@/components/smooth-scroll'
+import { StructuredData } from '@/components/structured-data'
 import { TextFlip } from '@/components/text-flip'
 import { githubUrl, heroProducts } from '@/lib/site'
 
 export default function Page() {
   return (
     <SmoothScroll>
+      <StructuredData />
       <nav aria-label='Site' className='absolute top-4 right-4 z-40 flex gap-1'>
         <a className='spaceman-nav-link' href={githubUrl}>
           GitHub
@@ -40,7 +42,7 @@ export default function Page() {
                 Open-source tools that help developers ship beautiful user
                 interfaces.
               </p>
-              <ExploreButton />
+              <ProductTour />
             </div>
           </section>
         </div>
