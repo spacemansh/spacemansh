@@ -7,6 +7,10 @@ import { products } from '@/lib/site'
 // by React Bits' BounceCards physics (reactbits.dev/components/bounce-cards):
 // a staggered pop-in, and the hovered card straightens, lifts and scales while
 // its neighbours slide aside. Geometry is in 288px card units.
+//
+// Where the fan no longer fits at a legible size, the same cards run as an
+// endless marquee instead: they drift left, follow a drag or flick, and a tap
+// holds a card forward and stops the drift until the next tap.
 const unit = 288
 
 const overlap = 36
@@ -72,6 +76,14 @@ const replayDelay = 0.12
 
 const stagger = 0.06
 
+// marquee: drift speed in px/s, the gap between cards as a share of their size,
+// and how fast a flick hands its speed back to the drift
+const drift = 32
+
+const gapRatio = 0.1
+
+const settle = 3
+
 type Body = {
   x: number
   y: number
@@ -105,6 +117,11 @@ function mountCards(stage: HTMLDivElement | null) {
   let raf = 0
   let last = 0
   let entrance = delay
+  let marquee = false
+  let pitch = 0
+  let offset = 0
+  let speed = drift
+  let drag: { id: number; x: number; at: number; moved: number } | null = null
 
   const layout = () => {
     width = stage.clientWidth
@@ -117,31 +134,31 @@ function mountCards(stage: HTMLDivElement | null) {
       height > 0 ? (height * unit) / fanHeight : base,
     )
 
-    let squeeze = 1
+    // too small to read as a fan: keep the cards legible and run them as a marquee
+    const wasMarquee = marquee
 
-    if (next < 150) {
-      // Phones: keep the cards legible and let them overlap more instead.
-      next = Math.max(96, Math.min(200, width * 0.44, height * 0.7))
-      squeeze = Math.min(
-        1,
-        (width / 2 - 16 - next / 2) / Math.max(1, (reach * next) / unit),
-      )
-    }
+    marquee = next < 150
+
+    if (marquee) next = Math.max(120, Math.min(200, width * 0.42, height * 0.7))
 
     size = next
+    pitch = size * (1 + gapRatio)
+
+    // start centred, in the order of the fan
+    if (marquee && !wasMarquee) offset = pitch * (slots.length / 2 - middle)
     const d = size / unit
     // Push neighbours 0.8 × card size, capped so the outer card stays 16px inside.
-    push = Math.max(
-      0,
-      Math.min(size * 0.8, width / 2 - 16 - size / 2 - reach * d * squeeze),
-    )
+    push = marquee
+      ? 0
+      : Math.max(0, Math.min(size * 0.8, width / 2 - 16 - size / 2 - reach * d))
     poses.forEach((pose, i) => {
       slots[i] = {
-        x: pose.x * d * squeeze,
-        y: (pose.y - centreY) * d,
+        x: marquee ? 0 : pose.x * d,
+        y: (pose.y - (marquee ? 0 : centreY)) * d,
         rotate: pose.rotate,
       }
     })
+    place()
     stage.style.setProperty('--card-size', `${size}px`)
     stage.style.setProperty('--card-radius', `${(size * 24) / unit}px`)
     stage.style.setProperty('--card-pad', `${(size * 10) / unit}px`)
@@ -161,6 +178,20 @@ function mountCards(stage: HTMLDivElement | null) {
 
     last = now
     time += dt
+
+    if (marquee) {
+      // a held card or a reduced-motion preference stops the drift; a flick
+      // eases back to it
+      const target = hovered >= 0 || reduce ? 0 : drift
+
+      if (!drag) {
+        speed = target + (speed - target) * Math.exp(-dt * settle)
+        offset -= speed * dt
+      }
+
+      place()
+      moving += drag || Math.abs(speed) > 0.5 ? 1 : 0
+    }
 
     const step = (
       v: number,
@@ -199,19 +230,26 @@ function mountCards(stage: HTMLDivElement | null) {
 
       if (hovered >= 0 && appeared) {
         if (i === hovered) {
-          // the hovered card takes the stage; on phones it also glides to centre
+          // the hovered card takes the stage; a narrow fan also glides it to centre
           ty = slot.y - size * 0.04
           tr = 0
           ts = narrow ? 1.12 : 1.06
 
-          if (narrow) tx = 0
-        } else {
+          if (narrow && !marquee) tx = 0
+        } else if (!marquee) {
           tx = narrow ? slot.x * 0.82 : slot.x + Math.sign(i - hovered) * push
         }
       }
 
+      // the marquee positions cards itself, so they wrap without springing back
+      if (marquee) {
+        body.x = tx
+        body.vx = 0
+      }
+
       for (let k = 0; k < substeps; k++) {
-        ;[body.x, body.vx] = step(body.x, body.vx, tx, moveK, moveD)
+        if (!marquee)
+          [body.x, body.vx] = step(body.x, body.vx, tx, moveK, moveD)
         ;[body.y, body.vy] = step(body.y, body.vy, ty, moveK, moveD)
         ;[body.r, body.vr] = step(body.r, body.vr, tr, moveK, moveD)
 
@@ -246,6 +284,16 @@ function mountCards(stage: HTMLDivElement | null) {
 
     // sleep once everything has settled; any input wakes the loop again
     if (moving > 0.02) raf = requestAnimationFrame(frame)
+  }
+
+  // marquee slots: evenly spaced on a loop longer than the stage, centred on it
+  function place() {
+    if (!marquee) return
+    const loop = pitch * slots.length
+
+    slots.forEach((slot, i) => {
+      slot.x = ((((i * pitch + offset) % loop) + loop) % loop) - loop / 2
+    })
   }
 
   function wake() {
@@ -293,6 +341,25 @@ function mountCards(stage: HTMLDivElement | null) {
   }
 
   const onMove = (event: PointerEvent) => {
+    if (drag && event.pointerId === drag.id) {
+      const dx = event.clientX - drag.x
+      const dt = Math.max(1, event.timeStamp - drag.at) / 1000
+
+      offset += dx
+      // follow the finger, and remember its speed (capped) for the release
+      speed = Math.max(-3000, Math.min(3000, -dx / dt))
+      drag = {
+        ...drag,
+        x: event.clientX,
+        at: event.timeStamp,
+        moved: drag.moved + Math.abs(dx),
+      }
+      place()
+      wake()
+
+      return
+    }
+
     if (event.pointerType === 'touch') return
     const next = pick(event)
 
@@ -312,14 +379,56 @@ function mountCards(stage: HTMLDivElement | null) {
   const onDown = (event: PointerEvent) => {
     const index = pick(event)
 
-    if (event.pointerType === 'touch') {
-      touch = true
-      hovered = index === hovered ? -1 : index
+    if (event.pointerType === 'touch') touch = true
+
+    if (marquee) {
+      // decide tap or drag on release
+      drag = {
+        id: event.pointerId,
+        x: event.clientX,
+        at: event.timeStamp,
+        moved: 0,
+      }
+      speed = 0
+      wake()
+
+      return
     }
 
-    // the click squash from BounceCards
+    if (event.pointerType === 'touch') hovered = index === hovered ? -1 : index
+    squash(index)
+    wake()
+  }
+
+  // the click squash from BounceCards
+  const squash = (index: number) => {
     if (index >= 0 && bodies[index] && !prefersReducedMotion())
       bodies[index].vs -= 2.2
+  }
+
+  const onUp = (event: PointerEvent) => {
+    if (!drag || event.pointerId !== drag.id) return
+    const tapped = drag.moved < 6
+
+    // a release long after the last move is a stop, not a flick
+    if (event.timeStamp - drag.at > 80) speed = 0
+    drag = null
+
+    if (tapped) {
+      const index = pick(event)
+
+      if (event.pointerType === 'touch')
+        hovered = index === hovered ? -1 : index
+      squash(index)
+    }
+
+    wake()
+  }
+
+  // the browser took the gesture (a vertical page scroll): neither tap nor flick
+  const onCancel = (event: PointerEvent) => {
+    if (!drag || event.pointerId !== drag.id) return
+    drag = null
     wake()
   }
 
@@ -350,6 +459,8 @@ function mountCards(stage: HTMLDivElement | null) {
   stage.addEventListener('pointermove', onMove)
   stage.addEventListener('pointerleave', onLeave)
   stage.addEventListener('pointerdown', onDown)
+  window.addEventListener('pointerup', onUp)
+  window.addEventListener('pointercancel', onCancel)
   document.addEventListener('pointerdown', onOutside)
   layout()
 
@@ -360,6 +471,8 @@ function mountCards(stage: HTMLDivElement | null) {
     stage.removeEventListener('pointermove', onMove)
     stage.removeEventListener('pointerleave', onLeave)
     stage.removeEventListener('pointerdown', onDown)
+    window.removeEventListener('pointerup', onUp)
+    window.removeEventListener('pointercancel', onCancel)
     document.removeEventListener('pointerdown', onOutside)
   }
 }
