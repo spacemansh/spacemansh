@@ -1,8 +1,9 @@
 'use client'
 
 import { onReplayCards } from '@/lib/replay-cards'
+import { products } from '@/lib/site'
 
-// Four square frames on a straight line with a zig-zag tilt and stagger, moved
+// Square frames on a straight line, one per product, with a zig-zag tilt and stagger, moved
 // by React Bits' BounceCards physics (reactbits.dev/components/bounce-cards):
 // a staggered pop-in, and the hovered card straightens, lifts and scales while
 // its neighbours slide aside. Geometry is in 288px card units.
@@ -12,12 +13,19 @@ const overlap = 36
 
 const band = 24
 
-const cards = [
+// one card per product, in order; the zig-zag tilt and stagger alternate
+const tilts = [
   { rotate: -6, lift: -0.45 },
   { rotate: 5, lift: 0.35 },
   { rotate: -3, lift: -0.2 },
   { rotate: 6, lift: 0.3 },
+  { rotate: -4, lift: -0.35 },
 ]
+
+const cards = products.map((product, i) => ({
+  ...tilts[i % tilts.length]!,
+  id: product.id,
+}))
 
 const middle = (cards.length - 1) / 2
 
@@ -59,6 +67,9 @@ const moveDamping = (ratio: number) => 2 * ratio * Math.sqrt(moveK)
 
 const delay = 0.5
 
+// a replay follows the tour off screen, so it skips most of the load delay
+const replayDelay = 0.12
+
 const stagger = 0.06
 
 type Body = {
@@ -93,6 +104,7 @@ function mountCards(stage: HTMLDivElement | null) {
   let touch = false
   let raf = 0
   let last = 0
+  let entrance = delay
 
   const layout = () => {
     width = stage.clientWidth
@@ -179,7 +191,7 @@ function mountCards(stage: HTMLDivElement | null) {
         born: time,
       })
 
-      const appeared = reduce || time - body.born >= delay + i * stagger
+      const appeared = reduce || time - body.born >= entrance + i * stagger
       let tx = slot.x
       let ty = slot.y
       let tr = slot.rotate
@@ -325,6 +337,7 @@ function mountCards(stage: HTMLDivElement | null) {
   }
 
   const replay = () => {
+    entrance = replayDelay
     bodies = []
     hovered = -1
     wake()
@@ -358,8 +371,8 @@ export function BounceCards() {
       className='spaceman-cards relative mt-18 min-h-0 flex-1 touch-pan-y select-none'
       ref={mountCards}
     >
-      {cards.map((_, i) => (
-        <div className='spaceman-card' data-card key={`card-${i}`}>
+      {cards.map((card) => (
+        <div className='spaceman-card' data-card key={card.id}>
           <div className='spaceman-card-well' />
         </div>
       ))}
