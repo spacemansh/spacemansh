@@ -1,0 +1,5 @@
+/* the name's box is trimmed to its capitals, so the logo and the name share
+   one box from the cap line to the baseline and the padding balances round it */
+[data-chip-label] {
+  text-box: trim-both cap alphabetic;
+}
