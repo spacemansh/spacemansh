@@ -1,0 +1,21 @@
+/* the circle slides across the pill while the padding swaps sides */
+[data-visit] {
+  transition:
+    padding 500ms var(--ease-sp-in-out),
+    scale 150ms var(--ease-sp-out);
+}
+
+[data-visit-icon] {
+  transition:
+    left 500ms var(--ease-sp-in-out),
+    margin 500ms var(--ease-sp-in-out),
+    translate 500ms var(--ease-sp-in-out),
+    rotate 500ms var(--ease-sp-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-visit],
+  [data-visit-icon] {
+    transition-duration: 0.01ms;
+  }
+}
