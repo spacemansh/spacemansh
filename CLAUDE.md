@@ -156,6 +156,15 @@ is on the page as provisional.
 - Never commit secrets. Anything the Worker needs at runtime belongs in Wrangler
   secrets, not in the repository or a `NEXT_PUBLIC_` variable.
 
+Cloudflare Workers Builds already watches `spacemansh/spacemansh` on `main`.
+Its production root is `/`, build command is `pnpm run build`, deploy command
+is `pnpm run deploy`. Non-production branch builds run
+`pnpm run build:worker && pnpm --filter web exec wrangler versions upload`
+after the build command. Preview URLs are enabled. Watch paths include
+`apps/web/*`, `packages/*`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`,
+`package.json` and `turbo.json`. The root scripts select the web workspace;
+keep the install at the monorepo root.
+
 ## Verification
 
 There is no test suite. `pnpm quality`, `pnpm typecheck` and `pnpm build` are all

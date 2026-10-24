@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "spacemansh",
+  "preview_urls": true,
   "compatibility_date": "2026-06-17",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -10,15 +11,11 @@
   },
   "services": [
     {
-      // Self-reference service binding, the service name must match the worker name
-      // see https://opennext.js.org/cloudflare/caching
       "binding": "WORKER_SELF_REFERENCE",
       "service": "spacemansh",
     },
   ],
   "images": {
-    // Enable image optimization
-    // see https://opennext.js.org/cloudflare/howtos/image
     "binding": "IMAGES",
   },
   "routes": [{ "pattern": "spaceman.sh", "custom_domain": true }],

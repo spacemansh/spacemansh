@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
+    "build:worker": "pnpm --filter web build:worker",
     "deploy": "pnpm --filter web deploy",
     "dev": "turbo dev",
     "format": "oxfmt --check .",
