@@ -9,8 +9,10 @@ import { products } from '@/lib/site'
 // its neighbours slide aside. Geometry is in 288px card units.
 //
 // Where the fan no longer fits at a legible size, the same cards run as an
-// endless marquee instead: they drift left, follow a drag or flick, and a tap
-// holds a card forward and stops the drift until the next tap.
+// endless marquee instead: they drift left and follow a drag or flick.
+//
+// Clicking a card opens the carousel: the cards straighten and grow into a
+// looping row centred on that card, with its caption underneath.
 const unit = 288
 
 const overlap = 36
@@ -84,6 +86,13 @@ const gapRatio = 0.1
 
 const settle = 3
 
+// carousel: a stiffer, nearly critical spring so the row lands without wobble
+const carouselK = 300
+
+const carouselD = 2 * 0.8 * Math.sqrt(carouselK)
+
+const swipe = 48
+
 type Body = {
   x: number
   y: number
@@ -104,6 +113,9 @@ function mountCards(stage: HTMLDivElement | null) {
   if (!stage) return
 
   const elements = [...stage.querySelectorAll<HTMLElement>('[data-card]')]
+  const carousel = stage.querySelector<HTMLElement>('[data-carousel]')
+  const captions = [...stage.querySelectorAll<HTMLElement>('[data-caption]')]
+  const root = document.documentElement
   const slots = poses.map(() => ({ x: 0, y: 0, rotate: 0 }))
   let bodies: Body[] = []
   let size = 248
@@ -113,7 +125,6 @@ function mountCards(stage: HTMLDivElement | null) {
   let time = 0
   let hovered = -1
   let layer = -2
-  let touch = false
   let raf = 0
   let last = 0
   let entrance = delay
@@ -122,6 +133,40 @@ function mountCards(stage: HTMLDivElement | null) {
   let offset = 0
   let speed = drift
   let drag: { id: number; x: number; at: number; moved: number } | null = null
+  // the centred card while the carousel is open, else -1
+  let open = -1
+  let returning = false
+  let suppress = false
+  let swipeFrom: { id: number; x: number } | null = null
+  let lastWheel = 0
+  const geo = { x: 0, y: 0, scale: 1, pitch: 0 }
+
+  const n = slots.length
+
+  // a card's place in the row relative to the centred one, in -n/2..n/2
+  const rel = (i: number, centre: number) => {
+    const d = (((i - centre) % n) + n) % n
+
+    return d > n / 2 ? d - n : d
+  }
+
+  // the row sits in viewport space; the caption takes the space under it
+  const measure = () => {
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const phone = vw < 640
+    const caption = phone ? 220 : 176
+    const big = Math.min(phone ? vw * 0.74 : vw * 0.36, vh - caption - 72, 520)
+    const top = Math.max(16, (vh - big - 24 - caption) / 2)
+    const rect = stage.getBoundingClientRect()
+
+    geo.x = vw / 2 - rect.left - width / 2
+    geo.y = top + big / 2 - rect.top - height / 2
+    geo.scale = big / size
+    geo.pitch = big * (phone ? 1.1 : 1.22)
+    carousel?.style.setProperty('--cc-y', `${top + big / 2}px`)
+    carousel?.style.setProperty('--cc-top', `${top + big + 24}px`)
+  }
 
   const layout = () => {
     width = stage.clientWidth
@@ -159,6 +204,8 @@ function mountCards(stage: HTMLDivElement | null) {
       }
     })
     place()
+
+    if (open >= 0) measure()
     stage.style.setProperty('--card-size', `${size}px`)
     stage.style.setProperty('--card-radius', `${(size * 24) / unit}px`)
     stage.style.setProperty('--card-pad', `${(size * 10) / unit}px`)
@@ -174,7 +221,12 @@ function mountCards(stage: HTMLDivElement | null) {
     const h = dt / substeps
     const moveD = moveDamping(reduce ? 1 : 0.72)
     const narrow = push < size * 0.3
+    const showing = open >= 0
+    const row = showing || returning
+    const k = row ? carouselK : moveK
+    const damping = row ? carouselD : moveD
     let moving = 0
+    let settled = true
 
     last = now
     time += dt
@@ -182,7 +234,7 @@ function mountCards(stage: HTMLDivElement | null) {
     if (marquee) {
       // a held card or a reduced-motion preference stops the drift; a flick
       // eases back to it
-      const target = hovered >= 0 || reduce ? 0 : drift
+      const target = hovered >= 0 || reduce || row ? 0 : drift
 
       if (!drag) {
         speed = target + (speed - target) * Math.exp(-dt * settle)
@@ -228,7 +280,12 @@ function mountCards(stage: HTMLDivElement | null) {
       let tr = slot.rotate
       let ts = appeared ? 1 : 0
 
-      if (hovered >= 0 && appeared) {
+      if (showing) {
+        tx = geo.x + rel(i, open) * geo.pitch
+        ty = geo.y
+        tr = 0
+        ts = appeared ? geo.scale : 0
+      } else if (hovered >= 0 && appeared) {
         if (i === hovered) {
           // the hovered card takes the stage; a narrow fan also glides it to centre
           ty = slot.y - size * 0.04
@@ -242,24 +299,56 @@ function mountCards(stage: HTMLDivElement | null) {
       }
 
       // the marquee positions cards itself, so they wrap without springing back
-      if (marquee) {
+      if (marquee && !row) {
         body.x = tx
         body.vx = 0
       }
 
-      for (let k = 0; k < substeps; k++) {
-        if (!marquee)
-          [body.x, body.vx] = step(body.x, body.vx, tx, moveK, moveD)
-        ;[body.y, body.vy] = step(body.y, body.vy, ty, moveK, moveD)
-        ;[body.r, body.vr] = step(body.r, body.vr, tr, moveK, moveD)
+      if (reduce && row) {
+        // the reduced twin: the row appears in place
+        Object.assign(body, {
+          x: tx,
+          y: ty,
+          r: tr,
+          s: ts,
+          vx: 0,
+          vy: 0,
+          vr: 0,
+          vs: 0,
+        })
+      } else {
+        for (let sub = 0; sub < substeps; sub++) {
+          if (!marquee || row)
+            [body.x, body.vx] = step(body.x, body.vx, tx, k, damping)
+          ;[body.y, body.vy] = step(body.y, body.vy, ty, k, damping)
+          ;[body.r, body.vr] = step(body.r, body.vr, tr, k, damping)
 
-        if (reduce) {
-          body.s = ts
-          body.vs = 0
-        } else {
-          ;[body.s, body.vs] = step(body.s, body.vs, ts, popK, popD)
+          if (reduce) {
+            body.s = ts
+            body.vs = 0
+          } else if (row) {
+            ;[body.s, body.vs] = step(body.s, body.vs, ts, k, damping)
+          } else {
+            ;[body.s, body.vs] = step(body.s, body.vs, ts, popK, popD)
+          }
         }
       }
+
+      if (
+        Math.abs(tx - body.x) + Math.abs(ty - body.y) > 0.5 ||
+        Math.abs(ts - body.s) > 0.002
+      ) {
+        settled = false
+      }
+
+      // speed blur stands in for motion blur while the row travels
+      const blur = row
+        ? Math.min(6, Math.max(0, (Math.hypot(body.vx, body.vy) - 600) / 500))
+        : 0
+
+      const filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : ''
+
+      if (el.style.filter !== filter) el.style.filter = filter
 
       moving +=
         Math.abs(body.vx) +
@@ -274,13 +363,24 @@ function mountCards(stage: HTMLDivElement | null) {
       el.style.transform = `translate3d(${(width / 2 + body.x).toFixed(2)}px, ${(height / 2 + body.y).toFixed(2)}px, 0) translate(-50%, -50%) rotate(${body.r.toFixed(3)}deg) scale(${Math.max(0, body.s).toFixed(4)})`
     })
 
-    if (layer !== hovered) {
-      layer = hovered
+    if (returning && settled) returning = false
+
+    // the row stacks from the centre out; the fan from the middle cards up
+    const focus = showing ? 100 + open : hovered
+
+    if (layer !== focus) {
+      layer = focus
       elements.forEach((el, i) => {
-        el.style.zIndex = i === hovered ? '99' : String(poses[i]!.layer)
-        el.toggleAttribute('data-active', i === hovered)
+        el.style.zIndex = showing
+          ? String(70 - Math.abs(rel(i, open)))
+          : i === hovered
+            ? '99'
+            : String(poses[i]!.layer)
+        el.toggleAttribute('data-active', showing ? i === open : i === hovered)
       })
     }
+
+    if (returning) moving += 1
 
     // sleep once everything has settled; any input wakes the loop again
     if (moving > 0.02) raf = requestAnimationFrame(frame)
@@ -300,6 +400,72 @@ function mountCards(stage: HTMLDivElement | null) {
     if (raf) return
     last = performance.now()
     raf = requestAnimationFrame(frame)
+  }
+
+  const caption = () => {
+    captions.forEach((el, i) => {
+      el.toggleAttribute('data-active', i === open)
+      el.inert = i !== open
+    })
+  }
+
+  const openAt = (index: number) => {
+    if (open >= 0 || index < 0) return
+    hovered = -1
+    drag = null
+    open = index
+    returning = false
+    measure()
+    root.toggleAttribute('data-cards-open', true)
+    carousel?.toggleAttribute('data-open', true)
+    caption()
+    // focus moves to the caption, but the page must not jump to it
+    requestAnimationFrame(() =>
+      captions[open]?.querySelector('a')?.focus({ preventScroll: true }),
+    )
+    wake()
+  }
+
+  const goTo = (next: number) => {
+    if (open < 0) return
+    const target = ((next % n) + n) % n
+    const shift = rel(target, open)
+
+    if (!shift) return
+
+    // a card that wraps round is moved a loop's length first, so it slides in
+    // from the far side instead of crossing the row
+    bodies.forEach((body, i) => {
+      const jump = rel(i, target) - rel(i, open) + shift
+
+      if (jump) body.x += jump * geo.pitch
+    })
+
+    // focus inside the old caption would fall to the page once it turns inert
+    const followFocus = captions.some((el) =>
+      el.contains(document.activeElement),
+    )
+
+    open = target
+    caption()
+
+    if (followFocus)
+      captions[open]?.querySelector('a')?.focus({ preventScroll: true })
+    layer = -2
+    wake()
+  }
+
+  const close = () => {
+    if (open < 0) return
+    const from = elements[open]
+
+    open = -1
+    returning = true
+    root.toggleAttribute('data-cards-open', false)
+    carousel?.toggleAttribute('data-open', false)
+    caption()
+    from?.focus({ preventScroll: true })
+    wake()
   }
 
   const pick = (event: PointerEvent) => {
@@ -341,6 +507,8 @@ function mountCards(stage: HTMLDivElement | null) {
   }
 
   const onMove = (event: PointerEvent) => {
+    if (open >= 0 || returning) return
+
     if (drag && event.pointerId === drag.id) {
       const dx = event.clientX - drag.x
       const dt = Math.max(1, event.timeStamp - drag.at) / 1000
@@ -375,11 +543,16 @@ function mountCards(stage: HTMLDivElement | null) {
     wake()
   }
 
-  // Touch has no hover: a tap brings a card forward until the next tap.
   const onDown = (event: PointerEvent) => {
-    const index = pick(event)
+    suppress = false
 
-    if (event.pointerType === 'touch') touch = true
+    if (open >= 0) {
+      swipeFrom = { id: event.pointerId, x: event.clientX }
+
+      return
+    }
+
+    const index = pick(event)
 
     if (marquee) {
       // decide tap or drag on release
@@ -395,7 +568,6 @@ function mountCards(stage: HTMLDivElement | null) {
       return
     }
 
-    if (event.pointerType === 'touch') hovered = index === hovered ? -1 : index
     squash(index)
     wake()
   }
@@ -407,6 +579,20 @@ function mountCards(stage: HTMLDivElement | null) {
   }
 
   const onUp = (event: PointerEvent) => {
+    if (swipeFrom && event.pointerId === swipeFrom.id) {
+      const dx = event.clientX - swipeFrom.x
+
+      swipeFrom = null
+
+      // a swipe moves the row; the click that follows it must not
+      if (Math.abs(dx) > swipe) {
+        suppress = true
+        goTo(open + (dx < 0 ? 1 : -1))
+      }
+
+      return
+    }
+
     if (!drag || event.pointerId !== drag.id) return
     const tapped = drag.moved < 6
 
@@ -414,38 +600,88 @@ function mountCards(stage: HTMLDivElement | null) {
     if (event.timeStamp - drag.at > 80) speed = 0
     drag = null
 
-    if (tapped) {
-      const index = pick(event)
-
-      if (event.pointerType === 'touch')
-        hovered = index === hovered ? -1 : index
-      squash(index)
-    }
+    if (tapped) squash(pick(event))
+    else suppress = true
 
     wake()
   }
 
   // the browser took the gesture (a vertical page scroll): neither tap nor flick
   const onCancel = (event: PointerEvent) => {
+    swipeFrom = null
+
     if (!drag || event.pointerId !== drag.id) return
     drag = null
     wake()
   }
 
-  const onOutside = (event: PointerEvent) => {
-    if (
-      !touch ||
-      hovered === -1 ||
-      (event.target instanceof Node && stage.contains(event.target))
-    ) {
+  const onClick = (event: MouseEvent) => {
+    if (!(event.target instanceof Element)) return
+
+    const target = event.target
+
+    if (suppress) {
+      suppress = false
+
       return
     }
 
+    const card = target.closest<HTMLElement>('[data-card]')
+
+    if (card) {
+      const index = elements.indexOf(card)
+
+      if (open < 0) openAt(index)
+      else if (index === open) close()
+      else goTo(index)
+
+      return
+    }
+
+    const step = target.closest<HTMLElement>('[data-step]')
+
+    if (step) goTo(open + Number(step.dataset.step))
+    else if (target.closest('[data-close], [data-backdrop]')) close()
+  }
+
+  const onKey = (event: KeyboardEvent) => {
+    if (open < 0 || event.defaultPrevented) return
+
+    if (event.key === 'Escape') close()
+    else if (event.key === 'ArrowRight') goTo(open + 1)
+    else if (event.key === 'ArrowLeft') goTo(open - 1)
+    else return
+    event.preventDefault()
+  }
+
+  // a horizontal trackpad swipe moves one card per gesture
+  const onWheel = (event: WheelEvent) => {
+    if (open < 0 || Math.abs(event.deltaX) < 24) return
+
+    if (Math.abs(event.deltaX) < Math.abs(event.deltaY)) return
+
+    if (event.timeStamp - lastWheel < 500) return
+    lastWheel = event.timeStamp
+    goTo(open + (event.deltaX > 0 ? 1 : -1))
+  }
+
+  // keyboard focus lifts a card the way hover does
+  const onFocus = (event: FocusEvent) => {
+    if (open >= 0 || !(event.target instanceof HTMLElement)) return
+
+    if (!event.target.matches(':focus-visible')) return
+    hovered = elements.indexOf(event.target)
+    wake()
+  }
+
+  const onBlur = () => {
+    if (open >= 0 || hovered < 0) return
     hovered = -1
     wake()
   }
 
   const replay = () => {
+    if (open >= 0) return
     entrance = replayDelay
     bodies = []
     hovered = -1
@@ -459,10 +695,15 @@ function mountCards(stage: HTMLDivElement | null) {
   stage.addEventListener('pointermove', onMove)
   stage.addEventListener('pointerleave', onLeave)
   stage.addEventListener('pointerdown', onDown)
+  stage.addEventListener('click', onClick)
+  stage.addEventListener('focusin', onFocus)
+  stage.addEventListener('focusout', onBlur)
   window.addEventListener('pointerup', onUp)
   window.addEventListener('pointercancel', onCancel)
-  document.addEventListener('pointerdown', onOutside)
+  window.addEventListener('wheel', onWheel, { passive: true })
+  document.addEventListener('keydown', onKey)
   layout()
+  caption()
 
   return () => {
     cancelAnimationFrame(raf)
@@ -471,24 +712,118 @@ function mountCards(stage: HTMLDivElement | null) {
     stage.removeEventListener('pointermove', onMove)
     stage.removeEventListener('pointerleave', onLeave)
     stage.removeEventListener('pointerdown', onDown)
+    stage.removeEventListener('click', onClick)
+    stage.removeEventListener('focusin', onFocus)
+    stage.removeEventListener('focusout', onBlur)
     window.removeEventListener('pointerup', onUp)
     window.removeEventListener('pointercancel', onCancel)
-    document.removeEventListener('pointerdown', onOutside)
+    window.removeEventListener('wheel', onWheel)
+    document.removeEventListener('keydown', onKey)
+    root.toggleAttribute('data-cards-open', false)
   }
 }
+
+const chevron = (d: string) => (
+  <svg
+    aria-hidden='true'
+    fill='none'
+    height='18'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='18'
+  >
+    <path d={d} />
+  </svg>
+)
 
 export function BounceCards() {
   return (
     <div
-      aria-hidden='true'
       className='spaceman-cards relative mt-18 min-h-0 flex-1 touch-pan-y select-none'
       ref={mountCards}
     >
-      {cards.map((card) => (
-        <div className='spaceman-card' data-card key={card.id}>
-          <div className='spaceman-card-well' />
-        </div>
+      {products.map((product) => (
+        <button
+          aria-label={`Open ${product.name}`}
+          className='spaceman-card'
+          data-card
+          key={product.id}
+          type='button'
+        >
+          <span aria-hidden='true' className='spaceman-card-well' />
+        </button>
       ))}
+
+      <div className='spaceman-carousel' data-carousel>
+        <div
+          aria-hidden='true'
+          className='spaceman-carousel-backdrop'
+          data-backdrop
+        />
+        <button
+          aria-label='Previous product'
+          className='spaceman-carousel-arrow'
+          data-step='-1'
+          type='button'
+        >
+          {chevron('m15 18-6-6 6-6')}
+        </button>
+        <button
+          aria-label='Next product'
+          className='spaceman-carousel-arrow'
+          data-step='1'
+          type='button'
+        >
+          {chevron('m9 18 6-6-6-6')}
+        </button>
+        <section
+          aria-label='Spaceman products'
+          className='spaceman-carousel-captions'
+        >
+          {products.map((product, i) => (
+            <div
+              className='spaceman-carousel-caption'
+              data-caption
+              inert
+              key={product.id}
+            >
+              <p className='text-muted-foreground font-mono text-sm'>
+                {String(i + 1).padStart(2, '0')} /{' '}
+                {String(products.length).padStart(2, '0')} · {product.domain}
+              </p>
+              <h2 className='spaceman-carousel-name'>{product.name}</h2>
+              <p className='spaceman-tour-lead'>{product.description}</p>
+              <div className='spaceman-tour-actions justify-center'>
+                <a className='spaceman-tour-visit' href={product.href}>
+                  <span>
+                    Visit
+                    <span className='max-sm:sr-only'> {product.name}</span>
+                  </span>
+                  <svg
+                    aria-hidden='true'
+                    fill='none'
+                    height='14'
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    viewBox='0 0 24 24'
+                    width='14'
+                  >
+                    <path d='M7 17 17 7M8 7h9v9' />
+                  </svg>
+                </a>
+                <button className='spaceman-tour-next' data-close type='button'>
+                  <span>Back to all</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </section>
+      </div>
     </div>
   )
 }
