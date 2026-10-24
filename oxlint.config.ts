@@ -23,9 +23,20 @@ export default defineConfig({
     'nextjs',
     'jsx-a11y',
   ],
-  jsPlugins: antiSlopConfig.jsPlugins,
+  jsPlugins: [...antiSlopConfig.jsPlugins, '@shadcn/lint'],
+  settings: {
+    shadcn: {
+      ui: '@workspace/ui/components',
+      note: 'Use a theme value from the spaceman:tokens region of packages/ui/src/styles/globals.css; a missing value is a token decision (DESIGN.md §2).',
+    },
+  },
   rules: {
     ...antiSlopConfig.rules,
+
+    // tailwind classes: @shadcn/lint owns these checks
+    'shadcn/no-arbitrary-values': 'error',
+    'shadcn/no-raw-colors': 'error',
+    'shadcn/no-unknown-classes': 'error',
 
     'nextjs/no-html-link-for-pages': 'error',
     'nextjs/no-sync-scripts': 'error',
@@ -44,4 +55,14 @@ export default defineConfig({
     'typescript/no-unnecessary-type-constraint': 'error',
     'typescript/no-unsafe-function-type': 'error',
   },
+  overrides: [
+    {
+      // shadcn primitives own their styling; the rules check their callers
+      files: ['packages/ui/src/components/**'],
+      rules: {
+        'shadcn/no-arbitrary-values': 'off',
+        'shadcn/no-raw-colors': 'off',
+      },
+    },
+  ],
 })
