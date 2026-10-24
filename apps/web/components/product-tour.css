@@ -1,0 +1,73 @@
+/* framed page transition: frame 420ms, slide 560ms, expand 420ms; away is the
+   closed state, framed and parked one page and a gap below the screen */
+html[data-tour-open] {
+  overflow: hidden;
+}
+
+[data-tour] {
+  position: fixed;
+  inset: 0;
+}
+
+[data-tour-field] {
+  transition: opacity 320ms ease-out;
+}
+
+[data-tour][data-phase='away'] [data-tour-field] {
+  opacity: 0;
+  transition-duration: 440ms;
+}
+
+[data-tour-scale] {
+  transition:
+    scale 420ms var(--ease-sp-out),
+    translate 560ms var(--ease-sp-in-out);
+}
+
+[data-tour]:not([data-phase='full']) [data-tour-scale] {
+  scale: 0.9;
+}
+
+[data-tour][data-phase='away'] [data-tour-scale] {
+  translate: 0 calc(100% + 24px);
+  transition-duration: 420ms, 440ms;
+}
+
+/* the wrapper carries every page, so only the current one may drop into view */
+[data-tour][data-phase='away'] [data-tour-page][inert] {
+  visibility: hidden;
+}
+
+[data-tour-track] {
+  transition: transform 560ms var(--ease-sp-in-out);
+}
+
+/* concentric frame: inner radius = outer radius - padding - 1px hairline */
+[data-tour-art] {
+  max-height: 52dvh;
+  border-radius: 20px;
+}
+
+[data-tour-well] {
+  inset: 8px;
+  border-radius: 11px;
+}
+
+[data-tour-nav] {
+  scrollbar-width: none;
+  transition: opacity 320ms ease-out;
+}
+
+[data-tour][data-phase='away'] [data-tour-nav] {
+  opacity: 0;
+  transition-duration: 440ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tour-field],
+  [data-tour-nav],
+  [data-tour-scale],
+  [data-tour-track] {
+    transition-duration: 0.01ms;
+  }
+}

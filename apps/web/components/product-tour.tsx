@@ -2,9 +2,12 @@
 
 import { useCallback, useRef, useState } from 'react'
 
-import { ExploreButtonFace } from '@/components/explore-button'
+import { LiquidMetalButton } from '@/components/liquid-metal-button'
+import { ActionRow, StepButton, VisitLink } from '@/components/tour-actions'
 import { replayCards } from '@/lib/replay-cards'
 import { products } from '@/lib/site'
+
+import './product-tour.css'
 
 // The Explore tour: one full-screen page per product, moved like a framed page
 // transition. Every change of page runs three phases, timed from the reference:
@@ -21,6 +24,9 @@ const slideMs = 560
 const awayMs = 440
 
 type Phase = 'away' | 'frame' | 'slide' | 'full'
+
+const segmentClasses =
+  'text-control text-muted-foreground not-data-active:hover:bg-muted not-data-active:hover:text-foreground data-active:bg-foreground data-active:text-background inline-flex h-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent px-3 font-medium whitespace-nowrap transition-colors duration-200'
 
 const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -83,7 +89,7 @@ export function ProductTour() {
 
     if (!dialog || dialog.open) return
     clearTimers()
-    document.documentElement.classList.add('spaceman-tour-open')
+    document.documentElement.toggleAttribute('data-tour-open', true)
     // the dialog is already away, so it appears parked and framed
     dialog.showModal()
     focusCurrent()
@@ -136,7 +142,7 @@ export function ProductTour() {
     busy.current = false
     setPosition(0)
     setPhase('away')
-    document.documentElement.classList.remove('spaceman-tour-open')
+    document.documentElement.toggleAttribute('data-tour-open', false)
 
     if (prefersReducedMotion()) replayCards()
   }
@@ -195,19 +201,19 @@ export function ProductTour() {
 
   return (
     <>
-      <button
+      <LiquidMetalButton
         aria-haspopup='dialog'
-        className='spaceman-explore'
+        className='self-start'
         onClick={show}
-        type='button'
       >
-        <ExploreButtonFace />
-      </button>
+        Explore
+      </LiquidMetalButton>
 
       <dialog
         aria-label='Spaceman products'
-        className='spaceman-tour'
+        className='text-foreground m-0 size-full max-h-none max-w-none overflow-clip overscroll-contain border-0 bg-transparent p-0 backdrop:bg-transparent'
         data-phase={phase}
+        data-tour
         onCancel={(event) => {
           event.preventDefault()
           hide()
@@ -219,10 +225,15 @@ export function ProductTour() {
         onWheel={onWheel}
         ref={dialogRef}
       >
-        <div aria-hidden='true' className='spaceman-tour-field' />
-        <div className='spaceman-tour-scale'>
+        <div
+          aria-hidden='true'
+          className='bg-muted-strong absolute inset-0'
+          data-tour-field
+        />
+        <div className='absolute inset-0' data-tour-scale>
           <div
-            className='spaceman-tour-track'
+            className='absolute inset-0 flex flex-col gap-6'
+            data-tour-track
             style={{
               transform: `translate3d(0, calc(${-position * 100}% - ${position * 24}px), 0)`,
             }}
@@ -231,11 +242,12 @@ export function ProductTour() {
               <section
                 aria-hidden={i !== position}
                 aria-labelledby={`tour-${product.id}`}
-                className='spaceman-tour-page'
+                className='bg-background relative flex-none basis-full overflow-hidden'
+                data-tour-page
                 inert={i !== position}
                 key={product.id}
               >
-                <div className='mx-auto grid h-full w-full max-w-[1120px] content-center items-center gap-10 px-5 pt-24 pb-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16'>
+                <div className='mx-auto grid h-full w-full max-w-280 content-center items-center gap-10 px-5 pt-24 pb-12 sm:px-8 lg:grid-cols-2 lg:gap-16'>
                   <div className='flex flex-col gap-5'>
                     <p className='text-muted-foreground font-mono text-sm'>
                       {String(i + 1).padStart(2, '0')} /{' '}
@@ -243,62 +255,38 @@ export function ProductTour() {
                       {product.domain}
                     </p>
                     <h2
-                      className='spaceman-tour-title'
+                      className='text-page font-normal text-balance'
                       id={`tour-${product.id}`}
                     >
                       {product.name}
                     </h2>
-                    <p className='spaceman-tour-lead'>{product.description}</p>
-                    <div className='spaceman-tour-actions'>
-                      <a className='spaceman-tour-visit' href={product.href}>
-                        {/* phones keep the row short; the name stays in the link's name */}
-                        <span>
-                          Visit
-                          <span className='max-sm:sr-only'>
-                            {' '}
-                            {product.name}
-                          </span>
-                        </span>
-                        <svg
-                          aria-hidden='true'
-                          fill='none'
-                          height='14'
-                          stroke='currentColor'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth='2'
-                          viewBox='0 0 24 24'
-                          width='14'
-                        >
-                          <path d='M7 17 17 7M8 7h9v9' />
-                        </svg>
-                      </a>
+                    <p className='text-copy md:text-copy-lg text-muted-foreground max-w-130 text-pretty'>
+                      {product.description}
+                    </p>
+                    <ActionRow>
+                      <VisitLink href={product.href} name={product.name} />
                       {i < products.length - 1 ? (
-                        <button
-                          className='spaceman-tour-next'
-                          onClick={() => goTo(i + 1)}
-                          type='button'
-                        >
-                          <span>Next: {products[i + 1]!.name}</span>
-                        </button>
+                        <StepButton onClick={() => goTo(i + 1)}>
+                          Next: {products[i + 1]!.name}
+                        </StepButton>
                       ) : (
-                        <button
-                          className='spaceman-tour-next'
-                          onClick={hide}
-                          type='button'
-                        >
-                          <span>Back to spaceman.sh</span>
-                        </button>
+                        <StepButton onClick={hide}>
+                          Back to spaceman.sh
+                        </StepButton>
                       )}
-                    </div>
+                    </ActionRow>
                   </div>
                   {/* image slot: the product's artwork goes here */}
                   <div
                     aria-hidden='true'
-                    className='spaceman-tour-art'
+                    className='bg-card shadow-card relative aspect-4/3 w-full'
                     data-product={product.id}
+                    data-tour-art
                   >
-                    <div className='spaceman-card-well' />
+                    <div
+                      className='bg-inset inset-ring-border absolute inset-ring'
+                      data-tour-well
+                    />
                   </div>
                 </div>
               </section>
@@ -306,10 +294,14 @@ export function ProductTour() {
           </div>
         </div>
 
-        <nav aria-label='Products' className='spaceman-tour-nav'>
+        <nav
+          aria-label='Products'
+          className='bg-card shadow-float absolute inset-x-3 top-4 z-2 mx-auto flex w-fit max-w-full items-center gap-0.5 overflow-x-auto rounded-xl p-1'
+          data-tour-nav
+        >
           <button
             aria-label='Close'
-            className='spaceman-tour-seg'
+            className={segmentClasses}
             onClick={hide}
             type='button'
           >
@@ -330,7 +322,8 @@ export function ProductTour() {
           {products.map((product, i) => (
             <button
               aria-current={i === position ? 'page' : undefined}
-              className='spaceman-tour-seg'
+              className={segmentClasses}
+              data-active={i === position || undefined}
               key={product.id}
               onClick={() => goTo(i)}
               type='button'

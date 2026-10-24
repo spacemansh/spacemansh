@@ -1,0 +1,53 @@
+[data-flip-word][data-state='on'] {
+  opacity: 1;
+}
+
+[data-flip-word][data-state='in'] {
+  animation: spaceman-flip-in 300ms ease-out 300ms both;
+}
+
+[data-flip-word][data-state='out'] {
+  animation: spaceman-flip-out 300ms ease-out both;
+}
+
+/* both ends are explicit: the resting state is opacity 0, so an implicit `to`
+   would fade the entering word straight back out */
+@keyframes spaceman-flip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20%);
+    filter: blur(1px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes spaceman-flip-out {
+  from {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(40%);
+    filter: blur(1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-flip-word][data-state='in'] {
+    animation: none;
+    opacity: 1;
+  }
+
+  [data-flip-word][data-state='out'] {
+    animation: none;
+    opacity: 0;
+  }
+}

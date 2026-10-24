@@ -1,7 +1,10 @@
 'use client'
 
+import { ActionRow, StepButton, VisitLink } from '@/components/tour-actions'
 import { onReplayCards } from '@/lib/replay-cards'
 import { products } from '@/lib/site'
+
+import './bounce-cards.css'
 
 // Square frames on a straight line, one per product, with a zig-zag tilt and stagger, moved
 // by React Bits' BounceCards physics (reactbits.dev/components/bounce-cards):
@@ -723,6 +726,9 @@ function mountCards(stage: HTMLDivElement | null) {
   }
 }
 
+const arrowClasses =
+  'bg-card text-foreground shadow-float hover:bg-muted fixed z-80 inline-flex size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 p-0 active:scale-94 lg:size-14'
+
 const chevron = (d: string) => (
   <svg
     aria-hidden='true'
@@ -742,30 +748,31 @@ const chevron = (d: string) => (
 export function BounceCards() {
   return (
     <div
-      className='spaceman-cards relative mt-18 min-h-0 flex-1 touch-pan-y select-none'
+      className='relative mt-18 min-h-0 flex-1 touch-pan-y select-none'
+      data-cards
       ref={mountCards}
     >
       {products.map((product) => (
         <button
           aria-label={`Open ${product.name}`}
-          className='spaceman-card'
+          className='bg-card shadow-card data-active:shadow-card-raised focus-visible:outline-ring absolute top-0 left-0 cursor-pointer border-0 p-0 transition-shadow duration-300 focus-visible:outline-2 focus-visible:outline-offset-4'
           data-card
           key={product.id}
           type='button'
         >
-          <span aria-hidden='true' className='spaceman-card-well' />
+          <span
+            aria-hidden='true'
+            className='bg-inset inset-ring-border absolute inset-ring'
+            data-card-well
+          />
         </button>
       ))}
 
-      <div className='spaceman-carousel' data-carousel>
-        <div
-          aria-hidden='true'
-          className='spaceman-carousel-backdrop'
-          data-backdrop
-        />
+      <div data-carousel>
+        <div aria-hidden='true' className='fixed inset-0 z-40' data-backdrop />
         <button
           aria-label='Previous product'
-          className='spaceman-carousel-arrow'
+          className={arrowClasses + ' left-4 lg:left-8'}
           data-step='-1'
           type='button'
         >
@@ -773,7 +780,7 @@ export function BounceCards() {
         </button>
         <button
           aria-label='Next product'
-          className='spaceman-carousel-arrow'
+          className={arrowClasses + ' right-4 lg:right-8'}
           data-step='1'
           type='button'
         >
@@ -781,11 +788,12 @@ export function BounceCards() {
         </button>
         <section
           aria-label='Spaceman products'
-          className='spaceman-carousel-captions'
+          className='fixed inset-x-5 z-80 mx-auto grid max-w-140'
+          data-captions
         >
           {products.map((product, i) => (
             <div
-              className='spaceman-carousel-caption'
+              className='col-start-1 row-start-1 flex flex-col items-center gap-2.5 text-center'
               data-caption
               inert
               key={product.id}
@@ -794,32 +802,14 @@ export function BounceCards() {
                 {String(i + 1).padStart(2, '0')} /{' '}
                 {String(products.length).padStart(2, '0')} · {product.domain}
               </p>
-              <h2 className='spaceman-carousel-name'>{product.name}</h2>
-              <p className='spaceman-tour-lead'>{product.description}</p>
-              <div className='spaceman-tour-actions justify-center'>
-                <a className='spaceman-tour-visit' href={product.href}>
-                  <span>
-                    Visit
-                    <span className='max-sm:sr-only'> {product.name}</span>
-                  </span>
-                  <svg
-                    aria-hidden='true'
-                    fill='none'
-                    height='14'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    viewBox='0 0 24 24'
-                    width='14'
-                  >
-                    <path d='M7 17 17 7M8 7h9v9' />
-                  </svg>
-                </a>
-                <button className='spaceman-tour-next' data-close type='button'>
-                  <span>Back to all</span>
-                </button>
-              </div>
+              <h2 className='text-card-title font-normal'>{product.name}</h2>
+              <p className='text-copy md:text-copy-lg text-muted-foreground max-w-130 text-pretty'>
+                {product.description}
+              </p>
+              <ActionRow className='justify-center'>
+                <VisitLink href={product.href} name={product.name} />
+                <StepButton data-close>Back to all</StepButton>
+              </ActionRow>
             </div>
           ))}
         </section>

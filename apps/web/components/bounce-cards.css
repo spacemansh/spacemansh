@@ -1,0 +1,94 @@
+/* the engine sizes every card through custom properties on the stage */
+[data-cards],
+[data-card] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-card] {
+  width: var(--card-size);
+  height: var(--card-size);
+  border-radius: var(--card-radius);
+  transform: translate(-50%, -50%) scale(0);
+  will-change: transform;
+}
+
+/* concentric frame: inner radius = outer radius - padding - 1px hairline */
+[data-card-well] {
+  inset: var(--card-pad);
+  border-radius: calc(var(--card-radius) - var(--card-pad) - 1px);
+}
+
+/* the carousel: the hero recedes behind the row and the page holds still */
+html[data-cards-open] {
+  overflow: hidden;
+}
+
+[data-recede] {
+  transition:
+    opacity 300ms var(--ease-sp-out),
+    filter 300ms var(--ease-sp-out);
+}
+
+html[data-cards-open] [data-recede] {
+  opacity: 0.1;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* on a phone the caption sits over the hero, so it fades further */
+@media (width < 40rem) {
+  html[data-cards-open] [data-recede] {
+    opacity: 0.04;
+  }
+}
+
+/* fixed children each own a layer: backdrop under the cards, controls over them */
+[data-carousel] > * {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 140ms ease-out,
+    visibility 0s linear 140ms;
+}
+
+[data-carousel][data-open] > * {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 240ms ease-out 120ms,
+    visibility 0s;
+}
+
+[data-step] {
+  top: var(--cc-y);
+}
+
+[data-captions] {
+  top: var(--cc-top);
+}
+
+/* captions share one cell and cross-fade as the row moves */
+[data-caption] {
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 160ms ease-out,
+    translate 160ms ease-out;
+}
+
+[data-caption][data-active] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 240ms var(--ease-sp-out) 140ms,
+    translate 240ms var(--ease-sp-out) 140ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-recede],
+  [data-carousel] > *,
+  [data-caption],
+  [data-caption][data-active] {
+    transition-duration: 0.01ms;
+  }
+}
