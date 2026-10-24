@@ -42,16 +42,35 @@ familiar next to GitHub and npm, without code costumes.
 
 ### Where they live
 
-| File                               | Holds                                                                                           |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `globals.css`, `spaceman:tokens`   | `@custom-variant dark`, `:root` (light), `.dark`, the `.theme-<name>` palettes, `@theme inline` |
-| `base.css`                         | Shared base rules: `px-page`, `body`, border and outline defaults, the focus ring               |
-| `apps/web/app/site.css` (per site) | The site's `.spaceman-*` composition layer. It uses tokens; it never defines them               |
+| File                             | Holds                                                                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `globals.css`, `spaceman:tokens` | `@custom-variant dark`, `:root` (light), `.dark`, the `.theme-<name>` palettes, `@theme inline`     |
+| `base.css`                       | Shared base rules: `px-page`, `body`, border and outline defaults, the focus ring                   |
+| `<component>.css` (per feature)  | What Tailwind cannot express: keyframes, phase selectors, engine-driven geometry, on `data-*` hooks |
 
 Tokens live in `globals.css` because that is the file `components.json` names:
 the shadcn CLI, uitheme and Spaceman RTA all read and write theme variables
 there. Multi-palette theming fails if they sit anywhere else. Every other rule
 goes in an imported file.
+
+### Tailwind first, no arbitrary values
+
+Styling is Tailwind classes built from the theme. `@shadcn/lint` enforces it in
+`pnpm lint`: `no-arbitrary-values` (no `p-[13px]`, `text-[clamp(…)]`),
+`no-raw-colors` (no palette or raw colours) and `no-unknown-classes`. A value
+the scale does not have becomes a named token, not an arbitrary value. CSS
+that classes cannot express lives next to its component and hooks onto `data-*`
+attributes, never custom class names.
+
+### Design tokens added for the site
+
+| Group   | Tokens                                                                                                                                                                                                                        |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Type    | `text-hero`, `text-page`, `text-card-title`, `text-lead`, `text-copy`, `text-copy-lg`, `text-nav`, `text-action`, `text-control`, `text-overline`, `text-link`, `text-tagline` (each with its line height and letter spacing) |
+| Spacing | `gutter`, `footer-top`, `footer-gap`, `footer-end`, `tagline` (fluid `clamp()` values)                                                                                                                                        |
+| Shadow  | `shadow-card`, `shadow-card-raised` (light and dark values), `shadow-float`, `shadow-hairline`                                                                                                                                |
+| Colour  | `primary-hover`, derived from `--primary` so it follows every palette                                                                                                                                                         |
+| Easing  | `ease-sp-out`, `ease-sp-in-out`, `ease-roll`                                                                                                                                                                                  |
 
 ### Rules
 
@@ -63,9 +82,7 @@ goes in an imported file.
 - **Never invent one.** A value that has no token is a design-system question:
   stop and ask. Adding a token means `:root`, `.dark`, `@theme inline`, this
   file, and the copy in spaceman-ui.
-- **Never hardcode a colour, radius or font** in a component. Known debt: the
-  card and tour shadows in `site.css` use literal `hsl(0 0% 0% / …)` layers;
-  they are candidates for shadow tokens, pending a decision.
+- **Never hardcode a colour, radius or font** in a component.
 
 ## 3. Colour
 
@@ -116,16 +133,17 @@ is off-brand.
 
 ### Scale in use
 
-| Role             | Size                                         | Weight | Notes                                        |
-| ---------------- | -------------------------------------------- | ------ | -------------------------------------------- |
-| Hero line        | `clamp(40px, 34.65px + 1.427vw, 56px)` / 1.1 | 400    | Tracking −0.03em, balanced, two lines        |
-| Tour title       | `clamp(30px, 22px + 2vw, 52px)` / 1.08       | 400    | Must fit one line at 320px for every product |
-| Lead             | 20px / 26px                                  | 400    | Hero; tracking −0.02em                       |
-| Tour description | 16px / 24px, 18px / 26px from 768px          | 400    | Muted foreground                             |
-| Controls         | 14–16px / 1                                  | 500    | Buttons, nav pills, tour segments            |
-| Footer heading   | 12.5px, tracking 0.16em, uppercase           | 500    | Muted foreground with a 24px rule under it   |
-| Metadata         | 14px mono                                    | 400    | `01 / 05 · ui.spaceman.sh`, package names    |
-| Wordmark tagline | Fluid with the footer width, mono, uppercase | 500    | Under the SVG wordmark                       |
+| Role             | Size                                       | Weight | Notes                                        |
+| ---------------- | ------------------------------------------ | ------ | -------------------------------------------- |
+| Hero line        | `text-hero`: 40–56px fluid / 1.1, −0.03em  | 400    | Balanced, two lines                          |
+| Tour title       | `text-page`: 30–52px fluid / 1.08, −0.03em | 400    | Must fit one line at 320px for every product |
+| Carousel name    | `text-card-title`: 24–32px fluid / 1.1     | 400    | Under the centred card                       |
+| Lead             | `text-lead`: 20px / 26px, −0.02em          | 400    | Hero                                         |
+| Description      | `text-copy`, `md:text-copy-lg`             | 400    | Tour and carousel; muted foreground          |
+| Controls         | `text-sm`, `text-control`, `text-action`   | 500    | Buttons, tour segments, Explore              |
+| Footer heading   | `text-overline`: 12.5px, 0.16em, uppercase | 500    | Muted foreground with a 24px rule under it   |
+| Metadata         | `text-sm` mono                             | 400    | `01 / 05 · ui.spaceman.sh`, package names    |
+| Wordmark tagline | `text-tagline`, mono, uppercase            | 500    | Fluid with the footer width                  |
 
 ### Named rules
 
@@ -204,11 +222,24 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
 
 ### Buttons
 
-- **Primary (Explore):** accent fill, 48px tall, auto width, letter roll on
-  hover and focus.
-- **Solid / outline pair (tour):** foreground fill with an arrow for the
-  outbound link; a Border Strong outline for the next step. 40px tall, one line.
-- **Ghost pill (nav):** text at 34% foreground; Muted fill on hover.
+- **Primary (Explore):** a liquid metal pill (`liquid-metal-button.tsx`): a
+  Paper Shaders ring in the grey tokens round a background-filled body with an
+  arrow well; the metal flows faster on hover and focus, stays still under
+  reduced motion, and falls back to a plain ring without WebGL.
+- **Outbound link (tour, carousel):** a foreground pill whose arrow circle
+  starts on the left pointing right and slides to the right end, turning to ↗,
+  on hover and focus: the link leads away. 48px tall, one line, beside an
+  outline pill for the next step.
+- **GitHub (nav):** the name and a mono `[count]` of stars (a TanStack Query
+  hook, refetched every 6 hours; an org's total, or one repo). `emphasis`
+  chooses which part is in foreground; the site mutes the name. `hover` is a
+  thin underline under the name (the site's), a fill, a colour change, or none.
+- **Theme toggle (nav):** text only, the current mode name in the nav's muted
+  style, no fill on hover. Hover keeps the letters after the first three scrambling until the pointer
+  leaves; a
+  click scrambles the whole word into the next mode over the theme transition's
+  duration. System → Light → Dark when `system` is on, else Light ↔ Dark (the site),
+  where a system preference shows as the mode it resolves to.
 - **Press:** scale 0.96 on `:active`.
 
 ### Cards
@@ -217,9 +248,37 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
   each product's art; until art exists it stays an empty well.
 - Shadows per §5; z-order puts the middle cards on top of the fan.
 
+### Logo chip
+
+- A brand chip (`components/logo-chip.tsx`): a squircle logo beside its name,
+  after graphicalui.com's hero tokens. The hero line is "[astronaut]
+  Spaceman's [flip]", with the logo and name as the chip.
+- Default: a muted fill, a tight padding, no border. The logo is one cap
+  height (`1cap`), so it rests on the baseline and meets the cap line; the name
+  is trimmed to its capitals (`text-box: trim-both cap alphabetic`), so the
+  padding balances evenly round the capitals; descenders may dip below the fill, by design. The radius is concentric: the
+  logo's radius plus the padding. Lengths are in em and cap, so it scales with
+  the text around it.
+- Every 10s the logo dips, springs up 1.35× and leaning right 10°, holds 5s,
+  then springs back straight for 5s (motion). It grows from the side facing the
+  name and corrects for its rotated overhang, so it outgrows the chip while the
+  gap to the name holds. Only transforms move; the text never shifts. Reduced
+  motion keeps it still.
+- `logo` is a path in `public/` or a full link (links are served as they are);
+  an image that fails to load leaves the empty well; an empty `logo` gives a
+  name-only chip.
+- Props cover the logo (size, radius, smoothing, ring and ring colour,
+  alignment), the chip (gap, padding, radius, any CSS background or a gradient,
+  border, name colour and weight) and the motion (interval, hold, delay, tilt,
+  zoom, dip, origin, paused). Colours are plain CSS values, so the app passes
+  tokens (`var(--muted)`) and registry users can pass brand colours.
+- Tune it at `/lab/logo` (not indexed), which has presets showing the props
+  can reproduce the Cal.com, Airbnb and Meta reference chips. It becomes a
+  registry item once approved.
+
 ### Navigation
 
-- Sparse: a GitHub pill top right on spaceman.sh; the tour's segmented pill
+- Sparse: the theme toggle and the GitHub stars top right on spaceman.sh; the tour's segmented pill
   (close, divider, one segment per product; numbers below 640px).
 
 ### Footer

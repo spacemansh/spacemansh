@@ -35,9 +35,9 @@ similar folder inside this repository.
 apps/web/                      spaceman.sh
   app/layout.tsx               fonts (next/font), theme provider, metadata
   app/page.tsx                 the home page
-  app/site.css                 the site's .spaceman-* composition layer
+  app/lab/logo/                the logo token controls page (noindex, not in the sitemap)
   app/llms.txt/, robots.ts, sitemap.ts, opengraph-image.tsx   static metadata routes
-  components/                  page-level compositions (cards, tour, footer, …)
+  components/                  page-level compositions, each with any CSS it needs beside it
   lib/site.ts                  the product list and links every surface reads
   next.config.ts               includes the permanent /r/* → ui.spaceman.sh redirect
   wrangler.jsonc               Cloudflare Worker config
@@ -58,6 +58,7 @@ Run these from the repository root:
 ```bash
 pnpm install --frozen-lockfile
 pnpm dev            # turbo dev
+pnpm lint           # oxlint with antislop and @shadcn/lint; fix every error
 pnpm quality        # oxlint, then oxfmt --check (quality:fix fixes both)
 pnpm typecheck      # tsc in every workspace
 pnpm build          # next build in every app
@@ -89,20 +90,33 @@ is on the page as provisional.
   `@custom-variant dark`, `:root` (light), `.dark`, the `.theme-<name>`
   palettes, and `@theme inline`. That is the file `components.json` names, and
   the shadcn CLI, uitheme and Spaceman RTA read and write theme variables there.
-  Every other rule goes in an imported file (`base.css`, a site's `site.css`).
+  Every other rule goes in an imported file (`base.css`, or a component's own
+  CSS file).
 - **One token set, and keep every token.** Nothing outside the region defines
   or overrides a token. Unused token groups stay for future products.
 - **Never hardcode a colour, radius, or font, and never invent a token.** A raw
   hex or `oklch()` in a component is a bug; a new token is a decision — stop and
   ask. Adding one means `:root`, `.dark`, `@theme inline`, `DESIGN.md`, and the
   copy in spaceman-ui.
+- **Tailwind first, no arbitrary values.** Style with Tailwind classes from the
+  theme. `@shadcn/lint` (in `oxlint.config.ts`) fails `no-arbitrary-values`,
+  `no-raw-colors` and `no-unknown-classes`; it owns Tailwind checks where it
+  overlaps oxlint. A missing value becomes a named token in the region, never a
+  `[...]` value. There is no site-wide stylesheet: CSS that classes cannot
+  express (keyframes, phase selectors, engine-driven geometry) sits next to its
+  component as `<component>.css` and targets `data-*` attributes, not class
+  names. The rules are off for `packages/ui/src/components`, whose shadcn
+  primitives own their styling.
 - **Shared across repositories.** spaceman-ui keeps the token region of its
   `app/globals.css` and its `app/base.css` byte-identical to this repository's;
   its `pnpm tokens:check` fails on drift. Change them here first, copy them
   across, run the check there, and ship both changes together.
-- The `dark` class is applied to `<html>` by
-  `apps/web/components/theme-provider.tsx` (next-themes), which
-  `@custom-variant dark (&:is(.dark *))` matches.
+- Theming runs on `uitheme-web` (`NextUIThemeProvider` in
+  `apps/web/components/providers.tsx`). It puts `dark` and `theme-<name>` on
+  `<html>`, which `@custom-variant dark (&:is(.dark *))` and the palettes match,
+  and animates changes with a circle reveal. Its duration lives in
+  `lib/theme.ts`, which the theme toggle's scramble also reads; the hook does
+  not expose it. The same provider tree holds the TanStack Query client.
 - Light and dark are peers. Monochrome first; the accent is rare. The named
   rules are in `DESIGN.md`.
 
