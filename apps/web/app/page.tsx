@@ -10,7 +10,10 @@ export default function Page() {
   return (
     <SmoothScroll>
       <StructuredData />
-      <nav aria-label='Site' className='absolute top-4 right-4 z-40 flex gap-1'>
+      <nav
+        aria-label='Site'
+        className='spaceman-recede absolute top-4 right-4 z-40 flex gap-1'
+      >
         <a className='spaceman-nav-link' href={githubUrl}>
           GitHub
         </a>
@@ -22,7 +25,7 @@ export default function Page() {
 
           <section
             aria-labelledby='hero-title'
-            className='flex shrink-0 flex-col gap-10 px-[clamp(20px,2.7vw,40px)] pt-6 pb-5 md:pb-10 lg:flex-row lg:items-start lg:justify-between'
+            className='spaceman-recede flex shrink-0 flex-col gap-10 px-[clamp(20px,2.7vw,40px)] pt-6 pb-5 md:pb-10 lg:flex-row lg:items-start lg:justify-between'
           >
             <h1 className='spaceman-hero-title' id='hero-title'>
               <span className='sr-only'>

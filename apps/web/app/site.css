@@ -171,6 +171,10 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   width: var(--card-size, 248px);
   height: var(--card-size, 248px);
   border-radius: var(--card-radius, 20px);
@@ -182,6 +186,11 @@ body {
   transform: translate(-50%, -50%) scale(0);
   will-change: transform;
   transition: box-shadow 300ms ease;
+}
+
+.spaceman-card:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
 }
 
 .spaceman-card[data-active] {
@@ -212,6 +221,146 @@ body {
   border-radius: calc(var(--card-radius, 20px) - var(--card-pad, 9px) - 1px);
   background: var(--inset);
   box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* ---- card carousel ---- */
+
+/* the hero recedes behind the row and the page holds still */
+html[data-cards-open] {
+  overflow: hidden;
+}
+
+.spaceman-recede {
+  transition:
+    opacity 300ms var(--ease-sp-out),
+    filter 300ms var(--ease-sp-out);
+}
+
+html[data-cards-open] .spaceman-recede {
+  opacity: 0.1;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* on a phone the caption sits over the hero, so it fades further */
+@media (max-width: 639px) {
+  html[data-cards-open] .spaceman-recede {
+    opacity: 0.04;
+  }
+}
+
+/* fixed children each own a layer: backdrop under the cards, controls over them */
+.spaceman-carousel > * {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 140ms ease-out,
+    visibility 0s linear 140ms;
+}
+
+.spaceman-carousel[data-open] > * {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 240ms ease-out 120ms,
+    visibility 0s;
+}
+
+.spaceman-carousel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.spaceman-carousel-arrow {
+  position: fixed;
+  top: var(--cc-y, 50%);
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--shadow-lift);
+  translate: 0 -50%;
+  cursor: pointer;
+}
+
+.spaceman-carousel-arrow[data-step='-1'] {
+  left: 16px;
+}
+
+.spaceman-carousel-arrow[data-step='1'] {
+  right: 16px;
+}
+
+.spaceman-carousel-arrow:active {
+  scale: 0.94;
+}
+
+@media (min-width: 1024px) {
+  .spaceman-carousel-arrow {
+    width: 56px;
+    height: 56px;
+  }
+
+  .spaceman-carousel-arrow[data-step='-1'] {
+    left: 32px;
+  }
+
+  .spaceman-carousel-arrow[data-step='1'] {
+    right: 32px;
+  }
+}
+
+.spaceman-carousel-captions {
+  position: fixed;
+  top: var(--cc-top, 70%);
+  left: 50%;
+  z-index: 80;
+  display: grid;
+  width: min(560px, calc(100% - 40px));
+  translate: -50% 0;
+}
+
+/* captions share one cell and cross-fade as the row moves */
+.spaceman-carousel-caption {
+  display: flex;
+  grid-area: 1 / 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 160ms ease-out,
+    translate 160ms ease-out;
+}
+
+.spaceman-carousel-caption[data-active] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 240ms var(--ease-sp-out) 140ms,
+    translate 240ms var(--ease-sp-out) 140ms;
+}
+
+.spaceman-carousel-caption > p {
+  margin: 0;
+}
+
+.spaceman-carousel-name {
+  margin: 0;
+  font: 400 clamp(24px, calc(18px + 1vw), 32px) / 1.1 var(--font-sans);
+  letter-spacing: -0.02em;
 }
 
 /* ---- footer ---- */
@@ -350,9 +499,33 @@ html.spaceman-tour-open {
 
 .spaceman-tour-title {
   margin: 0;
-  font: 400 clamp(40px, calc(28px + 3vw), 72px) / 1.04 var(--font-sans);
+  font: 400 clamp(30px, calc(22px + 2vw), 52px) / 1.08 var(--font-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
+}
+
+.spaceman-tour-lead {
+  margin: 0;
+  max-width: 520px;
+  color: var(--muted-foreground);
+  font: 400 16px / 24px var(--font-sans);
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+@media (min-width: 768px) {
+  .spaceman-tour-lead {
+    font-size: 18px;
+    line-height: 26px;
+  }
+}
+
+/* the two actions always share one row; the Next label gives way first */
+.spaceman-tour-actions {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  margin-top: 4px;
 }
 
 .spaceman-tour-art {
@@ -373,11 +546,13 @@ html.spaceman-tour-open {
 .spaceman-tour-next {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 18px;
+  flex-shrink: 0;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
   border-radius: var(--radius-md);
-  font: 500 15px / 1 var(--font-sans);
+  font: 500 14px / 1 var(--font-sans);
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
   transition:
@@ -391,9 +566,17 @@ html.spaceman-tour-open {
 }
 
 .spaceman-tour-next {
+  flex-shrink: 1;
+  min-width: 0;
   border: 1px solid var(--border-strong);
   background: transparent;
   color: var(--foreground);
+}
+
+.spaceman-tour-next span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .spaceman-tour-visit:active,
@@ -476,6 +659,10 @@ html.spaceman-tour-open {
     text-decoration-color: var(--primary-ink);
   }
 
+  .spaceman-carousel-arrow:hover {
+    background: var(--muted);
+  }
+
   .spaceman-tour-seg:not([aria-current='page']):hover {
     background: var(--muted);
     color: var(--foreground);
@@ -501,6 +688,10 @@ html.spaceman-tour-open {
 
   .spaceman-roll-face span,
   .spaceman-explore,
+  .spaceman-recede,
+  .spaceman-carousel > *,
+  .spaceman-carousel-caption,
+  .spaceman-carousel-caption[data-active],
   .spaceman-tour-field,
   .spaceman-tour-nav,
   .spaceman-tour-scale,
