@@ -248,12 +248,17 @@ export function ProductTour() {
                     >
                       {product.name}
                     </h2>
-                    <p className='spaceman-hero-lead text-muted-foreground'>
-                      {product.description}
-                    </p>
-                    <div className='mt-2 flex flex-wrap gap-2'>
+                    <p className='spaceman-tour-lead'>{product.description}</p>
+                    <div className='spaceman-tour-actions'>
                       <a className='spaceman-tour-visit' href={product.href}>
-                        Visit {product.name}
+                        {/* phones keep the row short; the name stays in the link's name */}
+                        <span>
+                          Visit
+                          <span className='max-sm:sr-only'>
+                            {' '}
+                            {product.name}
+                          </span>
+                        </span>
                         <svg
                           aria-hidden='true'
                           fill='none'
@@ -274,7 +279,7 @@ export function ProductTour() {
                           onClick={() => goTo(i + 1)}
                           type='button'
                         >
-                          Next: {products[i + 1]!.name}
+                          <span>Next: {products[i + 1]!.name}</span>
                         </button>
                       ) : (
                         <button
@@ -282,7 +287,7 @@ export function ProductTour() {
                           onClick={hide}
                           type='button'
                         >
-                          Back to spaceman.sh
+                          <span>Back to spaceman.sh</span>
                         </button>
                       )}
                     </div>
