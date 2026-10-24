@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist_Mono, Noto_Sans, Source_Serif_4 } from 'next/font/google'
 
-import { ThemeProvider } from '@/components/theme-provider'
+import { Providers } from '@/components/providers'
 import { siteDescription, siteUrl } from '@/lib/site'
 
 import '@workspace/ui/globals.css'
-import './site.css'
 
 const notoSans = Noto_Sans({
   variable: '--font-sans',
@@ -78,12 +77,12 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={`${notoSans.variable} ${geistMono.variable} ${sourceSerif.variable}`}
+      className={`${notoSans.variable} ${geistMono.variable} ${sourceSerif.variable} overscroll-none`}
       lang='en'
       suppressHydrationWarning
     >
       <body className='antialiased'>
-        <ThemeProvider>{children}</ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
