@@ -13,9 +13,11 @@ packages/ui       @workspace/ui: design tokens, Tailwind entry, shadcn primitive
 packages/typescript-config  shared tsconfig presets
 ```
 
-Design tokens live in `packages/ui/src/styles/tokens.css`. spaceman-ui keeps a
-byte-identical copy and checks it with `pnpm tokens:check`. The rules behind the
-tokens are in [DESIGN.md](DESIGN.md).
+Design tokens live in the `spaceman:tokens` region of
+`packages/ui/src/styles/globals.css`; shared base rules are in `base.css` beside
+it. spaceman-ui keeps both byte-identical and checks them with
+`pnpm tokens:check`. The rules behind the tokens are in [DESIGN.md](DESIGN.md).
+Plans for anything Spaceman live in `../.plan/`, outside this repository.
 
 ## Development
 
