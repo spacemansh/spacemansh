@@ -195,10 +195,17 @@ function mountCards(stage: HTMLDivElement | null) {
     // start centred, in the order of the fan
     if (marquee && !wasMarquee) offset = pitch * (slots.length / 2 - middle)
     const d = size / unit
-    // Push neighbours 0.8 × card size, capped so the outer card stays 16px inside.
+    // neighbours move just far enough to clear the hovered card (its centre
+    // 1.12 cards from theirs), capped so the outer card stays 16px inside
     push = marquee
       ? 0
-      : Math.max(0, Math.min(size * 0.8, width / 2 - 16 - size / 2 - reach * d))
+      : Math.max(
+          0,
+          Math.min(
+            size * 1.12 - (unit - overlap) * d,
+            width / 2 - 16 - size / 2 - reach * d,
+          ),
+        )
     poses.forEach((pose, i) => {
       slots[i] = {
         x: marquee ? 0 : pose.x * d,
@@ -223,7 +230,6 @@ function mountCards(stage: HTMLDivElement | null) {
     const substeps = Math.ceil(dt / (1 / 240))
     const h = dt / substeps
     const moveD = moveDamping(reduce ? 1 : 0.72)
-    const narrow = push < size * 0.3
     const showing = open >= 0
     const row = showing || returning
     const k = row ? carouselK : moveK
@@ -290,14 +296,12 @@ function mountCards(stage: HTMLDivElement | null) {
         ts = appeared ? geo.scale : 0
       } else if (hovered >= 0 && appeared) {
         if (i === hovered) {
-          // the hovered card takes the stage; a narrow fan also glides it to centre
+          // the hovered card lifts in place, so it stays under the pointer
           ty = slot.y - size * 0.04
           tr = 0
-          ts = narrow ? 1.12 : 1.06
-
-          if (narrow && !marquee) tx = 0
+          ts = 1.06
         } else if (!marquee) {
-          tx = narrow ? slot.x * 0.82 : slot.x + Math.sign(i - hovered) * push
+          tx = slot.x + Math.sign(i - hovered) * push
         }
       }
 
