@@ -1,4 +1,3 @@
-/** Outbound links for the header and footer. */
 export const githubUrl = 'https://github.com/spacemansh'
 
 export const siteUrl = 'https://spaceman.sh'
@@ -6,22 +5,17 @@ export const siteUrl = 'https://spaceman.sh'
 export const siteDescription =
   'Open-source tools that help developers ship beautiful user interfaces.'
 
-/**
- * The Spaceman products, in card order. The cards, the Explore tour, the
- * structured data and llms.txt all read this list, so keep descriptions
- * factual and in step with each product's own site.
- */
 export const products = [
   {
     id: 'website',
-    name: 'Personal website',
+    name: 'Personal Website',
     href: 'https://tony.spaceman.sh',
     domain: 'tony.spaceman.sh',
     description: 'Experience, projects, writing and the story behind Spaceman.',
   },
   {
     id: 'registry',
-    name: 'UI registry',
+    name: 'Spaceman UI Registry',
     href: 'https://ui.spaceman.sh',
     domain: 'ui.spaceman.sh',
     description:
@@ -29,7 +23,7 @@ export const products = [
   },
   {
     id: 'theme',
-    name: 'UI theme',
+    name: 'UI Theme',
     href: 'https://www.uitheme.dev/',
     domain: 'uitheme.dev',
     description:
@@ -37,14 +31,14 @@ export const products = [
   },
   {
     id: 'rta',
-    name: 'Spaceman RTA',
+    name: 'Spaceman React Theme Animation',
     href: 'https://spaceman-rta-vite.netlify.app/',
     domain: '@space-man/react-theme-animation',
     description: 'Animated theme transitions for React.',
   },
   {
     id: 'skills',
-    name: 'Spaceman skills',
+    name: 'Spaceman Skills',
     href: 'https://github.com/spacemansh/spaceman-skills',
     domain: 'spacemansh/spaceman-skills',
     description:
@@ -52,13 +46,20 @@ export const products = [
   },
 ] as const
 
+export const seoLinks = ['registry', 'skills', 'rta', 'theme', 'website'].map(
+  (id) => products.find((product) => product.id === id)!,
+)
+
 export const footerColumns = [
   {
     title: 'Products',
     links: [
-      { label: 'UI Registry', href: 'https://ui.spaceman.sh' },
+      { label: 'Spaceman UI Registry', href: 'https://ui.spaceman.sh' },
       { label: 'UI Theme', href: 'https://www.uitheme.dev/' },
-      { label: 'Spaceman RTA', href: 'https://spaceman-rta-vite.netlify.app/' },
+      {
+        label: 'Spaceman React Theme Animation',
+        href: 'https://spaceman-rta-vite.netlify.app/',
+      },
       {
         label: 'Spaceman Skills',
         href: 'https://github.com/spacemansh/spaceman-skills',
@@ -66,7 +67,7 @@ export const footerColumns = [
     ],
   },
   {
-    title: 'Portfolio',
+    title: 'Personal website',
     links: [
       { label: 'Experience', href: 'https://tony.spaceman.sh/#content' },
       { label: 'Projects', href: 'https://tony.spaceman.sh/projects#content' },
@@ -89,5 +90,4 @@ export const footerColumns = [
   },
 ] as const
 
-/** The products the hero's text flip cycles through, in order. */
 export const heroProducts = ['Portfolio', 'UI Registry', 'Skills', 'Packages']

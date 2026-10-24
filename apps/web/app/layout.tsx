@@ -34,6 +34,10 @@ export const metadata: Metadata = {
   keywords: [
     'spaceman.sh',
     'Spaceman',
+    'Spaceman UI Registry',
+    'Spaceman Skills',
+    'Spaceman React Theme Animation',
+    'UI Theme',
     'open-source UI tools',
     'shadcn registry',
     'React components',
@@ -62,7 +66,6 @@ export const metadata: Metadata = {
   },
 }
 
-// Browser chrome colour; the values are the light and dark --background tokens.
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#fcfcfc' },

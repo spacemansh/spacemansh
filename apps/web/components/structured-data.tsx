@@ -1,4 +1,4 @@
-import { footerColumns, products, siteDescription, siteUrl } from '@/lib/site'
+import { footerColumns, seoLinks, siteDescription, siteUrl } from '@/lib/site'
 
 const sameAs =
   footerColumns
@@ -6,7 +6,6 @@ const sameAs =
     ?.links.filter((link) => link.href.startsWith('https://'))
     .map((link) => link.href) ?? []
 
-// schema.org graph for search engines: the site, its author and the products.
 const graph = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -14,9 +13,19 @@ const graph = {
       '@type': 'WebSite',
       '@id': `${siteUrl}/#website`,
       url: siteUrl,
-      name: 'spaceman.sh',
+      name: 'Spaceman',
+      alternateName: 'spaceman.sh',
       description: siteDescription,
       author: { '@id': `${siteUrl}/#author` },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${siteUrl}/#webpage`,
+      url: siteUrl,
+      name: 'Spaceman — open-source UI tools',
+      description: siteDescription,
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      mainEntity: { '@id': `${siteUrl}/#links` },
     },
     {
       '@type': 'Person',
@@ -27,8 +36,10 @@ const graph = {
     },
     {
       '@type': 'ItemList',
-      name: 'Spaceman products',
-      itemListElement: products.map((product, i) => ({
+      '@id': `${siteUrl}/#links`,
+      name: 'Spaceman links',
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      itemListElement: seoLinks.map((product, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         item: {
@@ -43,7 +54,7 @@ const graph = {
   ],
 }
 
-// `<` is escaped so the JSON can never close the script element early.
+// escape markup so product text cannot close the script element
 const json = JSON.stringify(graph).replace(/</g, '\\u003c')
 
 export function StructuredData() {
