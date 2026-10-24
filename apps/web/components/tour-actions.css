@@ -1,4 +1,3 @@
-/* the circle slides across the pill while the padding swaps sides */
 [data-visit] {
   transition:
     padding 500ms var(--ease-sp-in-out),

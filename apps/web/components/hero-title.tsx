@@ -7,8 +7,6 @@ export const heroLogo = {
   label: 'Spaceman’s',
 } satisfies LogoChipProps
 
-// the hero line: "The Home Of / [logo] Spaceman's [flip]"; the lab renders the
-// same line so the logo is tuned where it actually lives
 export function HeroTitle({
   as: Tag = 'h1',
   logo = heroLogo,

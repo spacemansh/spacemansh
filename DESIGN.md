@@ -250,8 +250,8 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
 
 ### Logo chip
 
-- A brand chip (`components/logo-chip.tsx`): a squircle logo beside its name,
-  after graphicalui.com's hero tokens. The hero line is "[astronaut]
+- A brand chip (`components/logo-chip.tsx`): a squircle logo beside its name.
+  The hero line is "[astronaut]
   Spaceman's [flip]", with the logo and name as the chip.
 - Default: a muted fill, a tight padding, no border. The logo is one cap
   height (`1cap`), so it rests on the baseline and meets the cap line; the name
@@ -273,7 +273,7 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
   zoom, dip, origin, paused). Colours are plain CSS values, so the app passes
   tokens (`var(--muted)`) and registry users can pass brand colours.
 - Tune it at `/lab/logo` (not indexed), which has presets showing the props
-  can reproduce the Cal.com, Airbnb and Meta reference chips. It becomes a
+  cover outlined, rose and blue chips. It becomes a
   registry item once approved.
 
 ### Navigation
@@ -285,7 +285,7 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
 
 - Sticky under the page, revealed as the page scrolls away (relative below a
   640px-tall screen so it can always be fully seen).
-- SVG wordmark SPACEMAN.SH after skills.sh's ANSI Shadow, `.SH` at half size,
+- SVG wordmark SPACEMAN.SH with a block shadow, `.SH` at half size,
   scaling to the width; a mono tagline; three link columns.
 
 ## 8. Do's and Don'ts

@@ -5,8 +5,6 @@ import { cn } from '@workspace/ui/lib/utils'
 
 import './tour-actions.css'
 
-// the solid outbound link and the outline step that share one row in the
-// tour and the card carousel; the row never wraps, the step label gives way
 export function ActionRow({ className, ...props }: ComponentProps<'div'>) {
   return (
     <div
@@ -16,8 +14,6 @@ export function ActionRow({ className, ...props }: ComponentProps<'div'>) {
   )
 }
 
-// the arrow starts beside the label and travels to the far end on hover, so
-// the link reads as leaving the site; it turns from → to ↗ on the way
 export function VisitLink({ href, name }: { href: string; name: string }) {
   return (
     <a
@@ -27,7 +23,6 @@ export function VisitLink({ href, name }: { href: string; name: string }) {
     >
       <span className='relative z-10'>
         Visit
-        {/* phones keep the row short; the name stays in the accessible name */}
         <span className='max-sm:sr-only'> {name}</span>
       </span>
       <span

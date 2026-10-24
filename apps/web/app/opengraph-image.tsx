@@ -9,9 +9,6 @@ export const size = { width: 1200, height: 630 }
 
 export const contentType = 'image/png'
 
-// Static: no request data is read, so the image is generated once at build.
-// ImageResponse takes literal colours; these are the dark --background,
-// --foreground and --muted-foreground tokens.
 export default function OpengraphImage() {
   return new ImageResponse(
     <div

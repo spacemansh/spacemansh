@@ -6,8 +6,6 @@ import { NextUIThemeProvider, ThemeAnimationType } from 'uitheme-web/react'
 
 import { colorThemes, themeTransition } from '@/lib/theme'
 
-// the theme provider puts `dark` and `theme-<name>` on <html>, which the
-// shared tokens match; the query client serves the GitHub star count
 export function Providers({ children }: { children: ReactNode }) {
   const [queries] = useState(
     () =>

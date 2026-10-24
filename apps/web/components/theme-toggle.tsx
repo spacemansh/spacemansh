@@ -15,10 +15,8 @@ const names: Record<Mode, string> = {
 
 const chars = '!@#$%^&*():{};|,.<>/?'
 
-// each letter shuffles twice before it settles, left to right
 const cyclesPerLetter = 2
 
-// hover leaves the first letters readable; a click scrambles all of them
 const steadyLetters = 3
 
 const prefersReducedMotion = () =>
@@ -27,16 +25,14 @@ const prefersReducedMotion = () =>
 const randomChar = () => chars[Math.floor(Math.random() * chars.length)] ?? ''
 
 export type ThemeToggleProps = {
-  /** adds System to the cycle: System → Light → Dark */
   system?: boolean
-  /** ms the click scramble takes; match the theme provider's duration */
+
   duration?: number
-  /** ms per shuffle while hovering */
+
   shuffle?: number
   className?: string
 }
 
-/** a text-only theme toggle that decrypts into the next mode */
 export function ThemeToggle({
   system = false,
   duration = 400,
@@ -46,7 +42,6 @@ export function ThemeToggle({
   const { theme, resolvedTheme, switchTheme } = useNextUITheme()
   const modes: Mode[] = system ? ['system', 'light', 'dark'] : ['light', 'dark']
 
-  // without System in the cycle, a system preference shows as what it resolves to
   const current: Mode =
     theme === 'light' || theme === 'dark' || (system && theme === 'system')
       ? theme
@@ -62,9 +57,6 @@ export function ThemeToggle({
     setText(null)
   }
 
-  // the pasted effect: positions before `pos / cycles` show the target, the
-  // rest shuffle; `from` keeps the first letters still
-  // hover: the letters after the first few keep shuffling until the pointer leaves
   const shimmer = () => {
     window.clearInterval(timer.current)
 
@@ -101,8 +93,6 @@ export function ThemeToggle({
 
   const onClick = (event: MouseEvent<HTMLButtonElement>) => {
     const target = names[next]
-
-    // the whole word resolves into the next mode over the theme's duration
     scramble(
       target,
       0,
@@ -128,7 +118,6 @@ export function ThemeToggle({
       onMouseLeave={stop}
       type='button'
     >
-      {/* every name shares one cell, so the button keeps the widest name's width */}
       <span aria-hidden='true' className='inline-grid'>
         {modes.map((mode) => (
           <span className='invisible col-start-1 row-start-1' key={mode}>

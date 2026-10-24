@@ -6,23 +6,12 @@ import { products } from '@/lib/site'
 
 import './bounce-cards.css'
 
-// Square frames on a straight line, one per product, with a zig-zag tilt and stagger, moved
-// by React Bits' BounceCards physics (reactbits.dev/components/bounce-cards):
-// a staggered pop-in, and the hovered card straightens, lifts and scales while
-// its neighbours slide aside. Geometry is in 288px card units.
-//
-// Where the fan no longer fits at a legible size, the same cards run as an
-// endless marquee instead: they drift left and follow a drag or flick.
-//
-// Clicking a card opens the carousel: the cards straighten and grow into a
-// looping row centred on that card, with its caption underneath.
 const unit = 288
 
 const overlap = 36
 
 const band = 24
 
-// one card per product, in order; the zig-zag tilt and stagger alternate
 const tilts = [
   { rotate: -6, lift: -0.45 },
   { rotate: 5, lift: 0.35 },
@@ -42,7 +31,6 @@ const poses = cards.map((card, i) => ({
   x: (i - middle) * (unit - overlap),
   y: -card.lift * band,
   rotate: card.rotate,
-  // the middle cards sit on top
   layer: (cards.length - Math.abs(2 * i - cards.length + 1)) * cards.length + i,
 }))
 
@@ -65,7 +53,6 @@ const fanHeight = bottom - top + 96
 
 const reach = Math.max(...poses.map((p) => Math.abs(p.x)))
 
-// BounceCards' springs: scale pops (bounciness 0.6), position settles (ratio 0.72).
 const popK = 170
 
 const popD = 2 * (1 - 0.85 * 0.6) * Math.sqrt(popK)
@@ -76,20 +63,16 @@ const moveDamping = (ratio: number) => 2 * ratio * Math.sqrt(moveK)
 
 const delay = 0.5
 
-// a replay follows the tour off screen, so it skips most of the load delay
 const replayDelay = 0.12
 
 const stagger = 0.06
 
-// marquee: drift speed in px/s, the gap between cards as a share of their size,
-// and how fast a flick hands its speed back to the drift
 const drift = 32
 
 const gapRatio = 0.1
 
 const settle = 3
 
-// carousel: a stiffer, nearly critical spring so the row lands without wobble
 const carouselK = 300
 
 const carouselD = 2 * 0.8 * Math.sqrt(carouselK)
@@ -111,7 +94,6 @@ type Body = {
 const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-/** Ref callback: runs the cards on mount and returns their cleanup (React 19). */
 function mountCards(stage: HTMLDivElement | null) {
   if (!stage) return
 
@@ -136,7 +118,6 @@ function mountCards(stage: HTMLDivElement | null) {
   let offset = 0
   let speed = drift
   let drag: { id: number; x: number; at: number; moved: number } | null = null
-  // the centred card while the carousel is open, else -1
   let open = -1
   let returning = false
   let suppress = false
@@ -146,14 +127,12 @@ function mountCards(stage: HTMLDivElement | null) {
 
   const n = slots.length
 
-  // a card's place in the row relative to the centred one, in -n/2..n/2
   const rel = (i: number, centre: number) => {
     const d = (((i - centre) % n) + n) % n
 
     return d > n / 2 ? d - n : d
   }
 
-  // the row sits in viewport space; the caption takes the space under it
   const measure = () => {
     const vw = window.innerWidth
     const vh = window.innerHeight
@@ -182,7 +161,6 @@ function mountCards(stage: HTMLDivElement | null) {
       height > 0 ? (height * unit) / fanHeight : base,
     )
 
-    // too small to read as a fan: keep the cards legible and run them as a marquee
     const wasMarquee = marquee
 
     marquee = next < 150
@@ -192,11 +170,8 @@ function mountCards(stage: HTMLDivElement | null) {
     size = next
     pitch = size * (1 + gapRatio)
 
-    // start centred, in the order of the fan
     if (marquee && !wasMarquee) offset = pitch * (slots.length / 2 - middle)
     const d = size / unit
-    // neighbours move just far enough to clear the hovered card (its centre
-    // 1.12 cards from theirs), capped so the outer card stays 16px inside
     push = marquee
       ? 0
       : Math.max(
@@ -241,8 +216,6 @@ function mountCards(stage: HTMLDivElement | null) {
     time += dt
 
     if (marquee) {
-      // a held card or a reduced-motion preference stops the drift; a flick
-      // eases back to it
       const target = hovered >= 0 || reduce || row ? 0 : drift
 
       if (!drag) {
@@ -296,7 +269,6 @@ function mountCards(stage: HTMLDivElement | null) {
         ts = appeared ? geo.scale : 0
       } else if (hovered >= 0 && appeared) {
         if (i === hovered) {
-          // the hovered card lifts in place, so it stays under the pointer
           ty = slot.y - size * 0.04
           tr = 0
           ts = 1.06
@@ -305,14 +277,12 @@ function mountCards(stage: HTMLDivElement | null) {
         }
       }
 
-      // the marquee positions cards itself, so they wrap without springing back
       if (marquee && !row) {
         body.x = tx
         body.vx = 0
       }
 
       if (reduce && row) {
-        // the reduced twin: the row appears in place
         Object.assign(body, {
           x: tx,
           y: ty,
@@ -348,7 +318,6 @@ function mountCards(stage: HTMLDivElement | null) {
         settled = false
       }
 
-      // speed blur stands in for motion blur while the row travels
       const blur = row
         ? Math.min(6, Math.max(0, (Math.hypot(body.vx, body.vy) - 600) / 500))
         : 0
@@ -371,8 +340,6 @@ function mountCards(stage: HTMLDivElement | null) {
     })
 
     if (returning && settled) returning = false
-
-    // the row stacks from the centre out; the fan from the middle cards up
     const focus = showing ? 100 + open : hovered
 
     if (layer !== focus) {
@@ -389,11 +356,9 @@ function mountCards(stage: HTMLDivElement | null) {
 
     if (returning) moving += 1
 
-    // sleep once everything has settled; any input wakes the loop again
     if (moving > 0.02) raf = requestAnimationFrame(frame)
   }
 
-  // marquee slots: evenly spaced on a loop longer than the stage, centred on it
   function place() {
     if (!marquee) return
     const loop = pitch * slots.length
@@ -426,7 +391,6 @@ function mountCards(stage: HTMLDivElement | null) {
     root.toggleAttribute('data-cards-open', true)
     carousel?.toggleAttribute('data-open', true)
     caption()
-    // focus moves to the caption, but the page must not jump to it
     requestAnimationFrame(() =>
       captions[open]?.querySelector('a')?.focus({ preventScroll: true }),
     )
@@ -439,16 +403,12 @@ function mountCards(stage: HTMLDivElement | null) {
     const shift = rel(target, open)
 
     if (!shift) return
-
-    // a card that wraps round is moved a loop's length first, so it slides in
-    // from the far side instead of crossing the row
     bodies.forEach((body, i) => {
       const jump = rel(i, target) - rel(i, open) + shift
 
       if (jump) body.x += jump * geo.pitch
     })
 
-    // focus inside the old caption would fall to the page once it turns inert
     const followFocus = captions.some((el) =>
       el.contains(document.activeElement),
     )
@@ -501,7 +461,6 @@ function mountCards(stage: HTMLDivElement | null) {
       return -1
     }
 
-    // hysteresis: keep the current card until the pointer is clearly nearer another
     if (
       hovered >= 0 &&
       hovered !== best &&
@@ -521,7 +480,6 @@ function mountCards(stage: HTMLDivElement | null) {
       const dt = Math.max(1, event.timeStamp - drag.at) / 1000
 
       offset += dx
-      // follow the finger, and remember its speed (capped) for the release
       speed = Math.max(-3000, Math.min(3000, -dx / dt))
       drag = {
         ...drag,
@@ -562,7 +520,6 @@ function mountCards(stage: HTMLDivElement | null) {
     const index = pick(event)
 
     if (marquee) {
-      // decide tap or drag on release
       drag = {
         id: event.pointerId,
         x: event.clientX,
@@ -579,7 +536,6 @@ function mountCards(stage: HTMLDivElement | null) {
     wake()
   }
 
-  // the click squash from BounceCards
   const squash = (index: number) => {
     if (index >= 0 && bodies[index] && !prefersReducedMotion())
       bodies[index].vs -= 2.2
@@ -591,7 +547,6 @@ function mountCards(stage: HTMLDivElement | null) {
 
       swipeFrom = null
 
-      // a swipe moves the row; the click that follows it must not
       if (Math.abs(dx) > swipe) {
         suppress = true
         goTo(open + (dx < 0 ? 1 : -1))
@@ -603,7 +558,6 @@ function mountCards(stage: HTMLDivElement | null) {
     if (!drag || event.pointerId !== drag.id) return
     const tapped = drag.moved < 6
 
-    // a release long after the last move is a stop, not a flick
     if (event.timeStamp - drag.at > 80) speed = 0
     drag = null
 
@@ -613,7 +567,6 @@ function mountCards(stage: HTMLDivElement | null) {
     wake()
   }
 
-  // the browser took the gesture (a vertical page scroll): neither tap nor flick
   const onCancel = (event: PointerEvent) => {
     swipeFrom = null
 
@@ -661,7 +614,6 @@ function mountCards(stage: HTMLDivElement | null) {
     event.preventDefault()
   }
 
-  // a horizontal trackpad swipe moves one card per gesture
   const onWheel = (event: WheelEvent) => {
     if (open < 0 || Math.abs(event.deltaX) < 24) return
 
@@ -672,7 +624,6 @@ function mountCards(stage: HTMLDivElement | null) {
     goTo(open + (event.deltaX > 0 ? 1 : -1))
   }
 
-  // keyboard focus lifts a card the way hover does
   const onFocus = (event: FocusEvent) => {
     if (open >= 0 || !(event.target instanceof HTMLElement)) return
 

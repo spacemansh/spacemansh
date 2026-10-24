@@ -12,68 +12,58 @@ import {
   useState,
 } from 'react'
 
-// A brand chip: a squircle logo beside its name, after graphicalui.com's hero
-// tokens. On an interval the logo dips, springs up larger and leaning right,
-// holds, then springs back straight. Only transforms move and every length is
-// in em, so the text around the chip never shifts; the logo grows away from
-// the name, so the gap between them holds while it outgrows the chip.
-
 export type LogoChipProps = {
-  /** the logo image: a path in public/ ('/spaceman.webp') or a full link; empty for a name-only chip */
   logo?: string
-  /** empty when the label already names the logo */
+
   alt?: string
   label?: ReactNode
 
-  /** logo edge in cap heights of the surrounding text; 1 spans baseline to cap line */
   logoSize?: number
-  /** logo corner radius as a share of its edge, 0 to 0.5 */
+
   logoRadius?: number
-  /** figma corner smoothing, 0 (circular) to 1 */
+
   smoothing?: number
-  /** sticker ring width in em; 0 hides it */
+
   ring?: number
-  /** any CSS colour */
+
   ringColor?: string
 
-  /** space between logo and name, in em */
   gap?: number
-  /** padding above, below and before the logo, in em */
+
   padding?: number
-  /** padding after the name, in em */
+
   paddingEnd?: number
-  /** chip corner radius in em; 'auto' is concentric: the logo's radius plus the padding */
+
   radius?: number | 'auto'
-  /** any CSS background: a colour, a gradient, an image */
+
   background?: string
-  /** two or more colours; when set, the chip uses a linear gradient of them */
+
   gradient?: string[]
-  /** gradient direction in degrees */
+
   gradientAngle?: number
-  /** border width in px; 0 hides it */
+
   borderWidth?: number
   borderColor?: string
-  /** the name's colour; inherits when omitted */
+
   color?: string
-  /** the name's weight; inherits when omitted */
+
   weight?: number
 
-  /** ms from one beat to the next; 0 keeps it still */
   interval?: number
-  /** ms the logo holds its tilted, zoomed pose */
+
   hold?: number
-  /** ms before the first beat, so beats can fall between other motion */
+
   delay?: number
-  /** tilt in degrees; positive leans right */
+
   tilt?: number
-  /** scale of the held pose */
+
   zoom?: number
-  /** scale of the dip before the zoom */
+
   dip?: number
-  /** grow from the side facing the name (the gap holds) or from the centre */
+
   origin?: 'label' | 'center'
   paused?: boolean
-  /** run one beat as soon as it mounts */
+
   playOnMount?: boolean
 
   className?: string
@@ -83,7 +73,6 @@ export type LogoChipProps = {
 const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// links go to the browser as they are; next/image only optimises local files
 const isLink = (logo: string) => /^(https?:|data:|\/\/)/.test(logo)
 
 export function LogoChip({
@@ -118,7 +107,6 @@ export function LogoChip({
   className,
   style,
 }: LogoChipProps) {
-  // a logo that fails to load leaves the empty well rather than a broken image
   const [failed, setFailed] = useState<string | null>(null)
 
   const mount = useCallback(
@@ -127,7 +115,6 @@ export function LogoChip({
 
       const face = sticker.firstElementChild
 
-      // the squircle needs pixels; the box itself is sized in em
       const clip = () => {
         const edge = sticker.offsetWidth
         const font = getComputedStyle(sticker)
@@ -151,9 +138,6 @@ export function LogoChip({
         if (document.hidden || prefersReducedMotion()) return
         running?.stop()
         window.clearTimeout(settle)
-
-        // a turned square's box grows; growing from the name's side, move it
-        // back by that overhang so the gap to the name stays as it was
         const turn = (Math.abs(tilt) * Math.PI) / 180
 
         const overhang =
@@ -174,7 +158,6 @@ export function LogoChip({
             { type: 'spring', stiffness: 320, damping: 16 },
           ],
         ])
-        // the hold counts from the zoom, so a cycle splits into hold and rest
         settle = window.setTimeout(() => {
           running = animate(
             sticker,
@@ -184,7 +167,6 @@ export function LogoChip({
         }, 140 + hold)
       }
 
-      // a beat is its hold plus its return; beats never overlap
       const every =
         interval > 0 && !paused ? Math.max(interval, hold + 1000) : 0
 
@@ -240,7 +222,6 @@ export function LogoChip({
       style={{
         gap: logo && label ? `${gap}em` : undefined,
         padding: `${padding}em ${paddingEnd}em ${padding}em ${padding}em`,
-        // concentric: outer radius = the logo's radius + the padding around it
         borderRadius:
           radius === 'auto'
             ? `calc(${logo ? logoRadius * logoSize : 0}cap + ${padding}em)`
@@ -260,8 +241,6 @@ export function LogoChip({
           data-logo
           ref={mount}
           style={{
-            // one cap tall rests on the baseline and meets the cap line; a
-            // bigger logo stays centred on the capitals
             width: `${logoSize}cap`,
             height: `${logoSize}cap`,
             top: `${((logoSize - 1) / 2).toFixed(3)}cap`,

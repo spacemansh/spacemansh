@@ -1,7 +1,3 @@
-// SPACEMAN.SH in figlet's "ANSI Shadow" font, redrawn as SVG paths after the
-// skills.sh wordmark: solid blocks plus a thin double-line shadow. .SH is drawn
-// at half size on the baseline. Generated from the figlet glyph grid: each
-// █ cell is a block, each box-drawing cell a pair of shadow strokes.
 export const wordmarkViewBox = '-1 -1 479.00 77.00'
 
 export const wordmarkShadow =

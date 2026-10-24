@@ -7,8 +7,6 @@ import { footerColumns } from '@/lib/site'
 
 import './site-footer.css'
 
-// The sliding footer (after usealia.com): it sits sticky at the bottom of the
-// viewport under the page, which lifts away to reveal it.
 export function SiteFooter() {
   return (
     <footer
