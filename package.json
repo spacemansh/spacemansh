@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@oxlint/plugins": "1.86.0",
+    "@shadcn/lint": "0.2.1",
     "antislop-plugin": "0.1.0",
     "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
