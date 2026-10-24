@@ -1,4 +1,3 @@
-/* a sticky footer taller than the screen could never be fully revealed */
 @media (max-height: 640px) {
   [data-footer] {
     position: relative;

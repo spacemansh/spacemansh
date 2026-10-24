@@ -69,11 +69,9 @@ const defaults: Settings = {
   paused: false,
 }
 
-// lab-only: the three reference chips, to show the props can reach them; the
-// brand colours are the reference's, not Spaceman tokens
 const presets = {
   Default: {},
-  'Cal.com': {
+  Outlined: {
     ring: 0,
     gap: 0.3,
     padding: 0.32,
@@ -84,7 +82,7 @@ const presets = {
     borderColor: 'var(--border-strong)',
     weight: 600,
   },
-  Airbnb: {
+  Rose: {
     ring: 0,
     gap: 0.3,
     padding: 0.32,
@@ -96,7 +94,7 @@ const presets = {
     color: '#ff385c',
     weight: 600,
   },
-  Meta: {
+  Blue: {
     ring: 0,
     gap: 0.25,
     padding: 0.32,
@@ -301,7 +299,6 @@ const numberKeys = [
   'dip',
 ] as const
 
-// the snippet lists the logo and name, then only what differs from the defaults
 const snippetFor = (settings: Settings) =>
   [
     '<LogoChip',

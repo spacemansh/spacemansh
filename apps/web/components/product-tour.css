@@ -1,5 +1,3 @@
-/* framed page transition: frame 420ms, slide 560ms, expand 420ms; away is the
-   closed state, framed and parked one page and a gap below the screen */
 html[data-tour-open] {
   overflow: hidden;
 }
@@ -33,7 +31,6 @@ html[data-tour-open] {
   transition-duration: 420ms, 440ms;
 }
 
-/* the wrapper carries every page, so only the current one may drop into view */
 [data-tour][data-phase='away'] [data-tour-page][inert] {
   visibility: hidden;
 }
@@ -42,7 +39,6 @@ html[data-tour-open] {
   transition: transform 560ms var(--ease-sp-in-out);
 }
 
-/* concentric frame: inner radius = outer radius - padding - 1px hairline */
 [data-tour-art] {
   max-height: 52dvh;
   border-radius: 20px;

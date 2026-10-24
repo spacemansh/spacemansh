@@ -26,8 +26,7 @@ const getReducedMotion = () => window.matchMedia(reducedMotionQuery).matches
 
 const getServerReducedMotion = () => false
 
-// the shader takes real colours, not custom properties, so the tokens are
-// painted onto a 1px canvas and read back as rgb
+// the shader needs resolved colours rather than css custom properties
 const readToken = (name: string) => {
   const context = document.createElement('canvas').getContext('2d')
 
@@ -44,14 +43,12 @@ const readToken = (name: string) => {
 
 type Metal = { back: string; tint: string; gl: boolean }
 
-// the shader throws where WebGL is missing; those browsers get a plain ring
 const hasWebGL = () => {
   const canvas = document.createElement('canvas')
 
   return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
 }
 
-// mid grey body, lit by whichever end of the scale is lighter
 const readMetal = (): Metal => {
   const dark = document.documentElement.classList.contains('dark')
 
@@ -67,12 +64,12 @@ export type LiquidMetalButtonProps = Omit<
   'children'
 > & {
   children: ReactNode
-  /** the icon in the round well; an arrow by default */
+
   icon?: ReactNode
-  /** shader colours; read from the theme tokens when omitted */
+
   colorBack?: string
   colorTint?: string
-  /** flow speed at rest and on hover or focus */
+
   speed?: number
   activeSpeed?: number
 }
@@ -100,7 +97,6 @@ export function LiquidMetalButton({
     getServerReducedMotion,
   )
 
-  // the tokens change with the theme class on <html>, so read them again then
   const watchTheme = useCallback((node: HTMLSpanElement | null) => {
     if (!node) return
     setMetal(readMetal())
@@ -115,7 +111,6 @@ export function LiquidMetalButton({
     return () => observer.disconnect()
   }, [])
 
-  // metal flows faster on hover and focus, and stays still for reduced motion
   const flow = reduceMotion ? 0 : isActive ? activeSpeed : speed
 
   return (
@@ -143,7 +138,6 @@ export function LiquidMetalButton({
       type='button'
       {...props}
     >
-      {/* the metal ring, oversized so the shader's faded edges stay clipped */}
       <span
         aria-hidden='true'
         className='absolute -inset-6 z-0'

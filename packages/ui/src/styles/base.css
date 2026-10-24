@@ -1,6 +1,3 @@
-/* Shared base rules for every Spaceman site: no tokens here, they live in
- * globals.css. spaceman-ui keeps a byte-identical copy (`pnpm tokens:check`). */
-
 @utility px-page {
   padding-inline: max(24px, calc((100% - 1120px) / 2));
 }

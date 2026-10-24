@@ -4,10 +4,6 @@ import { useCallback, useState } from 'react'
 
 import './text-flip.css'
 
-// After chanhdai.com/components/text-flip: every 2s the old word exits
-// (y 40%, fade, 1px blur, 300ms) and then the next one enters from y -20%.
-// Every word sits in the same grid cell, so the slot is always as wide as the
-// longest word and the line never reflows.
 export function TextFlip({ words }: { words: readonly string[] }) {
   const [{ index, previous }, setFlip] = useState({
     index: 0,

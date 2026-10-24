@@ -5,15 +5,7 @@
 @source '../../../../apps/**/*.{ts,tsx}';
 @source '../**/*.{ts,tsx}';
 
-/* spaceman:tokens:start
- * Spaceman design tokens: the single source of truth for every Spaceman site.
- * Light values on :root, dark values on .dark, colour palettes as .theme-<name>
- * (light) and .dark.theme-<name> (dark), and @theme inline exposes them to
- * Tailwind. They live here, in the file components.json names, because the
- * shadcn CLI, uitheme and Spaceman RTA all read and write theme variables in
- * globals.css. Every other rule goes in an imported file.
- * spaceman-ui keeps this region byte-identical; `pnpm tokens:check` there fails
- * on drift. Change tokens here first. DESIGN.md holds the rules. */
+/* spaceman:tokens:start */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -280,9 +272,6 @@
   --spacing-tagline: clamp(0.875rem, 2.2cqi, 1.75rem);
 }
 
-/* Theme picker colour themes. Applied as `theme-<name>` on <html> by the
-   theme provider, and on each swatch so it previews its own accent. Mirrors
-   the `css` block of the theme-picker item in registry.json. */
 .theme-emerald {
   --primary: oklch(0.8348 0.1302 160.908);
   --primary-foreground: oklch(0.2626 0.0147 166.4589);

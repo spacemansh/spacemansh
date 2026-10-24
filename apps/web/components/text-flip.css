@@ -10,8 +10,6 @@
   animation: spaceman-flip-out 300ms ease-out both;
 }
 
-/* both ends are explicit: the resting state is opacity 0, so an implicit `to`
-   would fade the entering word straight back out */
 @keyframes spaceman-flip-in {
   from {
     opacity: 0;

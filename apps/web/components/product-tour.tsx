@@ -9,14 +9,6 @@ import { products } from '@/lib/site'
 
 import './product-tour.css'
 
-// The Explore tour: one full-screen page per product, moved like a framed page
-// transition. Every change of page runs three phases, timed from the reference:
-//   frame  the page scales into a frame on a muted field   420ms ease-out
-//   slide  framed pages travel vertically, a gap between    560ms ease-in-out
-//   full   the new page grows back to full bleed            420ms ease-out
-// Away is the resting state while closed: framed, parked under the screen, no
-// field. Opening rises the first page out of it; closing drops the current
-// page back into it, a little faster, without travelling past the others.
 const frameMs = 420
 
 const slideMs = 560
@@ -49,7 +41,6 @@ export function ProductTour() {
     timers.current.push(window.setTimeout(run, ms))
   }
 
-  // the page that held focus turns inert when it leaves, so focus follows to the nav
   const focusCurrent = () => {
     requestAnimationFrame(() => {
       dialogRef.current
@@ -58,7 +49,6 @@ export function ProductTour() {
     })
   }
 
-  // frame → move → full, then release the lock
   const travel = useCallback((to: number) => {
     clearTimers()
 
@@ -90,7 +80,6 @@ export function ProductTour() {
     if (!dialog || dialog.open) return
     clearTimers()
     document.documentElement.toggleAttribute('data-tour-open', true)
-    // the dialog is already away, so it appears parked and framed
     dialog.showModal()
     focusCurrent()
 
@@ -101,7 +90,6 @@ export function ProductTour() {
     }
 
     busy.current = true
-    // let the parked state paint, then rise and expand
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
         setPhase('slide')
@@ -125,13 +113,11 @@ export function ProductTour() {
     }
 
     busy.current = true
-    // a page that is already framed (still rising, or mid-move) drops at once
     const wait = phase === 'full' ? frameMs : 0
 
     setPhase('frame')
     later(wait, () => {
       setPhase('away')
-      // the cards pop back in while the field fades off them
       replayCards()
     })
     later(wait + awayMs, () => dialogRef.current?.close())
@@ -155,7 +141,6 @@ export function ProductTour() {
   }
 
   const step = (direction: 1 | -1, at: number) => {
-    // one page per gesture: ignore the tail of a trackpad swipe
     if (at - lastStep.current < frameMs * 2 + slideMs) return
     lastStep.current = at
     goTo(position + direction)
@@ -276,7 +261,7 @@ export function ProductTour() {
                       )}
                     </ActionRow>
                   </div>
-                  {/* image slot: the product's artwork goes here */}
+
                   <div
                     aria-hidden='true'
                     className='bg-card shadow-card relative aspect-4/3 w-full'

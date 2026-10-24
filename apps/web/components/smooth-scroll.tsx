@@ -1,9 +1,5 @@
 'use client'
 
-// Eased wheel scrolling after usealia.com (Lenis { lerp: 0.08 }): wheel input
-// moves a target and the page closes 8% of the gap per 60fps frame, so the hero
-// lifts off the sticky footer smoothly. Keyboard, scrollbar and touch stay
-// native; reduced motion turns it off.
 const lerp = 0.08
 
 function mountSmoothScroll(node: HTMLDivElement | null) {
@@ -28,7 +24,6 @@ function mountSmoothScroll(node: HTMLDivElement | null) {
   const onWheel = (event: WheelEvent) => {
     if (
       event.ctrlKey ||
-      // the Explore tour handles its own wheel input
       document.documentElement.hasAttribute('data-tour-open') ||
       document.documentElement.hasAttribute('data-cards-open') ||
       Math.abs(event.deltaX) > Math.abs(event.deltaY) ||
@@ -57,7 +52,6 @@ function mountSmoothScroll(node: HTMLDivElement | null) {
     raf = requestAnimationFrame(step)
   }
 
-  // a native scroll (keys, scrollbar, touch) resyncs the target
   const onScroll = () => {
     if (!raf) target = current = window.scrollY
   }

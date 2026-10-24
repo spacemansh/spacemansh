@@ -4,13 +4,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cn } from '@workspace/ui/lib/utils'
 
-/** the one field read from GitHub's repository payload */
 type Repo = { stargazers_count?: number }
 
 const api = 'https://api.github.com'
 
-// the boundary: GitHub's JSON is read as repository records, and a missing
-// or odd star field counts as zero
 const getRepos = async (url: string): Promise<Repo[]> => {
   const response = await fetch(url, {
     headers: { Accept: 'application/vnd.github+json' },
@@ -26,7 +23,6 @@ const getRepos = async (url: string): Promise<Repo[]> => {
 const starsOf = (repos: Repo[]) =>
   repos.reduce((sum, repo) => sum + (Number(repo.stargazers_count) || 0), 0)
 
-// one repo's stars, or the total across every public repo of an org or user
 const fetchStars = async (owner: string, repo?: string) => {
   if (repo) return starsOf(await getRepos(`${api}/repos/${owner}/${repo}`))
 
@@ -45,7 +41,6 @@ const fetchStars = async (owner: string, repo?: string) => {
   return total
 }
 
-/** GitHub stars for an org or user, or one of its repos; refetched rarely */
 export function useGitHubStars(owner: string, repo?: string) {
   return useQuery({
     queryKey: ['github-stars', owner, repo ?? null],
@@ -61,15 +56,14 @@ const compact = new Intl.NumberFormat('en', {
 })
 
 export type GitHubStarsProps = {
-  /** the org or user whose stars are counted */
   owner: string
-  /** narrows the count to one repo */
+
   repo?: string
   label?: string
   href?: string
-  /** 'label': the name in foreground, the count muted; 'count' flips them */
+
   emphasis?: 'label' | 'count'
-  /** hover cue: a thin underline under the name, a fill, a colour change, or none */
+
   hover?: 'underline' | 'background' | 'color' | 'none'
   className?: string
 }

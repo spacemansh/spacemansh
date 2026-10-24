@@ -3,8 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   devIndicators: false,
   transpilePackages: ['@workspace/ui'],
-  // The registry moved to ui.spaceman.sh. Existing installs resolve items from
-  // spaceman.sh/r/{name}.json, so those URLs redirect permanently.
+  // preserve registry install urls published before the subdomain move
   async redirects() {
     return [
       {

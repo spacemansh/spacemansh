@@ -1,4 +1,3 @@
-/* the engine sizes every card through custom properties on the stage */
 [data-cards],
 [data-card] {
   -webkit-tap-highlight-color: transparent;
@@ -12,13 +11,11 @@
   will-change: transform;
 }
 
-/* concentric frame: inner radius = outer radius - padding - 1px hairline */
 [data-card-well] {
   inset: var(--card-pad);
   border-radius: calc(var(--card-radius) - var(--card-pad) - 1px);
 }
 
-/* the carousel: the hero recedes behind the row and the page holds still */
 html[data-cards-open] {
   overflow: hidden;
 }
@@ -35,14 +32,12 @@ html[data-cards-open] [data-recede] {
   pointer-events: none;
 }
 
-/* on a phone the caption sits over the hero, so it fades further */
 @media (width < 40rem) {
   html[data-cards-open] [data-recede] {
     opacity: 0.04;
   }
 }
 
-/* fixed children each own a layer: backdrop under the cards, controls over them */
 [data-carousel] > * {
   visibility: hidden;
   opacity: 0;
@@ -67,7 +62,6 @@ html[data-cards-open] [data-recede] {
   top: var(--cc-top);
 }
 
-/* captions share one cell and cross-fade as the row moves */
 [data-caption] {
   opacity: 0;
   translate: 0 6px;
