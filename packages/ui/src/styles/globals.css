@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "./base.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './base.css';
 
 @source '../../../../apps/**/*.{ts,tsx}';
 @source '../**/*.{ts,tsx}';
@@ -81,6 +81,13 @@
   --spacing: 0.25rem;
   --ease-sp-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-sp-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --card-shadow:
+    0 0 0 1px var(--border), 0 1px 2px hsl(0 0% 0% / 0.06),
+    0 12px 24px -12px hsl(0 0% 0% / 0.18);
+  --card-shadow-raised:
+    0 0 0 1px var(--border-strong), 0 2px 4px hsl(0 0% 0% / 0.14),
+    0 22px 44px -10px hsl(0 0% 0% / 0.42);
+  --primary-hover: color-mix(in oklch, var(--primary) 80%, var(--foreground));
   color-scheme: light;
 }
 
@@ -144,6 +151,13 @@
     0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
   --shadow-lift: 0px 12px 26px -10px hsl(0 0% 0% / 0.6);
+  --card-shadow:
+    0 0 0 1px var(--border-strong), 0 1px 2px hsl(0 0% 0% / 0.3),
+    0 16px 32px -14px hsl(0 0% 0% / 0.6);
+  --card-shadow-raised:
+    0 0 0 1px var(--border-strong), 0 2px 4px hsl(0 0% 0% / 0.4),
+    0 26px 52px -12px hsl(0 0% 0% / 0.75);
+  --primary-hover: color-mix(in oklch, var(--primary) 80%, var(--foreground));
   color-scheme: dark;
 }
 
@@ -212,6 +226,58 @@
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+  --color-primary-hover: var(--primary-hover);
+
+  --shadow-card: var(--card-shadow);
+  --shadow-card-raised: var(--card-shadow-raised);
+  --shadow-float: 0 0 0 1px var(--border), var(--shadow-lift);
+  --shadow-hairline: 0 1px 0 var(--border);
+
+  --ease-sp-out: var(--ease-sp-out);
+  --ease-sp-in-out: var(--ease-sp-in-out);
+  --ease-roll: cubic-bezier(0.6, 0, 0.2, 1);
+
+  --text-hero: clamp(2.5rem, calc(2.165rem + 1.427vw), 3.5rem);
+  --text-hero--line-height: 1.1;
+  --text-hero--letter-spacing: -0.03em;
+  --text-page: clamp(1.875rem, calc(1.375rem + 2vw), 3.25rem);
+  --text-page--line-height: 1.08;
+  --text-page--letter-spacing: -0.03em;
+  --text-card-title: clamp(1.5rem, calc(1.125rem + 1vw), 2rem);
+  --text-card-title--line-height: 1.1;
+  --text-card-title--letter-spacing: -0.02em;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.625rem;
+  --text-lead--letter-spacing: -0.02em;
+  --text-copy: 1rem;
+  --text-copy--line-height: 1.5rem;
+  --text-copy--letter-spacing: -0.01em;
+  --text-copy-lg: 1.125rem;
+  --text-copy-lg--line-height: 1.625rem;
+  --text-copy-lg--letter-spacing: -0.01em;
+  --text-nav: 1rem;
+  --text-nav--line-height: 1;
+  --text-nav--letter-spacing: -0.02em;
+  --text-action: 1rem;
+  --text-action--line-height: 1;
+  --text-action--letter-spacing: -0.01em;
+  --text-control: 0.84375rem;
+  --text-control--line-height: 1;
+  --text-overline: 0.78125rem;
+  --text-overline--line-height: 1;
+  --text-overline--letter-spacing: 0.16em;
+  --text-link: 0.9375rem;
+  --text-link--line-height: 1.5;
+  --text-tagline: clamp(0.6875rem, 2.5cqi, 2.125rem);
+  --text-tagline--line-height: 1.2;
+  --text-tagline--letter-spacing: 0.04em;
+
+  --spacing-gutter: clamp(1.25rem, 2.7vw, 2.5rem);
+  --spacing-footer-top: clamp(3rem, 7vw, 5.5rem);
+  --spacing-footer-gap: clamp(2.5rem, 5vw, 4rem);
+  --spacing-footer-end: clamp(3.5rem, 8vw, 6rem);
+  --spacing-tagline: clamp(0.875rem, 2.2cqi, 1.75rem);
 }
 
 /* Theme picker colour themes. Applied as `theme-<name>` on <html> by the
