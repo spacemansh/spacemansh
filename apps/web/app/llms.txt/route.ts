@@ -1,11 +1,10 @@
-import { footerColumns, products, siteDescription, siteUrl } from '@/lib/site'
+import { footerColumns, seoLinks, siteDescription, siteUrl } from '@/lib/site'
 
-// llms.txt (llmstxt.org): a plain Markdown summary for language models. It is
-// built from the same data as the page and prerendered at build time, so it
-// costs nothing at request time and cannot drift from the site.
 export const dynamic = 'force-static'
 
-const portfolio = footerColumns.find((column) => column.title === 'Portfolio')
+const portfolio = footerColumns.find(
+  (column) => column.title === 'Personal website',
+)
 
 const elsewhere = footerColumns.find((column) => column.title === 'Elsewhere')
 
@@ -19,11 +18,11 @@ const body = `# spaceman.sh
 spaceman.sh is the home of Spaceman, a set of open-source tools for building
 user interfaces, made by Tony Edgal.
 
-## Products
+## Links
 
-${products.map((product) => `- [${product.name}](${product.href}): ${product.description}`).join('\n')}
+${seoLinks.map((product) => `- [${product.name}](${product.href}): ${product.description}`).join('\n')}
 
-## Portfolio
+## Personal website
 
 ${list(portfolio?.links)}
 
