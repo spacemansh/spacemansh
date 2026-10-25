@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "build:worker": "pnpm --filter web build:worker",
-    "deploy": "pnpm --filter web deploy",
+    "deploy": "pnpm --filter web run deploy",
     "dev": "turbo dev",
     "format": "oxfmt --check .",
     "format:fix": "oxfmt .",
