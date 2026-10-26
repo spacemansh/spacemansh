@@ -165,7 +165,7 @@ export function LiquidMetalButton({
         ) : null}
       </span>
 
-      <span className='bg-background text-foreground group-hover:bg-muted relative z-10 flex items-center gap-3 rounded-full py-1.5 ps-1.5 pe-6 text-sm font-medium transition-colors duration-300'>
+      <span className='bg-background text-foreground group-hover:bg-muted/95 relative z-10 flex items-center gap-3 rounded-full py-1.5 ps-1.5 pe-6 text-sm font-medium transition-colors duration-300'>
         <span className='bg-muted text-muted-foreground group-hover:bg-background group-hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors duration-300'>
           {icon ?? (
             <ArrowRight
