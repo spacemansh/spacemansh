@@ -233,7 +233,7 @@ export function ProductTour() {
                 key={product.id}
               >
                 <div className='mx-auto grid h-full w-full max-w-280 content-center items-center gap-10 px-5 pt-24 pb-12 sm:px-8 lg:grid-cols-2 lg:gap-16'>
-                  <div className='flex flex-col gap-5'>
+                  <div className='flex min-w-0 flex-col gap-5'>
                     <p className='text-muted-foreground font-mono text-sm'>
                       {String(i + 1).padStart(2, '0')} /{' '}
                       {String(products.length).padStart(2, '0')} ·{' '}

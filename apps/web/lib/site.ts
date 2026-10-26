@@ -31,7 +31,8 @@ export const products = [
   },
   {
     id: 'rta',
-    name: 'Spaceman React Theme Animation',
+    name: 'Spaceman RTA',
+    seoName: 'Spaceman React Theme Animation',
     href: 'https://spaceman-rta-vite.netlify.app/',
     domain: '@space-man/react-theme-animation',
     description: 'Animated theme transitions for React.',
@@ -47,7 +48,14 @@ export const products = [
 ] as const
 
 export const seoLinks = ['registry', 'skills', 'rta', 'theme', 'website'].map(
-  (id) => products.find((product) => product.id === id)!,
+  (id) => {
+    const product = products.find((product) => product.id === id)!
+
+    return {
+      ...product,
+      name: 'seoName' in product ? product.seoName : product.name,
+    }
+  },
 )
 
 export const footerColumns = [
@@ -57,7 +65,7 @@ export const footerColumns = [
       { label: 'Spaceman UI Registry', href: 'https://ui.spaceman.sh' },
       { label: 'UI Theme', href: 'https://www.uitheme.dev/' },
       {
-        label: 'Spaceman React Theme Animation',
+        label: 'Spaceman RTA',
         href: 'https://spaceman-rta-vite.netlify.app/',
       },
       {
