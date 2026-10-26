@@ -61,7 +61,13 @@ jobs:
         run: pnpm quality && pnpm typecheck
 
       - name: Build Worker
-        run: pnpm build:worker
+        env:
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ vars.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.NEXT_PUBLIC_POSTHOG_HOST }}
+        run: |
+          test -n "$NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN" || { echo '::error::Set the NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN production variable.'; exit 1; }
+          test -n "$NEXT_PUBLIC_POSTHOG_HOST" || { echo '::error::Set the NEXT_PUBLIC_POSTHOG_HOST production variable.'; exit 1; }
+          pnpm build:worker
 
       - name: Deploy Worker
         working-directory: apps/web

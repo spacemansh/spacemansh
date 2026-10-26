@@ -140,6 +140,13 @@ is on the page as provisional.
 
 ## Cloudflare deployment
 
+PostHog initializes in `apps/web/instrumentation-client.ts` only on
+`spaceman.sh`. Its automatic pageviews cover the initial page and App Router
+navigation, including future pages. Keep this global setup when adding routes;
+do not add duplicate pageview calls. The production GitHub Actions environment
+must provide `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST`
+as build variables. Preview and local hosts must not send production events.
+
 `apps/web` builds to a Worker: `next build` → `opennextjs-cloudflare build` →
 `.open-next/worker.js`.
 
