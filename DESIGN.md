@@ -109,11 +109,16 @@ focus.
 
 ### Palettes
 
-`.theme-<name>` on `<html>` swaps the accent: emerald (the default, equal to the
-base tokens), slate, azure, violet and amber. Each palette overrides only
-`--primary`, `--primary-foreground`, `--ring` and `--primary-ink`, in light
-(`.theme-<name>`) and dark (`.dark.theme-<name>`). uitheme's `colorThemes` and
-the `@spaceman/theme-picker` item drive the class.
+`.theme-<name>` on `<html>` swaps the accent between the accents of the
+Spaceman RTA preset themes: supabase, northern-lights, mono, caffeine, mocha and
+perpetuity. Supabase equals the base tokens, so it is the default on
+ui.spaceman.sh; spaceman.sh calls the base tokens `default` and leaves supabase
+out. Northern-lights overrides only `--primary`, `--primary-foreground`,
+`--ring` and `--primary-ink`. The other five carry the full Spaceman RTA theme:
+every colour, chart and sidebar token, fonts, radius, shadows and tracking, plus
+their own `--primary-ink`. Each has a light (`.theme-<name>`) and dark
+(`.dark.theme-<name>`) block.
+uitheme's `colorThemes` and the `@spaceman/theme-picker` item drive the class.
 
 ### Named rules
 
@@ -241,6 +246,18 @@ instantly, springs settle at once, marquees stop, and nothing else is lost.
   duration. System → Light → Dark when `system` is on, else Light ↔ Dark (the site),
   where a system preference shows as the mode it resolves to.
 - **Press:** scale 0.96 on `:active`.
+
+### Bounce wrapper
+
+- `components/bounce-wrapper.tsx` gives any children the card motion: the
+  pop-in, the zig-zag fan where the hovered item lifts in place and neighbours
+  slide just clear, the marquee where the fan cannot fit, and the click
+  carousel with an optional caption per item. One file, Tailwind plus inline
+  styles, so it ships as a single registry item. Geometry and motion are props
+  (item size, overlap, tilts, lifts, hover scale, lift and gap, entrance delay
+  and stagger, marquee mode and speed). The home page fills it with five
+  registry preview cards (1a, 1n, 1o, 1u, 1t); BounceCards remains as its own
+  item.
 
 ### Cards
 
