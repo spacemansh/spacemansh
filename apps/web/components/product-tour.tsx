@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 
+import { GalleryCard } from '@/components/gallery-card'
 import { LiquidMetalButton } from '@/components/liquid-metal-button'
 import { ActionRow, StepButton, VisitLink } from '@/components/tour-actions'
 import { replayCards } from '@/lib/replay-cards'
@@ -262,17 +263,18 @@ export function ProductTour() {
                     </ActionRow>
                   </div>
 
-                  <div
-                    aria-hidden='true'
-                    className='bg-card shadow-card relative aspect-4/3 w-full'
-                    data-product={product.id}
+                  <GalleryCard
+                    className='justify-self-center'
                     data-tour-art
-                  >
-                    <div
-                      className='bg-inset inset-ring-border absolute inset-ring'
-                      data-tour-well
-                    />
-                  </div>
+                    index={i}
+                    item={{
+                      id: product.id,
+                      alt: product.name,
+                      label: product.name,
+                      detail: product.domain,
+                      href: product.href,
+                    }}
+                  />
                 </div>
               </section>
             ))}
