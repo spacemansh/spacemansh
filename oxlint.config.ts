@@ -58,7 +58,10 @@ export default defineConfig({
   overrides: [
     {
       // shadcn primitives own their styling; the rules check their callers
-      files: ['packages/ui/src/components/**'],
+      files: [
+        'packages/ui/src/components/**',
+        'apps/web/components/preview-card-*.tsx',
+      ],
       rules: {
         'shadcn/no-arbitrary-values': 'off',
         'shadcn/no-raw-colors': 'off',

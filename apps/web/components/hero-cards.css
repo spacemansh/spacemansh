@@ -1,0 +1,71 @@
+/* the hero recedes behind the open carousel; the wrapper sets the attribute */
+[data-recede] {
+  transition:
+    opacity 300ms var(--ease-sp-out),
+    filter 300ms var(--ease-sp-out);
+}
+
+html[data-cards-open] [data-recede] {
+  opacity: 0.1;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* on a phone the caption sits over the hero, so it fades further */
+@media (width < 40rem) {
+  html[data-cards-open] [data-recede] {
+    opacity: 0.04;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-recede] {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* a short screen steps the hero type down one size so the fan keeps room */
+@media (height < 45rem) {
+  [data-hero-cards] {
+    margin-top: calc(var(--spacing) * 14);
+  }
+
+  [data-hero] {
+    gap: calc(var(--spacing) * 5);
+    padding-top: calc(var(--spacing) * 3);
+    padding-bottom: calc(var(--spacing) * 5);
+  }
+
+  [data-hero] #hero-title {
+    font-size: var(--text-page);
+    line-height: var(--text-page--line-height);
+  }
+
+  [data-hero-lead] {
+    font-size: var(--text-copy-lg);
+    line-height: var(--text-copy-lg--line-height);
+  }
+}
+
+/* a very short screen steps down once more */
+@media (height < 30rem) {
+  [data-hero-cards] {
+    margin-top: calc(var(--spacing) * 12);
+  }
+
+  [data-hero] {
+    gap: calc(var(--spacing) * 3);
+    padding-top: calc(var(--spacing) * 2);
+    padding-bottom: calc(var(--spacing) * 3);
+  }
+
+  [data-hero] #hero-title {
+    font-size: var(--text-card-title);
+    line-height: var(--text-card-title--line-height);
+  }
+
+  [data-hero-lead] {
+    font-size: var(--text-copy);
+    line-height: var(--text-copy--line-height);
+  }
+}
