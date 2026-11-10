@@ -4,9 +4,9 @@ export const themeTransition = {
 
 export const colorThemes = [
   'default',
-  'emerald',
-  'slate',
-  'azure',
-  'violet',
-  'amber',
+  'northern-lights',
+  'mono',
+  'caffeine',
+  'mocha',
+  'perpetuity',
 ] as const
