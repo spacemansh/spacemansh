@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
-import type { ComponentProps } from 'react'
+import Link from 'next/link'
+import type { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@workspace/ui/lib/utils'
 
@@ -36,17 +37,29 @@ export function VisitLink({ href, name }: { href: string; name: string }) {
   )
 }
 
+const stepClasses =
+  'border-border-strong text-foreground hover:bg-muted inline-flex h-12 min-w-0 cursor-pointer items-center rounded-full border bg-transparent px-5 text-sm leading-none font-medium whitespace-nowrap transition duration-150 active:scale-96'
+
 export function StepButton({
   children,
   ...props
 }: Omit<ComponentProps<'button'>, 'className' | 'type'>) {
   return (
-    <button
-      className='border-border-strong text-foreground hover:bg-muted inline-flex h-12 min-w-0 cursor-pointer items-center rounded-full border bg-transparent px-5 text-sm leading-none font-medium whitespace-nowrap transition duration-150 active:scale-96'
-      type='button'
-      {...props}
-    >
+    <button className={stepClasses} type='button' {...props}>
       <span className='min-w-0 truncate'>{children}</span>
     </button>
+  )
+}
+
+export function StepLink({
+  children,
+  icon,
+  ...props
+}: Omit<ComponentProps<typeof Link>, 'className'> & { icon?: ReactNode }) {
+  return (
+    <Link className={cn(stepClasses, 'gap-2 no-underline')} {...props}>
+      {icon}
+      <span className='min-w-0 truncate'>{children}</span>
+    </Link>
   )
 }
