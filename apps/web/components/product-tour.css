@@ -40,13 +40,8 @@ html[data-tour-open] {
 }
 
 [data-tour-art] {
-  max-height: 52dvh;
-  border-radius: 20px;
-}
-
-[data-tour-well] {
-  inset: 8px;
-  border-radius: 11px;
+  width: min(100%, 52dvh);
+  aspect-ratio: 1;
 }
 
 [data-tour-nav] {
